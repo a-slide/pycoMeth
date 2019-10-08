@@ -31,23 +31,11 @@ def mkdir (fn, exist_ok=False):
     except:
         raise pycoMethError ("Error creating output folder `{}`".format(fn))
 
-def numeric_cast_dict (d):
-    """Cast str values to integer or float from a dict """
-    for k, v in d.items():
-        d[k] = numeric_cast(v)
-    return d
-
-def numeric_cast (v):
-    """Try to cast values to int or to float"""
-    if type(v)== str:
-        try:
-            v = int(v)
-        except ValueError:
-            try:
-                v = float(v)
-            except ValueError:
-                pass
-    return v
+def mkbasedir (fn, exist_ok=False):
+    """ Create directory for a given file recursivelly. Raise IO error if path exist or if error at creation """
+    dir_fn = os.path.dirname(fn)
+    if dir_fn:
+        mkdir (dir_fn, exist_ok=True)
 
 def dict_to_str (d, sep="\t", nsep=0, exclude_list=[]):
     """ Transform a multilevel dict to a tabulated str """
@@ -66,7 +54,10 @@ def dict_to_str (d, sep="\t", nsep=0, exclude_list=[]):
                     m += "{}{}\n{}".format(sep*nsep, i, j)
                 else:
                     m += "{}{}: {}\n".format(sep*nsep, i, j)
-    return m[:-1]
+    if not m:
+        return ""
+    else:
+        return m[:-1]
 
 def jhelp (f:"python function or method"):
     """
@@ -197,54 +188,6 @@ def get_logger (name=None, verbose=False, quiet=False):
         logger.setLevel(logging.INFO)
 
     return logger
-
-class LineParser():
-    """Simple line parser which returns namedtuples per line and does numeric
-    type casting for file lines"""
-
-    def __init__(self, header_line, sep="\t", cast_numeric_field=True):
-        """"""
-        self.cast_numeric_field = cast_numeric_field
-        self.sep = sep
-        self.header = header_line.strip().split(self.sep)
-        self.line_tuple = namedtuple("Line", self.header)
-        self.c = Counter()
-
-    def __repr__ (self):
-        m = "Header names: {}\n".format(self.header)
-        m+="Line counter:{}".format(dict_to_str(self.c))
-        return m
-
-    def __call__(self, line):
-        """"""
-        line = line.strip().split(self.sep)
-
-        # Try to cast numeric field to appropiate type
-        if self.cast_numeric_field:
-            for i in range(len(line)):
-                line[i] = self._numeric_cast(line[i])
-
-        if len(line) != len(self.header):
-            self.c["Inconsistent field numbers"]+=1
-            return None
-        else:
-            # Cast line_tuple object
-            line = self.line_tuple(*line)
-            self.c["Valid line parsed"]+=1
-            return line
-
-    def _numeric_cast(self, val):
-        """Try to cast values to int or to float"""
-        if type(val)== str:
-            try:
-                val = int(val)
-            except ValueError:
-                try:
-                    val = float(val)
-                except ValueError:
-                    pass
-        return val
-
 
 #~~~~~~~~~~~~~~CUSTOM EXCEPTION AND WARN CLASSES~~~~~~~~~~~~~~#
 class pycoMethError (Exception):

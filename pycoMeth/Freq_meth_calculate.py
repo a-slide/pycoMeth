@@ -3,31 +3,30 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Standard library imports
 from collections import *
-import csv
 import datetime
-from random import randint
 
 # Third party imports
 from tqdm import tqdm
 import numpy as np
+import pandas as pd
 
 # Local imports
 from pycoMeth.common import *
+from pycoMeth.FileParser import FileParser
 from pycoMeth import __version__ as package_version
 from pycoMeth import __name__ as package_name
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~Freq_meth_calculate MAIN CLASS~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class Freq_meth_calculate():
 
     def __init__ (self,
         input_fn:"str",
-        fasta_index:"str"="",
+        fasta_index:"str",
         output_bed_fn:"str"="",
         output_tsv_fn:"str"="",
         min_depth:"int"=10,
         sample_id:"str"="",
-        strand_specific:"bool"=False,
         min_llr:"float"=2,
         verbose:"bool"=False,
         quiet:"bool"=False):
@@ -36,7 +35,7 @@ class Freq_meth_calculate():
         * input_fn
             Path to a nanopolish call_methylation tsv output file
         * fasta_index
-            fasta index file obtained with samtools faidx. Required for coordinate sorting
+            fasta index file obtained with samtools faidx needed for coordinate sorting
         * output_bed_fn
             Path to write a summary result file in BED format
         * output_tsv_fn
@@ -45,8 +44,6 @@ class Freq_meth_calculate():
             Minimal number of reads covering a site to be reported
         * sample_id
             Sample ID to be used for the bed track header
-        * strand_specific
-            If True, output strand specific sites
         * min_llr
             Minimal log likelyhood ratio to consider a site significantly methylated or unmethylated
         * verbose
@@ -54,12 +51,12 @@ class Freq_meth_calculate():
         * quiet
             Reduce verbosity
         """
+
         # Save init options in dict for later
         kwargs = locals()
 
         # Define overall verbose level
         log = get_logger(name="Freq_meth_calculate", verbose=verbose, quiet=quiet)
-
         # Print option summary log
         log.debug ("## Options summary ##")
         log.debug ("\tpackage_name: {}".format(package_name))
@@ -77,252 +74,280 @@ class Freq_meth_calculate():
 
         # Verify that at least one output file is given:
         log.debug("\tCheck output file")
-        if not output_bed_fn and not output_tsv_fn:
-            raise pycoMethError("At least one output file should be given")
         if output_bed_fn:
-            if os.path.dirname(output_bed_fn):
-                mkdir (os.path.dirname(output_bed_fn), exist_ok=True)
-            log.debug("\t\tOutput results in bed format")
+            log.debug("\t\tOutput results in BED format")
         if output_tsv_fn:
-            if os.path.dirname(output_tsv_fn):
-                mkdir (os.path.dirname(output_tsv_fn), exist_ok=True)
-            log.debug("\t\tOutput results in tsv format")
-
-        # Create self variables
-        counter = Counter()
+            log.debug("\t\tOutput results in TSV format")
+        if not output_bed_fn and not output_tsv_fn:
+            log.debug("\t\tInteractive mode. Save result in memory")
 
         log.warning ("## Parsing methylation_calls file ##")
-        # Init SGC class with fasta_index
-        if fasta_index:
-            SGC.set_chrom_list(fasta_index)
+        # Init SitesIndex object with fasta_index to aggregate data at genomic position level
+        sites_index = SitesIndex(chr_index=fasta_index)
 
-        # Create collection to store results
-        site_dict = defaultdict(list)
-
-        try:
-            input_fp = open (input_fn, "r")
+        # Open file parser
+        with FileParser(
+            fn=input_fn, sep="\t", first_line_header=True, include_byte_offset=True,
+            dtypes={"start":int, "end":int, "log_lik_ratio":float, "num_motifs":int}) as np_call_fp:
 
             log.info ("\tStarting to parse file Nanopolish methylation call file")
-            header_line = input_fp.readline()
-            byte_offset = len(header_line)
-            lp = LineParser(header_line, sep="\t", cast_numeric_field=True)
 
-            for line in tqdm(input_fp, desc="\t", unit=" lines", disable=log.level>=30):
-                counter["Total read lines"]+=1
-                byte_len = len(line)
-                l = lp(line)
-
-                if not l:
-                    # Failsafe if line is malformed
-                    counter["Invalid read line"]+=1
-                else:
-                    # Store byte offset corresponding to appropriate line
-                    counter["Valid read lines"]+=1
-                    if strand_specific:
-                        coord = SGC(l.chromosome, l.start, l.strand)
-                    else:
-                        coord = SGC(l.chromosome, l.start)
-                    site_dict[coord].append(byte_offset)
-                    byte_offset += byte_len
+            with tqdm (total=len(np_call_fp), desc="\t", unit=" bytes", unit_scale=True, disable=log.level>=30) as pbar:
+                prev_byte_len = 0
+                for lt in np_call_fp:
+                    sites_index (lt.chromosome, lt.start, lt.byte_offset)
+                    pbar.update(lt.byte_offset-prev_byte_len)
+                    prev_byte_len = lt.byte_offset
 
             log.info ("\tFiltering out low coverage sites")
-            filtered_site_dict = defaultdict(list)
-            for k, offset_list in site_dict.items():
-                counter["Total sites"]+=1
+            sites_index.filter_low_count(min_depth)
 
-                # If low coverage unset list to release memory
-                if len(offset_list) < min_depth:
-                    counter["Low coverage sites"]+=1
+            log.info ("\tSorting by coordinates")
+            sites_index.sort()
+
+            log.info ("\tProcessing valid sites found and write to file")
+            if output_bed_fn: log.info ("\t\tStart writing BED output")
+            if output_tsv_fn: log.info ("\t\tStart writing TSV output")
+
+            with SitesWriter(
+                bed_fn=output_bed_fn,
+                tsv_fn=output_tsv_fn,
+                sample_id=sample_id,
+                min_llr=min_llr) as sites_writer:
+
+                for chrom, pos, byte_offset_list in tqdm(sites_index, desc="\t", unit=" sites", unit_scale=True, disable=log.level>=30):
+                    # Summarize and write all lines corresponding to a given genomic position
+                    sites_writer (ll=np_call_fp.get_lines(byte_offset_list))
+
+                log.info ("## Results summary ##")
+                log.info (dict_to_str (np_call_fp.counter, nsep=1))
+                log.info (dict_to_str (sites_index.counter, nsep=1))
+                log.info (dict_to_str (sites_writer.counter, nsep=1))
+
+
+                if not output_bed_fn and not output_tsv_fn:
+                    self.df = sites_writer.df
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~SitesIndex HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+class SitesIndex():
+    def __init__ (self, chr_index):
+        """"""
+        # Import chr list
+        if isinstance(chr_index, list):
+            chr_list = chr_index
+        else:
+            chr_list=[]
+            with open(chr_index) as fp:
+                for line in fp:
+                    chr_list.append(line.split()[0])
+
+        # Init dict with chromosomes names
+        self.sites=OrderedDict()
+        for c in chr_list:
+            self.sites[c] = OrderedDict()
+
+        # Init other self variables
+        self.counter = Counter()
+
+    #~~~~~~~~~~~~~~MAGIC AND PROPERTY METHODS~~~~~~~~~~~~~~#
+
+    def __repr__(self):
+        return dict_to_str(self.counter)
+
+    def __len__(self):
+        i=0
+        for v in self.sites.values():
+            i+=len(v)
+        return i
+
+    def __call__ (self, chrom, pos, byte_offset):
+        """"""
+        #assert type(pos) == int
+        if chrom not in self.sites:
+            self.counter ["Invalid chromosome lines"]+=1
+        else:
+            if not pos in self.sites[chrom]:
+                self.counter ["Initial Sites"]+=1
+                self.sites[chrom][pos]=[]
+            self.counter ["Total Valid Lines"]+=1
+            self.sites[chrom][pos].append(byte_offset)
+
+    def __iter__(self):
+        for chrom, chrom_d in self.sites.items():
+            for pos, byte_offset_list in chrom_d.items():
+                yield (chrom, pos, byte_offset_list)
+
+    #~~~~~~~~~~~~~~PUBLIC METHODS~~~~~~~~~~~~~~#
+
+    def filter_low_count (self, min_count=0):
+        i = 0
+        for k in self.sites.keys():
+            filtered_d = OrderedDict()
+            for i,j in self.sites[k].items():
+                if len(j)<min_count:
+                    self.counter ["Low Count Sites"]+=1
                 else:
-                    counter["Valid sites"]+=1
-                    filtered_site_dict[k]=offset_list
-            del site_dict
+                    self.counter ["Valid Sites Found"]+=1
+                    filtered_d[i]=j
+                    i+=1
+            self.sites[k] = filtered_d
+        if i == 0:
+            raise pycoMethError ("No valid sites left after coverage filtering")
 
-            if not filtered_site_dict:
-                raise pycoMethError ("No valid sites left after coverage filtering")
+    def sort (self):
+        for k in self.sites.keys():
+            self.sites[k] = OrderedDict(sorted(self.sites[k].items(), key=lambda t: t[0]))
 
-            if fasta_index:
-                log.info ("\tSorting by coordinates")
-                filtered_site_dict = OrderedDict(sorted(filtered_site_dict.items(), key=lambda t: t[0]))
 
-            log.info ("\tProcessing valid sites found")
-            Site.set_class_param(strand_specific=strand_specific, min_llr=min_llr)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~SitesWriter HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-            log.debug ("\t\tWrite output file header")
-            if output_bed_fn:
-                output_bed_fp = open (output_bed_fn, "w")
-                output_bed_fp.write(Site.BED_header(sample_id)+"\n")
-            if output_tsv_fn:
-                output_tsv_fp = open (output_tsv_fn, "w")
-                output_tsv_fp.write(Site.TSV_header()+"\n")
+class SitesWriter():
+    """Extract data for valid sites and write to BED and/or TSV file"""
 
-            for k, offset_list in tqdm(filtered_site_dict.items(), desc="\t", unit=" sites", disable=log.level>=30):
-                # Get all read lines corresponding to current site
-                ll = []
-                for offset in offset_list:
-                    input_fp.seek(offset, 0)
-                    ll.append(lp(input_fp.readline()))
+    def __init__ (self, bed_fn="", tsv_fn="", sample_id="", min_llr=2,):
+        """"""
+        self.sample_id = sample_id
+        self.min_llr = min_llr
+        self.counter = Counter()
 
-                # Parse list with helper class Site
-                site = Site(ll=ll)
-                counter["Valid sites"]+=1
-                if output_bed_fn:
-                    output_bed_fp.write(site.to_bed()+"\n")
-                if output_tsv_fn:
-                    output_tsv_fp.write(site.to_tsv()+"\n")
+        # Init output files handlers is needed
+        self.bed_fp = self._init_bed (bed_fn)
+        self.tsv_fp = self._init_tsv (tsv_fn)
 
-        finally:
-            input_fp.close()
-            if output_bed_fn:
-                output_bed_fp.close()
-            if output_tsv_fn:
-                output_tsv_fp.close()
-
-        log.info ("## Results summary ##")
-        log.info (dict_to_str(counter, nsep=1))
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-class Site():
-    """Structure like class to store site information"""
-
-    # Class variables and setter
-    strand_specific = False
-    min_llr = 2
-    @classmethod
-    def set_class_param (cls, strand_specific=False, min_llr=2):
-        cls.strand_specific = strand_specific
-        cls.min_llr = min_llr
-
-    @classmethod
-    def BED_header (cls, sample_id=""):
-        return "track name=Methylation_{} itemRgb=On".format(sample_id)
-
-    @classmethod
-    def TSV_header (cls):
-        return "\t".join([
+        # Init list if running in non file mode
+        self._ll = []
+        self._l = namedtuple("l", [
             "chromosome",
             "start",
             "end",
             "strand",
-            "site_id",
             "methylated_reads",
             "unmethylated_reads",
             "ambiguous_reads",
             "sequence",
             "num_motifs",
+            "median_llr",
             "llr_list"])
 
-    def __init__ (self, ll):
-        """"""
-        self.total = len(ll)
-        self.methylated = 0
-        self.unmethylated = 0
-        self.ambiguous = 0
-        self.id = "{}:{}-{}".format(ll[0].chromosome, ll[0].start, ll[0].end+1)
-        self.sequence = ll[0].sequence
-        self.num_motifs = ll[0].num_motifs
-        self.chromosome = ll[0].chromosome
-        self.start = ll[0].start
-        self.end = ll[0].end+1
-        self.strand = ll[0].strand if self.strand_specific else "."
+    #~~~~~~~~~~~~~~MAGIC AND PROPERTY METHODS~~~~~~~~~~~~~~#
 
-        self.llr_list = []
-        for l in ll:
-            self.llr_list.append(float(l.log_lik_ratio))
-            # Count read methylation call per site
-            if l.log_lik_ratio >= self.min_llr:
-                self.methylated+=1
-            elif l.log_lik_ratio <= -self.min_llr:
-                self.unmethylated+=1
-            else:
-                self.ambiguous+=1
-
-        self.med_llr = np.mean(self.llr_list)
-        if self.med_llr <= -self.min_llr:
-            self.color = '8,121,207'
-        elif self.med_llr < self.min_llr:
-            self.color = '100,100,100'
-        else:
-            self.color = '235,5,79'
-
-    def __repr__(self):
-        return "{}:{}-{}({}) / id:{} / reads:{}".format(
-            self.chromosome,
-            self.start,
-            self.end,
-            self.strand,
-            self.id,
-            self.total)
-
-    def to_bed (self):
-        """"""
-        return "{}\t{}\t{}\t{}\t{:.6f}\t{}\t{}\t{}\t'{}'".format(
-            self.chromosome,
-            self.start,
-            self.end,
-            self.id,
-            self.med_llr,
-            self.strand,
-            self.start,
-            self.end,
-            self.color)
-
-    def to_tsv (self):
-        """"""
-        return "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
-            self.chromosome,
-            self.start,
-            self.end,
-            self.strand,
-            self.id,
-            self.methylated,
-            self.unmethylated,
-            self.ambiguous,
-            self.sequence,
-            self.num_motifs,
-            ",".join([str(i) for i in self.llr_list]))
-
-class SGC():
-    """Sortable genomic coordinate object"""
-
-    chr_list = OrderedDict()
-    @classmethod
-    def set_chrom_list (cls, index):
-        if isinstance(index, dict):
-            cls.chr_list = index
-        else:
-            with open(index) as fp:
-                for i, line in enumerate(fp):
-                    chrom = line.split()[0]
-                    cls.chr_list[chrom]=i
-
-    def __init__ (self, chrom, start=0, strand=""):
-        # Verify and store chromosome name
-        self.chrom = chrom
-        self.start = int(start)
-        self.strand = strand
+    @property
+    def df (self):
+        return pd.DataFrame(self._ll)
 
     def __repr__ (self):
-        return "{}:{} ({})".format(self.chrom, self.start, self.strand)
+        return dict_to_str (self.counter)
 
-    def __lt__(self, other):
-        if self.chrom == other.chrom:
-            if self.start == other.start:
-                # If everything is the same, just pick a random one
-                if self.strand == other.strand:
-                    return randint(0,1)
-                else:
-                    return self.strand < other.strand
+    def __call__ (self, ll):
+        """"""
+        self.counter["Total Sites Written"]+=1
+
+        # Shortcut for first line
+        l0 = ll[0]
+
+        # Collect llr values and count methylated, unmethylated and ambiguous reads
+        llr_list = []
+        reads_c = Counter()
+        for lt in ll:
+            reads_c["total sites"]+=1
+            llr_list.append(lt.log_lik_ratio)
+            # Count read methylation call per site
+            if lt.log_lik_ratio >= self.min_llr:
+                reads_c["methylated"]+=1
+            elif lt.log_lik_ratio <= -self.min_llr:
+                reads_c["unmethylated"]+=1
             else:
-                return self.start < other.start
+                reads_c["ambiguous"]+=1
+        med_llr = np.median(llr_list)
+
+        # Update counters and define color for bed file
+        if med_llr >= self.min_llr:
+            self.counter["Methylated sites"]+=1
+            color = '235,5,79'
+        elif med_llr <= -self.min_llr:
+            self.counter["Unmethylated sites"]+=1
+            color = '8,121,207'
         else:
-            return self.chr_list.get(self.chrom, 0) < self.chr_list.get(other.chrom, 0)
+            self.counter["Ambiguous sites"]+=1
+            color = '100,100,100'
 
-    def __hash__(self):
-        return hash((self.chrom, self.start, self.strand))
+        # Write tsv line
+        if self.tsv_fp:
+            line = "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
+                l0.chromosome,
+                l0.start,
+                l0.end+1,
+                ".",
+                reads_c.get("methylated", 0),
+                reads_c.get("unmethylated", 0),
+                reads_c.get("ambiguous", 0),
+                l0.sequence,
+                l0.num_motifs,
+                med_llr,
+                ";".join([str(i) for i in llr_list]))
+            self.tsv_fp.write (line)
 
-    def __eq__(self, other):
-        return (self.chrom, self.start, self.strand) == (other.chrom, other.start, other.strand)
+        if self.bed_fp:
+            line = "{}\t{}\t{}\t{}\t{:.2f}\t{}\t{}\t{}\t'{}'\n".format(
+                l0.chromosome,
+                l0.start,
+                l0.end+1,
+                ".",
+                med_llr,
+                ".",
+                l0.start,
+                l0.end+1,
+                color)
+            self.bed_fp.write (line)
 
-    def __ne__(self, other):
-        return not(self == other)
+        if not self.tsv_fp and not self.bed_fp:
+            self._ll.append(
+                self._l(
+                    l0.chromosome,
+                    l0.start,
+                    l0.end+1,
+                    ".",
+                    reads_c.get("methylated", 0),
+                    reads_c.get("unmethylated", 0),
+                    reads_c.get("ambiguous", 0),
+                    l0.sequence,
+                    l0.num_motifs,
+                    med_llr,
+                    llr_list))
+
+    def __enter__ (self):
+        return self
+
+    def __exit__(self, exception_type, exception_val, trace):
+        for fp in (self.bed_fp, self.tsv_fp):
+            if fp:
+                try:
+                    fp.close()
+                except Exception as E:
+                    print (E)
+
+    #~~~~~~~~~~~~~~PRIVATE METHODS~~~~~~~~~~~~~~#
+
+    def _init_bed (self, fn):
+        """Open BED file and write file header"""
+        if fn:
+            mkbasedir (fn, exist_ok=True)
+            fp = open(fn, "w")
+            if self.sample_id:
+                fp.write("track name=Methylation_{} itemRgb=On\n".format(self.sample_id))
+            else:
+                fp.write("track name=Methylation itemRgb=On\n")
+            return fp
+        else:
+            return False
+
+    def _init_tsv (self, fn):
+        """Open TSV file and write file header"""
+        if fn:
+            mkbasedir (fn, exist_ok=True)
+            fp = open(fn, "w")
+            fp.write("chromosome\tstart\tend\tstrand\tmethylated_reads\tunmethylated_reads\tambiguous_reads\tsequence\tnum_motifs\tmedian_llr\tllr_list\n")
+            return fp
+        else:
+            return False

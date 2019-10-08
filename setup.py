@@ -28,6 +28,9 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3'],
-    install_requires = ['numpy>=1.14.0', 'tqdm>=4.23.4'],
+    install_requires = [
+        'numpy>=1.14.0',
+        'tqdm>=4.23.4',
+        "pandas>=0.25.1"],
     packages = [name],
     entry_points = {'console_scripts': ['pycoMeth=pycoMeth.__main__:main']})
