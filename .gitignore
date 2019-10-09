@@ -105,5 +105,5 @@ venv.bak/
 tests/
 
 # demo_results
-docs/demo/output/
-docs/demo/data/
+docs/*/results/
+docs/*/data/
