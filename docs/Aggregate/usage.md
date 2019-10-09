@@ -6,11 +6,11 @@
 
 ### Jupyter API
 
-* [pycoMeth API usage notebook](https://a-slide.github.io/pycoMeth/demo/Aggregate_API/)
+* [pycoMeth API usage notebook](https://a-slide.github.io/pycoMeth/Aggregate/API_usage/)
 
 ### Shell CLI
 
-* [pycoMeth CLI usage notebook](https://a-slide.github.io/pycoMeth/demo/Aggregate_CLI/)
+* [pycoMeth CLI usage notebook](https://a-slide.github.io/pycoMeth/Aggregate/CLI_usage/)
 
 ## Output format
 
