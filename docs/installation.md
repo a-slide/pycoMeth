@@ -27,6 +27,7 @@ Nanocompore relies on a the following robustly maintained third party python lib
 
 * numpy>=1.14.0
 * tqdm>=4.23.4
+* pandas>=0.25.1
 
 The correct versions of packages are installed together with the software when using pip.
 
@@ -40,6 +41,12 @@ pip install pycoMeth
 
 # Update to last version
 pip install pycoMeth --upgrade
+```
+
+If you feel adventurous you can install the development version from test.pypi
+
+```bash
+pip install --index-url https://test.pypi.org/simple/ pycoMeth
 ```
 
 ## Option 2: Installation with pip from Github

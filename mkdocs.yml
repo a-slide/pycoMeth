@@ -22,12 +22,14 @@ copyright: 'Copyright &copy; 2019 Adrien Leger'
 nav:
     - Home: index.md
     - Installation instructions: installation.md
-    - Usage:
-        - How to use pycoMeth: usage.md
-        - Freq_meth_calculate usage: demo/Freq_meth_calculate_usage.ipynb
+    - pycoMeth Aggregate Usage:
+        - Using Aggregate: Aggregate/usage.md
+        - jupyter API usage: Aggregate/API_usage.ipynb
+        - Command line usage: Aggregate/CLI_usage.ipynb
     - Contributing: contributing.md
     - Code of conduct: code_of_conduct.md
     - Licence: licence.md
+    - Changelog: changelog.md
 
 # Theme customization
 theme:
