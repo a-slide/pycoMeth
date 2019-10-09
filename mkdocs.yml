@@ -1,0 +1,63 @@
+# Required python packages to generate the documentation
+# * mkdocs
+# * mkdocs-material
+# * pygments
+# * pymdown-extensions
+# * mknotebooks
+
+# Project information
+site_name: 'pycoMeth'
+site_description: 'Python package for nanopore DNA methylation analysis downstream to Nanopolish'
+site_author: 'Adrien Leger'
+site_url: 'https://a-slide.github.io/pycoMeth/'
+
+# Repository
+repo_name: 'a-slide/pycoMeth'
+repo_url: 'https://github.com/a-slide/pycoMeth'
+
+# Copyright
+copyright: 'Copyright &copy; 2019 Adrien Leger'
+
+# Navigation menu
+nav:
+    - Home: index.md
+    - Installation instructions: installation.md
+    - pycoMeth Aggregate Usage:
+        - Using Aggregate: Aggregate/usage.md
+        - jupyter API usage: Aggregate/API_usage.ipynb
+        - Command line usage: Aggregate/CLI_usage.ipynb
+    - Contributing: contributing.md
+    - Code of conduct: code_of_conduct.md
+    - Licence: licence.md
+    - Changelog: changelog.md
+
+# Theme customization
+theme:
+    name: 'material'
+    highlightjs: true
+    font: false
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: a-slide
+      repo: pycoMeth
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - mknotebooks
