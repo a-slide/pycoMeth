@@ -18,18 +18,17 @@ from pycoMeth import __name__ as package_name
 
 #~~~~~~~~~~~~~~~~~~~~~~~~Freq_meth_calculate MAIN CLASS~~~~~~~~~~~~~~~~~~~~~~~~#
 
-class Freq_meth_calculate():
+class Aggregate():
 
     def __init__ (self,
-        input_fn:"str",
-        fasta_index:"str",
-        output_bed_fn:"str"="",
-        output_tsv_fn:"str"="",
-        min_depth:"int"=10,
-        sample_id:"str"="",
-        min_llr:"float"=2,
-        verbose:"bool"=False,
-        quiet:"bool"=False):
+        input_fn:str,
+        fasta_index:str,
+        output_bed_fn:str="",
+        output_tsv_fn:str="",
+        min_depth:int=10,
+        sample_id:str="",
+        min_llr:float=2,
+        **kwargs):
         """
         Calculate methylation frequency at genomic CpG sites from the output of nanopolish call-methylation
         * input_fn
@@ -37,35 +36,44 @@ class Freq_meth_calculate():
         * fasta_index
             fasta index file obtained with samtools faidx needed for coordinate sorting
         * output_bed_fn
-            Path to write a summary result file in BED format
+            Path to write a summary result file in BED format (At least 1 output file is requires in CLI mode)
         * output_tsv_fn
-            Path to write an more extensive result report in TSV format
+            Path to write an more extensive result report in TSV format (At least 1 output file is requires in CLI mode)
         * min_depth
             Minimal number of reads covering a site to be reported
         * sample_id
             Sample ID to be used for the bed track header
         * min_llr
             Minimal log likelyhood ratio to consider a site significantly methylated or unmethylated
-        * verbose
-            Increase verbosity
-        * quiet
-            Reduce verbosity
+        * kwargs
+            Allow to pass extra options such as verbose and quiet
         """
 
         # Save init options in dict for later
-        kwargs = locals()
+        args = locals()
 
-        # Define overall verbose level
-        log = get_logger(name="Freq_meth_calculate", verbose=verbose, quiet=quiet)
+        log = get_logger (
+            name = "pycoMeth_Aggregate",
+            verbose = kwargs.get("verbose", False),
+            quiet = kwargs.get("quiet", False))
+
         # Print option summary log
         log.debug ("## Options summary ##")
         log.debug ("\tpackage_name: {}".format(package_name))
         log.debug ("\tpackage_version: {}".format(package_version))
         log.debug ("\ttimestamp: {}".format(str(datetime.datetime.now())))
-        log.debug (dict_to_str(kwargs, nsep=1, exclude_list=["self"]))
+        log.debug (dict_to_str(args, nsep=1, exclude_list=["self"]))
 
         # Verify parameters validity
         log.warning ("## Checking arguments ##")
+
+        # If CLI mode ask for a least one output file, otherwise it doesn't make any sense
+        if "func" in kwargs:
+            log.debug ("\tRunning in CLI mode")
+            if not output_bed_fn and not output_tsv_fn:
+                raise pycoMethError ("At least 1 output file is requires in CLI mode (-t or -b)")
+        else:
+            log.debug ("\tRunning in API mode")
 
         # Try to read input file if not a stream
         log.debug("\tTesting input file readability")
