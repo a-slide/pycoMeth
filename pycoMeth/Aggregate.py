@@ -46,7 +46,7 @@ class Aggregate():
         * min_llr
             Minimal log likelyhood ratio to consider a site significantly methylated or unmethylated
         * kwargs
-            Allow to pass extra options such as verbose and quiet
+            Allow to pass extra options such as verbose, quiet and progress
         """
 
         # Save init options in dict for later
@@ -56,6 +56,7 @@ class Aggregate():
             name = "pycoMeth_Aggregate",
             verbose = kwargs.get("verbose", False),
             quiet = kwargs.get("quiet", False))
+        progress = kwargs.get("progress", False)
 
         # Print option summary log
         log.debug ("## Options summary ##")
@@ -100,7 +101,7 @@ class Aggregate():
 
             log.info ("\tStarting to parse file Nanopolish methylation call file")
 
-            with tqdm (total=len(np_call_fp), desc="\t", unit=" bytes", unit_scale=True, disable=log.level>=30) as pbar:
+            with tqdm (total=len(np_call_fp), desc="\t", unit=" bytes", unit_scale=True, disable=not progress) as pbar:
                 prev_byte_len = 0
                 for lt in np_call_fp:
                     sites_index (lt.chromosome, lt.start, lt.byte_offset)
@@ -123,7 +124,7 @@ class Aggregate():
                 sample_id=sample_id,
                 min_llr=min_llr) as sites_writer:
 
-                for chrom, pos, byte_offset_list in tqdm(sites_index, desc="\t", unit=" sites", unit_scale=True, disable=log.level>=30):
+                for chrom, pos, byte_offset_list in tqdm(sites_index, desc="\t", unit=" sites", unit_scale=True, disable=not progress):
                     # Summarize and write all lines corresponding to a given genomic position
                     sites_writer (ll=np_call_fp.get_lines(byte_offset_list))
 
