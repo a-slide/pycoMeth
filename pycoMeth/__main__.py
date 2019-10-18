@@ -30,20 +30,21 @@ def main(args=None):
     sp_agg = subparsers.add_parser("Aggregate", description=doc_func(f))
     sp_agg.set_defaults(func=f)
     sp_agg_io = sp_agg.add_argument_group("Input/Output options")
-    add_argument(sp_agg_io, f, "input_fn", "i")
-    add_argument(sp_agg_io, f, "fasta_index", "f")
-    add_argument(sp_agg_io, f, "output_bed_fn", "b")
-    add_argument(sp_agg_io, f, "output_tsv_fn", "t")
+    arg_from_docstr(sp_agg_io, f, "input_fn", "i")
+    arg_from_docstr(sp_agg_io, f, "fasta_index", "f")
+    arg_from_docstr(sp_agg_io, f, "output_bed_fn", "b")
+    arg_from_docstr(sp_agg_io, f, "output_tsv_fn", "t")
     sp_agg_ms = sp_agg.add_argument_group("Misc options")
-    add_argument(sp_agg_ms, f, "min_depth", "d")
-    add_argument(sp_agg_ms, f, "min_llr", "l")
-    add_argument(sp_agg_ms, f, "sample_id", "s")
+    arg_from_docstr(sp_agg_ms, f, "min_depth", "d")
+    arg_from_docstr(sp_agg_ms, f, "min_llr", "l")
+    arg_from_docstr(sp_agg_ms, f, "sample_id", "s")
 
     # Add common group parsers
     for sp in [sp_agg]:
         sp_vb = sp.add_mutually_exclusive_group()
         sp_vb.add_argument("-v", "--verbose", action="store_true", default=False, help="Increase verbosity")
         sp_vb.add_argument("-q", "--quiet", action="store_true", default=False, help="Reduce verbosity")
+        sp_vb.add_argument("-p", "--progress", action="store_true", default=False, help="Display a progress bar")
 
     # Parse args and call subfunction
     args = parser.parse_args()

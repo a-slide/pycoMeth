@@ -115,7 +115,7 @@ def make_arg_dict (func):
         return d
 
 
-def add_argument (parser, func, arg_name, short_name=None):
+def arg_from_docstr (parser, func, arg_name, short_name=None):
     """Get options corresponding to argumant name and deal with special cases"""
 
     if short_name:
@@ -124,14 +124,17 @@ def add_argument (parser, func, arg_name, short_name=None):
         arg_names = ["--{}".format(arg_name)]
 
     arg_dict = make_arg_dict(func)[arg_name]
-    if "default" in arg_dict and "help" in arg_dict:
-        if arg_dict["default"] == "" or arg_dict["default"] == [] :
-            arg_dict["help"] += " (default: None)"
+    if "help" in arg_dict:
+        if "default" in arg_dict:
+            if arg_dict["default"] == "" or arg_dict["default"] == [] :
+                arg_dict["help"] += " (default: None)"
+            else:
+                arg_dict["help"] += " (default: %(default)s)"
         else:
-            arg_dict["help"] += " (default: %(default)s)"
+            arg_dict["help"] += " (required)"
 
-    if "type" in arg_dict and "help" in arg_dict:
-        arg_dict["help"] += " [%(type)s]"
+        if "type" in arg_dict:
+            arg_dict["help"] += " [%(type)s]"
 
     # Special case for boolean args
     if arg_dict["type"] == bool:
