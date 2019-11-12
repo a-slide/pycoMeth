@@ -5,24 +5,67 @@
 import os
 from collections import *
 
-class FileParserError (Exception):
-    """ Basic exception class for FileParserError """
-    pass
+# Local imports
+from pycoMeth.common import *
 
 #~~~~~~~~~~~~~~CLASS~~~~~~~~~~~~~~#
 
-class FileParser():
-    def __init__ (self, fn, colnames=False, first_line_header=True, sep="\t", auto_numeric=False, include_byte_offset=False, dtypes={}, force_dtypes=False):
-        """"""
+class FileParser ():
+    def __init__ (self,
+        fn,
+        colnames=False,
+        first_line_header=True,
+        sep="\t",
+        auto_numeric=False,
+        include_byte_offset=False,
+        dtypes={},
+        force_dtypes=False,
+        **kwargs):
+        """
+        Open a parser ++ for field delimited file
+        * fn
+            Path to a field delimited file
+        * colnames
+            List of column names to use if not in first file line
+        * sep
+            field separator
+        * auto_numeric
+            Try to automatically cast fields values in int or float
+        * include_byte_offset
+            Add byte offset corresponding to the beginning of each line in the file
+        * dtypes
+            Dict corresponding to fields (based on colnames) to cast in a given python type
+        * force_dtypes
+            Raise an error if type casting fails
+        * kwargs
+            Allow to pass extra options such as verbose, quiet and progress
+        """
+
+        # Init logger
+        self.log = get_logger (
+            name = "pycoMeth_FileParser",
+            verbose = kwargs.get("verbose", False),
+            quiet = kwargs.get("quiet", False))
+
+        # Save self variables
         self.fn = fn
-        self.fp = open(fn, "r")
         self.sep = sep
-        self.byte_offset=0
         self.first_line_header= first_line_header
         self.include_byte_offset = include_byte_offset
         self.auto_numeric = auto_numeric
         self.force_dtypes = force_dtypes
+
+        # Open file
+        self.log.debug ("\tOpening file:{}".format(self.fn))
+        self.fp = open(fn, "r")
+        self.is_open = True
+        self.is_closed = False
+
+        # Init extra variables
+        self.byte_offset=0
         self.counter = Counter()
+        self._current = None
+        self._previous = None
 
         # Define colname depending on options
         if colnames and type(colnames) in (list, tuple):
@@ -39,7 +82,7 @@ class FileParser():
             self.lt = namedtuple("lt", self.colnames)
 
         # Set types to try to cast data in
-        self.dtypes_index = self.set_types(dtypes)
+        self.dtypes_index = self._set_types(dtypes)
 
     #~~~~~~~~~~~~~~MAGIC AND PROPERTY METHODS~~~~~~~~~~~~~~#
 
@@ -49,9 +92,18 @@ class FileParser():
     def __enter__ (self):
         return self
 
-    def __exit__(self, exception_type, exception_val, trace):
+    def close (self):
         try:
             self.fp.close()
+            self.is_open = False
+            self.is_closed = True
+            self.log.debug ("\tClosing file:{}".format(self.fn))
+        except Exception as E:
+            print (E)
+
+    def __exit__(self, exception_type, exception_val, trace):
+        try:
+            self.close()
         except Exception as E:
             print (E)
 
@@ -59,17 +111,30 @@ class FileParser():
         for line in self.fp:
             self.counter["Lines Parsed"]+=1
             try:
-                yield self._parse_line(line)
+                line = self._parse_line(line)
+                self._previous = self._current
+                self._current = line
+                yield line
             except FileParserError:
                 self.counter["Malformed or Invalid Lines"]+=1
 
     #~~~~~~~~~~~~~~PUBLIC METHODS~~~~~~~~~~~~~~#
 
+    def current_line (self):
+        return self._current
+
+    def previous_line (self):
+        return self._previous
+
     def next_line (self):
         if self.byte_offset >= len(self):
             raise StopIteration
+
         line = self.fp.readline()
-        return self._parse_line(line)
+        line = self._parse_line(line)
+        self._previous = self._current
+        self._current = line
+        return line
 
     def get_line (self, byte_offset):
         if byte_offset < 0 or byte_offset >= len(self):
@@ -88,6 +153,8 @@ class FileParser():
             except FileParserError:
                 pass
         return ll
+
+    #~~~~~~~~~~~~~~PRIVATE METHODS~~~~~~~~~~~~~~#
 
     def _get_first_line_header (self):
         header_line = self.fp.readline()
@@ -132,7 +199,7 @@ class FileParser():
         # Return nametuple
         return self.lt(*line)
 
-    def set_types (self, dtypes):
+    def _set_types (self, dtypes):
         """"""
         dtypes_index = OrderedDict()
         if dtypes:
@@ -140,3 +207,7 @@ class FileParser():
                 if name in dtypes:
                     dtypes_index[i] = dtypes[name]
         return dtypes_index
+
+class FileParserError (Exception):
+    """ Basic exception class for FileParserError """
+    pass
