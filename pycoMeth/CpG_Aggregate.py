@@ -183,6 +183,7 @@ class CpG_Writer():
         """"""
         self.log = get_logger (name="pycoMeth_CpG_Writer", verbose=verbose,)
         self.min_llr = min_llr
+        self.sample_id = sample_id
         self.counter = Counter()
         self.bed_fn = bed_fn
         self.tsv_fn = tsv_fn
