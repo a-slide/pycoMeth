@@ -22,10 +22,18 @@ copyright: 'Copyright &copy; 2019 Adrien Leger'
 nav:
     - Home: index.md
     - Installation instructions: installation.md
-    - pycoMeth Aggregate Usage:
-        - Using Aggregate: Aggregate/usage.md
-        - jupyter API usage: Aggregate/API_usage.ipynb
-        - Command line usage: Aggregate/CLI_usage.ipynb
+    - CpG_Aggregate Usage:
+        - Using CpG_Aggregate: CpG_Aggregate/usage.md
+        - jupyter API usage: CpG_Aggregate/API_usage.ipynb
+        - Command line usage: CpG_Aggregate/CLI_usage.ipynb
+    - Interval_Aggregate Usage:
+        - Using Interval_Aggregate: Interval_Aggregate/usage.md
+        - jupyter API usage: Interval_Aggregate/API_usage.ipynb
+        - Command line usage: Interval_Aggregate/CLI_usage.ipynb
+    - Meth_Comp Usage:
+        - Using Meth_Comp: Meth_Comp/usage.md
+        - jupyter API usage: Meth_Comp/API_usage.ipynb
+        - Command line usage: Meth_Comp/CLI_usage.ipynb
     - Contributing: contributing.md
     - Code of conduct: code_of_conduct.md
     - Licence: licence.md

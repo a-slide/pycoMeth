@@ -33,6 +33,7 @@ setup(
         'tqdm>=4.23.4',
         "pandas>=0.25.1",
         "statsmodels>=0.10.1",
-        "scipy>=1.3.1"],
+        "scipy>=1.3.1",
+        "pyfaidx>=0.5.5.2"],
     packages = [name],
     entry_points = {'console_scripts': ['pycoMeth=pycoMeth.__main__:main']})
