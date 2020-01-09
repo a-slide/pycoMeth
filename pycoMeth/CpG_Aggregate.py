@@ -256,7 +256,7 @@ class CpG_Writer():
         self.log.debug("Initialise output tsv file")
         mkbasedir (self.tsv_fn, exist_ok=True)
         fp = open(self.tsv_fn, "w")
-        fp.write("chromosome\tstart\tend\tnum_CpG_clusters\tmedian_llr\tllr_list\n")
+        fp.write("chromosome\tstart\tend\tsequence\tnum_motifs\tmedian_llr\tllr_list\n")
         return fp
 
     def _write_tsv (self, coord, val_dict, med_llr):
