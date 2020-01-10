@@ -10,6 +10,7 @@ from glob import iglob
 import datetime
 import logging
 import json
+import gzip
 
 # Local imports
 from pycoMeth import __version__ as pkg_version
@@ -232,7 +233,8 @@ def head (fp, n=10, sep="\t", comment=None):
 
     # Get lines
     try:
-        with open(fp) as fh:
+        open_fun, open_mode = (gzip.open, "rt") if fp.endswith(".gz") else (open, "r")
+        with open_fun(fp, open_mode) as fh:
             line_num = 0
             while (line_num < n):
                 l= next(fh).strip()
