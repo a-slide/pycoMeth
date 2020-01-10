@@ -98,7 +98,7 @@ def CGI_Finder (
                         valid_win_end = i+min_win_len
                         previous_valid = True
 
-                    for i in trange(1, len(seq)-min_win_len, desc="\t{}".format(seq_name), unit=" bases", unit_scale=True, disable=not progress):
+                    for i in trange(1, len(seq)-min_win_len, unit=" bases", unit_scale=True, disable=not progress):
 
                         # Decrement counters based on changes at previous start
                         prev_start = i-1

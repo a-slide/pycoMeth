@@ -3,6 +3,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Standard library imports
 from collections import OrderedDict, namedtuple, Counter
+import gzip
 
 # Third party imports
 from tqdm import tqdm
@@ -29,13 +30,13 @@ def CpG_Aggregate(
     """
     Calculate methylation frequency at genomic CpG sites from the output of `nanopolish call-methylation`
     * nanopolish_fn
-        Path to a nanopolish call_methylation tsv output file or a list of files or a regex matching several files
+        Path to a nanopolish call_methylation tsv output file or a list of files or a regex matching several files (can be gzipped)
     * ref_fasta_fn
         Reference file used for alignment in Fasta format (ideally already indexed with samtools faidx)
     * output_bed_fn
-        Path to write a summary result file in BED format (At least 1 output file is required)
+        Path to write a summary result file in BED format (At least 1 output file is required) (can be gzipped)
     * output_tsv_fn
-        Path to write an more extensive result report in TSV format (At least 1 output file is required)
+        Path to write a more extensive result report in TSV format (At least 1 output file is required) (can be gzipped)
     * min_depth
         Minimal number of reads covering a site to be reported
     * sample_id
@@ -68,7 +69,7 @@ def CpG_Aggregate(
     with FileParser(fn=nanopolish_fn, dtypes=dtypes, verbose=verbose, quiet=quiet, include_byte_len=progress) as input_fp:
 
         log.info ("Starting to parse file Nanopolish methylation call file")
-        with tqdm (total=len(input_fp), desc="\t", unit=" bytes", unit_scale=True, disable=not progress) as pbar:
+        with tqdm (total=len(input_fp), unit=" bytes", unit_scale=True, disable=not progress) as pbar:
             for lt in input_fp:
                 sites_index.add(lt)
                 # Update progress_bar
@@ -89,7 +90,7 @@ def CpG_Aggregate(
     log.warning("Processing valid sites found and write to file")
 
     with CpG_Writer(bed_fn=output_bed_fn, tsv_fn=output_tsv_fn, sample_id=sample_id, min_llr=min_llr, verbose=verbose) as writer:
-        for coord, val_dict in tqdm(sites_index, desc="\t", unit=" sites", unit_scale=True, disable=not progress):
+        for coord, val_dict in tqdm(sites_index, unit=" sites", unit_scale=True, disable=not progress):
             writer.write (coord, val_dict)
 
         log.info ("Results summary")
@@ -247,7 +248,7 @@ class CpG_Writer():
         """Open BED file and write file header"""
         self.log.debug("Initialise output bed file")
         mkbasedir (self.bed_fn, exist_ok=True)
-        fp = open(self.bed_fn, "w")
+        fp = gzip.open(self.bed_fn, "wt") if self.bed_fn.endswith(".gz") else open(self.bed_fn, "w")
         fp.write("track name={}_CpG itemRgb=On\n".format(self.sample_id))
         return fp
 
@@ -271,7 +272,7 @@ class CpG_Writer():
         """Open TSV file and write file header"""
         self.log.debug("Initialise output tsv file")
         mkbasedir (self.tsv_fn, exist_ok=True)
-        fp = open(self.tsv_fn, "w")
+        fp = gzip.open(self.tsv_fn, "wt") if self.tsv_fn.endswith(".gz") else open(self.tsv_fn, "w")
         fp.write("chromosome\tstart\tend\tsequence\tnum_motifs\tmedian_llr\tllr_list\n")
         return fp
 
