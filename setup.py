@@ -5,7 +5,7 @@ from setuptools import setup
 
 # Define package info
 name = "pycoMeth"
-version = "0.1.2"
+version = "0.2.4"
 description = 'Python package for nanopore DNA methylation analysis downstream to Nanopolish'
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -33,6 +33,7 @@ setup(
         'tqdm>=4.23.4',
         "pandas>=0.25.1",
         "statsmodels>=0.10.1",
-        "scipy>=1.3.1"],
+        "scipy>=1.3.1",
+        "pyfaidx>=0.5.5.2"],
     packages = [name],
     entry_points = {'console_scripts': ['pycoMeth=pycoMeth.__main__:main']})

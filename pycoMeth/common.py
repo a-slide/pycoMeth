@@ -6,10 +6,34 @@ import sys
 import os
 import inspect
 from collections import *
-import logging
 from glob import iglob
+import datetime
+import logging
+import json
+
+# Local imports
+from pycoMeth import __version__ as pkg_version
+from pycoMeth import __name__ as pkg_name
 
 #~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~#
+
+def opt_summary (local_opt):
+    """Simplifiy option dict creation"""
+    d=OrderedDict()
+    d["Package name"] = pkg_name
+    d["Package version"] = pkg_version
+    d["Timestamp"] = str(datetime.datetime.now())
+    for i, j in local_opt.items():
+        d[i]=j
+    return d
+
+def list_to_str (l):
+    """Generate a string from any list"""
+    return str(json.dumps(l)).replace(" ", "")
+
+def str_to_list (s, parse_int=None, parse_float=None):
+    """Generate a list from a string"""
+    return json.loads(s, parse_int=parse_int, parse_float=parse_float)
 
 def file_readable (fn, **kwargs):
     """Check if the file is readable"""
@@ -116,7 +140,7 @@ def make_arg_dict (func):
 
 
 def arg_from_docstr (parser, func, arg_name, short_name=None):
-    """Get options corresponding to argumant name and deal with special cases"""
+    """Get options corresponding to argument name from docstring and deal with special cases"""
 
     if short_name:
         arg_names = ["-{}".format(short_name), "--{}".format(arg_name)]
@@ -146,8 +170,9 @@ def arg_from_docstr (parser, func, arg_name, short_name=None):
             del arg_dict["type"]
 
     # Special case for lists args
-    elif arg_dict["type"] == list:
+    elif isinstance(arg_dict["type"], list):
         arg_dict["nargs"]='*'
+        arg_dict["type"]=arg_dict["type"][0]
 
     parser.add_argument(*arg_names, **arg_dict)
 
@@ -180,8 +205,10 @@ def jhelp (f:"python function or method"):
         if "required" in arg_val:
             s+= " (required)"
         if "type" in arg_val:
-            if type(list) == type:
+            if isinstance(arg_val["type"], type):
                 s+= " [{}]".format(arg_val["type"].__name__)
+            elif isinstance(arg_val["type"], list):
+                s+= " [list({})]".format(arg_val["type"][0].__name__)
             else:
                 s+= " [{}]".format(arg_val["type"])
         s+="\n\n"
@@ -191,6 +218,7 @@ def jhelp (f:"python function or method"):
 
     # Display in Jupyter
     display (Markdown(s))
+
 
 def head (fp, n=10, sep="\t", comment=None):
     """
@@ -251,8 +279,8 @@ def head (fp, n=10, sep="\t", comment=None):
 
 def get_logger (name=None, verbose=False, quiet=False):
     """Set logger to appropriate log level"""
-
     logging.basicConfig(format='%(message)s')
+    logging.getLogger().handlers[0].setFormatter(CustomFormatter())
     logger = logging.getLogger(name)
 
     # Define overall verbose level
@@ -264,6 +292,18 @@ def get_logger (name=None, verbose=False, quiet=False):
         logger.setLevel(logging.INFO)
 
     return logger
+
+class CustomFormatter(logging.Formatter):
+    """"""
+    FORMATS = {
+        logging.WARNING: "## %(msg)s ##",
+        logging.INFO: "\t%(msg)s",
+        logging.DEBUG: "\t[DEBUG] [%(name)s] %(msg)s"}
+
+    def format(self, record):
+        log_fmt = self.FORMATS[record.levelno]
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
 
 #~~~~~~~~~~~~~~CUSTOM EXCEPTION AND WARN CLASSES~~~~~~~~~~~~~~#
 class pycoMethError (Exception):
