@@ -93,7 +93,7 @@ def CGI_Finder (
                             cg_count+=1
 
                     if valid_window (c_count, g_count, cg_count, min_win_len, min_CG_freq, min_obs_CG_ratio):
-                        counter["Valid minimal size window"]+=1
+                        counter["Valid minimal size windows"]+=1
                         valid_win_start = i
                         valid_win_end = i+min_win_len
                         previous_valid = True
