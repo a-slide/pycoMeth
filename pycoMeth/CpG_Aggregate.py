@@ -190,6 +190,23 @@ class CpG_Writer():
         self.bed_fp = self._init_bed () if bed_fn else None
         self.tsv_fp = self._init_tsv () if tsv_fn else None
 
+        # Color score tables
+        self.pos_colors = OrderedDict()
+        self.pos_colors[min_llr+4]='172,0,38'
+        self.pos_colors[min_llr+3]='205,11,33'
+        self.pos_colors[min_llr+2]='231,34,30'
+        self.pos_colors[min_llr+1]='249,73,40'
+        self.pos_colors[min_llr]='252,118,53'
+        self.pos_colors[0]='230,230,230'
+
+        self.neg_colors = OrderedDict()
+        self.neg_colors[-min_llr-4]='28,45,131'
+        self.neg_colors[-min_llr-3]='35,70,156'
+        self.neg_colors[-min_llr-2]='33,102,171'
+        self.neg_colors[-min_llr-1]='29,140,190'
+        self.neg_colors[-min_llr]='52,168,194'
+        self.neg_colors[0]='230,230,230'
+
     #~~~~~~~~~~~~~~MAGIC AND PROPERTY METHODS~~~~~~~~~~~~~~#
     def __repr__ (self):
         return dict_to_str (self.counter)
@@ -231,22 +248,21 @@ class CpG_Writer():
         self.log.debug("Initialise output bed file")
         mkbasedir (self.bed_fn, exist_ok=True)
         fp = open(self.bed_fn, "w")
-        fp.write("track name={}_Interval itemRgb=On\n".format(self.sample_id))
+        fp.write("track name={}_CpG itemRgb=On\n".format(self.sample_id))
         return fp
 
     def _write_bed (self, coord, med_llr):
         """Write line to BED file"""
-        # Define color for bed file
-        if med_llr >= self.min_llr*2:
-            color = '225,0,0'
-        elif med_llr >= self.min_llr:
-            color = '255,170,0'
-        elif med_llr <= -self.min_llr*2:
-            color = '0,170,255'
-        elif med_llr <= -self.min_llr:
-            color = '0,0,225'
+
+        # define track color dependign on med llr
+        if med_llr>=0:
+            for min_llr, color in self.pos_colors.items():
+                if med_llr >= min_llr:
+                    break
         else:
-            color = '100,100,100'
+            for min_llr, color in self.neg_colors.items():
+                if med_llr <= min_llr:
+                    break
         # Write line
         self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3f}\t.\t{}\t{}\t'{}'\n".format(
             coord.chr_name, coord.start, coord.end, med_llr, coord.start, coord.end, color))

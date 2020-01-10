@@ -319,16 +319,16 @@ class Comp_Writer():
 
         # Color score table
         self.colors = OrderedDict()
-        self.colors[10]='250,0,0'
-        self.colors[9]='250,25,25'
-        self.colors[8]='250,50,50'
-        self.colors[7]='250,75,75'
-        self.colors[6]='250,100,100'
-        self.colors[5]='250,125,125'
-        self.colors[4]='250,150,150'
-        self.colors[3]='250,175,175'
-        self.colors[2]='250,200,200'
-        self.colors[1]='250,225,225'
+        self.colors[10]='10,7,35'
+        self.colors[9]='32,12,74'
+        self.colors[8]='60,9,101'
+        self.colors[7]='87,15,109'
+        self.colors[6]='112,25,110'
+        self.colors[5]='137,34,105'
+        self.colors[4]='163,43,97'
+        self.colors[3]='187,55,84'
+        self.colors[2]='209,70,67'
+        self.colors[1]='228,90,49'
         self.colors[0]='230,230,230'
 
     #~~~~~~~~~~~~~~PUBLIC METHODS~~~~~~~~~~~~~~#
