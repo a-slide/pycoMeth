@@ -17,13 +17,13 @@ With [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.
 conda create -n pycoMeth python=3.6
 ```
 
-You might also want to install [Nanopolish](https://github.com/jts/nanopolish) in the same virtual environment so you can pipe nanopolish output directly into pycoMeth
+You might also want to install [Nanopolish](https://github.com/jts/nanopolish) in the same virtual environment so you can pipe nanopolish output directly into `pycoMeth`
 
 ## Dependencies
 
 [Nanopolish 0.10+](https://github.com/jts/nanopolish) is not a direct dependency but is required to generate the files used by several commands from this package
 
-Nanocompore relies on a the following robustly maintained third party python libraries:
+`pycoMeth` relies on a the following robustly maintained third party python libraries:
 
 * numpy>=1.14.0
 * tqdm>=4.23.4
@@ -43,7 +43,7 @@ pip install pycoMeth
 pip install pycoMeth --upgrade
 ```
 
-If you feel adventurous you can install the development version from test.pypi
+If you feel more adventurous you can install the development version from test.pypi
 
 ```bash
 pip install --index-url https://test.pypi.org/simple/ pycoMeth

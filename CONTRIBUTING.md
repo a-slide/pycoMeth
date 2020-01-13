@@ -11,7 +11,7 @@ First of all, thanks for considering contributing to `pycoMeth`! 👍 It's peopl
 
 ## Code of conduct
 
-Please note that this project is released with a [Contributor Code of Conduct][code_of_conduct.md]. By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of Conduct][code_of_conduct]. By participating in this project you agree to abide by its terms.
 
 ## How you can contribute
 
