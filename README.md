@@ -21,12 +21,12 @@
 
 ### pycoMeth workflow
 
-![Workflow](pictures/pycoMeth_package.png)
+![Workflow](docs/pictures/pycoMeth_package.png)
 
 
 ### pycoMeth example output IGV rendering
 
-![](pictures/pycoMeth_all.png)
+![](docs/pictures/pycoMeth_all.png)
 
 ### Authors
 
