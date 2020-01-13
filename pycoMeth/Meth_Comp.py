@@ -372,7 +372,7 @@ class Comp_Writer():
             if score >= min_score:
                 break
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3}\t.\t{}\t{}\t'{}'\n".format(
+        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3}\t.\t{}\t{}\t{}\n".format(
             res.chr_name, res.start, res.end, score, res.start, res.end, color))
 
     def _init_tsv (self):
