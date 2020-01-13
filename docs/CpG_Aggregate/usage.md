@@ -25,9 +25,9 @@ CpG_Aggregate can generates 2 files, a standard BED file and a tabulated file co
 
 This tabulated file contains the following fields:
 
-* chromosome / start / end / strand: Genomic coordinates of the CpG or group of CpGs if in less than 5 bases from each other.
+* chromosome / start / end: Genomic coordinates of the CpG or cluster of CpGs if in less than 5 bases from each other.
 * sequence: -5 to +5 sequence of the motif or group of motifs in case split_group was not selected.
-* num_motifs: Number of motif found in the group.
+* num_motifs: Number of motifs (CpG) found in the cluster.
 * median_llr: Median of log likelihood ratios for all read mapped
 * llr_list: List of raw llr values
 
@@ -38,12 +38,10 @@ The file is already sorted by coordinates and can be rendered with a genome brow
 
 The sites are color-coded as follow:
 
-* Red: Median log likelyhood ratio >= 3 (more methylated)
-* Orange: Median log likelyhood ratio >= 2 (more methylated)
-* Blue: Median log likelyhood ratio <= -2 (more unmethylated)
-* Light blue: Median log likelyhood ratio <= -3 (more methylated)
-* Grey: Median log likelyhood ration between -2 and 2 (ambiguous methylation status)
+- Median log likelihood ratio higher than 2 (Methylated):  Colorscale from orange (llr = 2) to deep red (llr >=6) 
+- Median log likelihood ratio lower than 2 (Unmethylated):  Colorscale from green (llr = -2) to deep blue (llr <= -6) 
+- Grey: Median log likelihood ration between -2 and 2 (ambiguous methylation status)
 
 Here is an example of multiple methylation bed files rendered with IGV
 
-![Example Bed Files](../pictures/CpG_Aggregate.png)
+![Example Bed Files](../pictures/CpG_Aggregate_2.png)

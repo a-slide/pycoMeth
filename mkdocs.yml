@@ -34,6 +34,10 @@ nav:
         - Using Meth_Comp: Meth_Comp/usage.md
         - jupyter API usage: Meth_Comp/API_usage.ipynb
         - Command line usage: Meth_Comp/CLI_usage.ipynb
+    - CGI_Finder Usage:
+        - Using CGI_Finder: CGI_Finder/usage.md
+        - jupyter API usage: CGI_Finder/API_usage.ipynb
+        - Command line usage: CGI_Finder/CLI_usage.ipynb
     - Contributing: contributing.md
     - Code of conduct: code_of_conduct.md
     - Licence: licence.md

@@ -16,9 +16,9 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="pycoMeth_long.svg"
-   inkscape:export-filename="/home/aleg/Programming/Packages/pycoMeth/docs/pictures/pycoMeth_short.png"
-   inkscape:export-xdpi="49.993904"
-   inkscape:export-ydpi="49.993904">
+   inkscape:export-filename="/home/aleg/Programming/Packages/pycoMeth/docs/pictures/pycoMeth_long.png"
+   inkscape:export-xdpi="25.931261"
+   inkscape:export-ydpi="25.931261">
   <defs
      id="defs9944">
     <marker
@@ -165,7 +165,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.16"
-     inkscape:cx="2233.9035"
+     inkscape:cx="1183.9035"
      inkscape:cy="806.9985"
      inkscape:document-units="px"
      inkscape:current-layer="g4860"
@@ -189,7 +189,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

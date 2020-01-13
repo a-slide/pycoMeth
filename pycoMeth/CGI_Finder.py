@@ -28,8 +28,9 @@ def CGI_Finder (
     progress:bool=False,
     **kwargs):
     """
-    Find CpG islands in a fasta file by using a sliding window and merging overlapping windows satisfying the CpG island definition.
-    Results can be save in bed and tsv format.
+    Simple method to find putative CpG islands in DNA sequences by using a sliding window and merging
+    overlapping windows satisfying the CpG island definition.
+    Results can be saved in bed and tsv format
     * ref_fasta_fn
         Reference file used for alignment in Fasta format (ideally already indexed with samtools faidx)
     * output_bed_fn

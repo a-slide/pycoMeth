@@ -368,9 +368,8 @@ class Comp_Writer():
         if score > 1000:
             score = 1000
         # Define color for bed file
-        for min_score, color_code in self.colors.items():
+        for min_score, color in self.colors.items():
             if score >= min_score:
-                color = color_code
                 break
         # Write line
         self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3}\t.\t{}\t{}\t'{}'\n".format(
