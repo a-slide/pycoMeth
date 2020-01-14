@@ -265,7 +265,7 @@ class CpG_Writer():
                 if med_llr <= min_llr:
                     break
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3f}\t.\t{}\t{}\t'{}'\n".format(
+        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3f}\t.\t{}\t{}\t{}\n".format(
             coord.chr_name, coord.start, coord.end, med_llr, coord.start, coord.end, color))
 
     def _init_tsv (self):

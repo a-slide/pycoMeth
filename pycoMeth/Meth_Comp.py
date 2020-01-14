@@ -175,19 +175,22 @@ def Meth_Comp (
                 if fp_done == len(fp_list):
                     break
 
-        # Exit condition
-        if not stats_results.res_list:
-            raise SystemExit("No significant pvalues found. Exiting program")
-
-        # Convert results to dataframe and correct pvalues for multiple tests
-        log.info("Adjust pvalues")
-        stats_results.multitest_adjust(method=pvalue_adj_method, alpha=pvalue_adj_alpha)
-
-        # Write output file
-        log.info("Writing output file")
+        # Init file writter
         with Comp_Writer(bed_fn=output_bed_fn, tsv_fn=output_tsv_fn, verbose=verbose) as writer:
-            for res in tqdm(stats_results, unit=" sites", unit_scale=True, disable=not progress):
-                writer.write (res)
+
+            # Exit condition
+            if not stats_results.res_list:
+                log.info("No valid p-Value could be computed")
+
+            else:
+                # Convert results to dataframe and correct pvalues for multiple tests
+                log.info("Adjust pvalues")
+                stats_results.multitest_adjust(method=pvalue_adj_method, alpha=pvalue_adj_alpha)
+
+                # Write output file
+                log.info("Writing output file")
+                for res in tqdm(stats_results, unit=" sites", unit_scale=True, disable=not progress):
+                    writer.write (res)
 
     finally:
         # Print counters
@@ -372,7 +375,7 @@ class Comp_Writer():
             if score >= min_score:
                 break
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3}\t.\t{}\t{}\t'{}'\n".format(
+        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3}\t.\t{}\t{}\t{}\n".format(
             res.chr_name, res.start, res.end, score, res.start, res.end, color))
 
     def _init_tsv (self):
