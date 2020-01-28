@@ -1,10 +1,13 @@
-![](./docs/pictures/pycoMeth_long.png)
+![](pictures/pycoMeth_long.png)
 
 [![GitHub license](https://img.shields.io/github/license/a-slide/pycoMeth.svg)](https://github.com/a-slide/pycoMeth/blob/master/LICENSE)
 [![Language](https://img.shields.io/badge/Language-Python3-yellow.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/pycoMeth.svg)](https://badge.fury.io/py/pycoMeth)
 [![PyPI downloads](https://pepy.tech/badge/pycoMeth)](https://pepy.tech/project/pycoMeth)
-<!-- [![DOI](https://zenodo.org/badge/144169864.svg)](https://zenodo.org/badge/latestdoi/144169864) -->
+[![DOI](https://zenodo.org/badge/211195001.svg)](https://zenodo.org/badge/latestdoi/211195001)
+[![Build Status](https://travis-ci.com/a-slide/pycoMeth.svg?branch=master)](https://travis-ci.com/a-slide/pycoMeth)
+
+---
 
 # Welcome to pycoMeth documentation
 
@@ -34,3 +37,13 @@ Please be aware that `pycoMeth` is a research package that is still under develo
 ### pycoMeth example output IGV rendering
 
 ![](pictures/pycoMeth_all.png)
+
+### Citing
+
+The repository is archive at Zenodo. If you use `pycoMeth` please cite as follow:
+
+Adrien Leger. (2020, January 28). a-slide/pycoMeth. Zenodo. https://doi.org/10.5281/zenodo.3629254
+
+### Authors
+
+* Adrien Leger - aleg {at} ebi.ac.uk
