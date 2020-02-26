@@ -19,32 +19,45 @@ before_deploy:
 - mkdocs build --verbose --clean
 
 deploy:
-# Deploy package to pypy
-- provider: pypi
-  user: aleg
-  password: "$PYPI_PW"
-  server: https://test.pypi.org/legacy/
-  on:
-    branch: dev
+  # Deploy mkdoc documentation to github page
+  - provider: pages
+    skip_cleanup: true
+    target_branch: gh-pages-test
+    github_token: "$GH_TOKEN"
+    local_dir: site
+    on:
+      branch: dev
 
-- provider: pypi
-  user: aleg
-  password: "$PYPI_PW"
-  on:
-    branch: master
+  - provider: pages
+    skip_cleanup: true
+    github_token: "$GH_TOKEN"
+    local_dir: site
+    on:
+      branch: master
 
-# Deploy mkdoc documentation to github page
-- provider: pages
+  # Deploy package to pypy
+  - provider: pypi
+    user: aleg
+    password: "$PYPI_PW"
+    server: https://test.pypi.org/legacy/
+    on:
+      branch: dev
+
+  - provider: pypi
+    user: aleg
+    password: "$PYPI_PW"
+    on:
+      branch: master
+
+  # Deploy to Anaconda
+  - provider: script
+   skip_cleanup: true
+   script: bash ./deploy_anaconda.sh $ANACONDA_DEV_TOKEN
+   on:
+     branch: dev
+
+  - provider: script
   skip_cleanup: true
-  target_branch: gh-pages-test
-  github_token: "$GH_TOKEN"
-  local_dir: site
-  on:
-    branch: dev
-
-- provider: pages
-  skip_cleanup: true
-  github_token: "$GH_TOKEN"
-  local_dir: site
+  script: bash ./deploy_anaconda.sh $ANACONDA_TOKEN
   on:
     branch: master
