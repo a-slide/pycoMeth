@@ -28,7 +28,7 @@ def Meth_Comp (
     min_diff_llr:float=2,
     sample_id_list:[str]=None,
     pvalue_adj_method:str="fdr_bh",
-    pvalue_adj_alpha:float=0.01,
+    pvalue_threshold:float=0.01,
     verbose:bool=False,
     quiet:bool=False,
     progress:bool=False,
@@ -54,7 +54,7 @@ def Meth_Comp (
         list of sample ids to annotate results in tsv file
     * pvalue_adj_method
         Method to use for pValue multiple test adjustment
-    * pvalue_adj_alpha
+    * pvalue_threshold
         Alpha parameter (family-wise error rate) for pValue adjustment
     """
 

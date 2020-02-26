@@ -68,7 +68,7 @@ def main(args=None):
     arg_from_docstr(sp_met_ms, f, "min_diff_llr", "l")
     arg_from_docstr(sp_met_ms, f, "sample_id_list", "s")
     arg_from_docstr(sp_met_ms, f, "pvalue_adj_method")
-    arg_from_docstr(sp_met_ms, f, "pvalue_adj_alpha")
+    arg_from_docstr(sp_met_ms, f, "pvalue_threshold")
 
     # CGI_Finder subparser
     f = CGI_Finder
