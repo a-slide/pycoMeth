@@ -40,7 +40,7 @@ Please be aware that `pycoMeth` is a research package that is still under develo
 
 ### Citing
 
-The repository is archive at Zenodo. If you use `pycoMeth` please cite as follow:
+The repository is archived at Zenodo. If you use `pycoMeth` please cite as follow:
 
 Adrien Leger. (2020, January 28). a-slide/pycoMeth. Zenodo. https://doi.org/10.5281/zenodo.3629254
 
