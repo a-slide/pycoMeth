@@ -52,10 +52,7 @@ def CGI_Finder (
     log = get_logger (name="pycoMeth_CGI_Finder", verbose=verbose, quiet=quiet)
 
     log.warning("Checking options and input files")
-
-    log.debug ("Options summary")
-    for i,j in opt_summary_dict.items():
-        log.debug ("\t{}: {}".format(i,j))
+    log_dict(opt_summary_dict, log.debug, "Options summary")
 
     # Init collections
     counter = Counter()
@@ -149,12 +146,9 @@ def CGI_Finder (
 
                             previous_valid=False
 
-
     finally:
         # Print counters
-        log.info ("Results summary")
-        for i,j in counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
+        log_dict(counter, log.info, "Results summary")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~Comp_Writer HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class CGI_Writer():

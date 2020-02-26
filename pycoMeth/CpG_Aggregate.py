@@ -49,11 +49,8 @@ def CpG_Aggregate(
     opt_summary_dict = opt_summary(local_opt=locals())
     log = get_logger (name="pycoMeth_CpG_Aggregate", verbose=verbose, quiet=quiet)
 
-    log.debug ("Options summary")
-    for i,j in opt_summary_dict.items():
-        log.debug ("\t{}: {}".format(i,j))
-
     log.warning("Checking options and input files")
+    log_dict(opt_summary_dict, log.debug, "Options summary")
 
     # At least one output file is required, otherwise it doesn't make any sense
     if not output_bed_fn and not output_tsv_fn:
@@ -75,17 +72,15 @@ def CpG_Aggregate(
                 # Update progress_bar
                 if progress: pbar.update(lt.byte_len)
 
+        log_dict(input_fp.counter, log.info, "Parsing summary")
+
         log.info ("Filtering out low coverage sites")
         sites_index.filter_low_count(min_depth)
 
         log.info ("Sorting each chromosome by coordinates")
         sites_index.sort()
 
-        log.info ("Parsing summary")
-        for i,j in input_fp.counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
-        for i,j in sites_index.counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
+        log_dict(sites_index.counter, log.info, "Sites summary")
 
     log.warning("Processing valid sites found and write to file")
 
@@ -93,9 +88,7 @@ def CpG_Aggregate(
         for coord, val_dict in tqdm(sites_index, unit=" sites", unit_scale=True, disable=not progress):
             writer.write (coord, val_dict)
 
-        log.info ("Results summary")
-        for i,j in writer.counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
+        log_dict(writer.counter, log.info, "Results summary")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~SitesIndex HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 

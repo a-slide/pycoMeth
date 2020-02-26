@@ -63,16 +63,11 @@ def Meth_Comp (
     log = get_logger (name="pycoMeth_CpG_Comp", verbose=verbose, quiet=quiet)
 
     log.warning("Checking options and input files")
-
-    log.debug ("Options summary")
-    for i,j in opt_summary_dict.items():
-        log.debug ("\t{}: {}".format(i,j))
+    log_dict(opt_summary_dict, log.debug, "Options summary")
 
     # Init collections
     coordgen = CoordGen(ref_fasta_fn, verbose, quiet)
-    log.debug ("Coordinate reference summary")
-    for i in coordgen:
-        log.debug ("\t{}".format(i))
+    log_list(coordgen, log.debug, "Coordinate reference summary")
 
     # At least one output file is required, otherwise it doesn't make any sense
     log.debug ("Checking required output")
@@ -194,9 +189,7 @@ def Meth_Comp (
 
     finally:
         # Print counters
-        log.info ("Results summary")
-        for i,j in stats_results.counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
+        log_dict(stats_results.counter, log.info, "Results summary")
 
         # Close input and output files
         for fp in fp_list:
