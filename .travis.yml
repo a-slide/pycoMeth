@@ -7,16 +7,16 @@ branches:
   - dev
 
 install:
-# Install other pip dependencies
-- pip install nbconvert requests jinja2 mkdocs mkdocs-material pygments pymdown-extensions mkdocs-exclude
-# Install this one after or it raises an error
-- pip install mknotebooks
+  # Install other pip dependencies
+  - pip install nbconvert requests jinja2 mkdocs mkdocs-material pygments pymdown-extensions mkdocs-exclude
+  # Install this one after or it raises an error
+  - pip install mknotebooks
 
 script: true
 
 before_deploy:
-# Prebuild mkdocs site documentation
-- mkdocs build --verbose --clean
+  # Prebuild mkdocs site documentation
+  - mkdocs build --verbose --clean
 
 deploy:
   # Deploy mkdoc documentation to github page
@@ -51,13 +51,13 @@ deploy:
 
   # Deploy to Anaconda
   - provider: script
-   skip_cleanup: true
-   script: bash ./deploy_anaconda.sh $ANACONDA_DEV_TOKEN
-   on:
-     branch: dev
+    skip_cleanup: true
+    script: bash ./deploy_anaconda.sh $ANACONDA_DEV_TOKEN
+    on:
+      branch: dev
 
   - provider: script
-  skip_cleanup: true
-  script: bash ./deploy_anaconda.sh $ANACONDA_TOKEN
-  on:
-    branch: master
+    skip_cleanup: true
+    script: bash ./deploy_anaconda.sh $ANACONDA_TOKEN
+    on:
+      branch: master
