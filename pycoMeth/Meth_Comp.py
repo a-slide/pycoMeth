@@ -75,16 +75,18 @@ def Meth_Comp (
         raise pycoMethError ("At least 1 output file is requires (-t or -b)")
 
     # Automatically define tests and maximal missing samples depending on number of files to compare
-    min_samples = len(aggregate_fn_list)-max_missing
+    all_samples = len(aggregate_fn_list)
+    min_samples = all_samples-max_missing
+
     # 3 values = Kruskal Wallis test
-    if len(aggregate_fn_list) >= 3:
+    if all_samples >= 3:
         pvalue_method = "KW"
         log.debug("Multiple comparison mode (Kruskal_Wallis test)")
         if min_samples < 3:
             log.debug("Automatically raise number of minimal samples to 3")
             min_samples = 3
     # 2 values = Mann_Withney test
-    elif len(aggregate_fn_list) == 2:
+    elif all_samples == 2:
         pvalue_method = "MW"
         log.debug("Pairwise comparison mode (Mann_Withney test)")
         if min_samples:
@@ -152,7 +154,7 @@ def Meth_Comp (
                 lower_coord = sorted(coord_d.keys())[0]
                 coord_fp_list = sorted(coord_d[lower_coord], key=lambda x: x.label)
 
-                # Deal with lower coordinates and compute result is needed
+                # Deal with lower coordinates and compute result if needed
                 stats_results.compute_pvalue(
                     coord=lower_coord,
                     line_list=[coord_fp.current() for coord_fp in coord_fp_list],
@@ -219,6 +221,9 @@ class StatsResults():
         self.res_list = []
         self.counter = Counter()
 
+        # Get minimal non-zero float value
+        self.min_pval = np.nextafter(float(0), float(1))
+
     #~~~~~~~~~~~~~~MAGIC AND PROPERTY METHODS~~~~~~~~~~~~~~#
 
     def __repr__(self):
@@ -269,12 +274,17 @@ class StatsResults():
         elif self.pvalue_method == "MW":
             statistics, pvalue = mannwhitneyu(raw_llr_list[0], raw_llr_list[1])
 
-        # Update counters and fix invalid pvalues
-        if pvalue is np.nan or pvalue is None or pvalue < 0:
+        # Fix and categorize p-values
+        if pvalue is np.nan or pvalue is None or pvalue>1 or pvalue<0:
             pvalue = 1.0
             self.counter["Sites with invalid pvalue"]+=1
         elif pvalue <= self.pvalue_threshold:
+            # Correct very low pvalues to minimal float size
+            if pvalue == 0:
+                pvalue = self.min_pval
             self.counter["Sites with significant pvalue"]+=1
+        else:
+            self.counter["Sites with non-significant pvalue"]+=1
 
         self.res_list.append(
             OrderedDict(
@@ -283,7 +293,7 @@ class StatsResults():
                 end = coord.end,
                 pvalue = pvalue,
                 adj_pvalue = 1.0, # to be filled
-                n_samples = pvalue,
+                n_samples = n_samples,
                 neg_med = neg_med,
                 pos_med = pos_med,
                 ambiguous_med = ambiguous_med,
@@ -300,12 +310,17 @@ class StatsResults():
 
         for i, adj_pvalue in enumerate(adj_pvalue_list):
 
-            # Update counters and fix invalid pvalues
-            if adj_pvalue is np.nan or adj_pvalue is None or adj_pvalue < 0:
+            # Fix and categorize p-values
+            if adj_pvalue is np.nan or adj_pvalue is None or adj_pvalue>1 or adj_pvalue<0:
                 adj_pvalue = 1.0
                 self.counter["Sites with invalid adjusted pvalue"]+=1
             elif adj_pvalue <= self.pvalue_threshold:
+                # Correct very low pvalues to minimal float size
+                if adj_pvalue == 0:
+                    adj_pvalue = self.min_pval
                 self.counter["Sites with significant adjusted pvalue"]+=1
+            else:
+                self.counter["Sites with non-significant adjusted pvalue"]+=1
 
             # Add adjusted pvalue to counter
             self.res_list[i]["adj_pvalue"] = adj_pvalue
