@@ -42,10 +42,10 @@ Install or upgrade the package with pip from pypi
 pip install pycoMeth
 ```
 
-You can also get the **unstable** development version from test.pypi repository
+You can also update to the **unstable** development version from test.pypi repository
 
 ```bash
-pip install --index-url https://test.pypi.org/simple/ pycoMeth
+pip install --index-url https://test.pypi.org/simple/ pycoMeth -U
 ```
 
 ## Option 2: Installation with conda from Anacounda cloud
