@@ -55,17 +55,12 @@ def Interval_Aggregate(
     log = get_logger (name="pycoMeth_CpG_Comp", verbose=verbose, quiet=quiet)
 
     log.warning("Checking options and input files")
-
-    log.debug ("Options summary")
-    for i,j in opt_summary_dict.items():
-        log.debug ("\t{}: {}".format(i,j))
+    log_dict(opt_summary_dict, log.debug, "Options summary")
 
     # Init collections
     counter = Counter()
     coordgen = CoordGen(ref_fasta_fn, verbose, quiet)
-    log.debug ("Coordinate reference summary")
-    for i in coordgen:
-        log.debug ("\t{}".format(i))
+    log_list(coordgen, log.debug, "Coordinate reference summary")
 
     # At least one output file is required, otherwise it doesn't make any sense
     log.debug ("Checking required output")
@@ -140,11 +135,8 @@ def Interval_Aggregate(
 
     finally:
         # Print counters
-        log.info ("Results summary")
-        for i,j in counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
-        for i,j in fp_out.counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
+        log_dict(counter, log.info, "Results summary")
+        log_dict(fp_out.counter, log.info, "Writter summary")
 
         # Close input and output files
         for fp in (fp_in, fp_out):

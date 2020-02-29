@@ -1,11 +1,14 @@
-![](./docs/pictures/pycoMeth_long.png)
+![pycoMeth](./docs/pictures/pycoMeth_long.png)
 
 [![GitHub license](https://img.shields.io/github/license/a-slide/pycoMeth.svg)](https://github.com/a-slide/pycoMeth/blob/master/LICENSE)
-[![Language](https://img.shields.io/badge/Language-Python3-yellow.svg)](https://www.python.org/)
-[![PyPI version](https://badge.fury.io/py/pycoMeth.svg)](https://badge.fury.io/py/pycoMeth)
-[![PyPI downloads](https://pepy.tech/badge/pycoMeth)](https://pepy.tech/project/pycoMeth)
+[![Language](https://img.shields.io/badge/Language-Python3.6+-yellow.svg)](https://www.python.org/)
 [![DOI](https://zenodo.org/badge/211195001.svg)](https://zenodo.org/badge/latestdoi/211195001)
 [![Build Status](https://travis-ci.com/a-slide/pycoMeth.svg?branch=master)](https://travis-ci.com/a-slide/pycoMeth)
+
+[![PyPI version](https://badge.fury.io/py/pycoMeth.svg)](https://badge.fury.io/py/pycoMeth)
+[![PyPI downloads](https://pepy.tech/badge/pycoMeth)](https://pepy.tech/project/pycoMeth)
+[![Anaconda Version](https://anaconda.org/aleg/pycometh/badges/version.svg)](https://anaconda.org/aleg/pycometh)
+[![Anaconda Downloads](https://anaconda.org/aleg/pycometh/badges/downloads.svg)](https://anaconda.org/aleg/pycometh)
 
 ---
 
@@ -33,10 +36,10 @@ Please be aware that `pycoMeth` is a research package that is still under develo
 
 ### Citing
 
-The repository is archive at Zenodo. If you use `pycoMeth` please cite as follow:
+The repository is archived at Zenodo. If you use `pycoMeth` please cite as follow:
 
 Adrien Leger. (2020, January 28). a-slide/pycoMeth. Zenodo. https://doi.org/10.5281/zenodo.3629254
 
-### Authors
+## Authors and contributors
 
-* Adrien Leger - aleg {at} ebi.ac.uk
+* Adrien Leger (@a-slide) - aleg {at} ebi.ac.uk

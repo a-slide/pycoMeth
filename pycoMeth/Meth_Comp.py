@@ -28,7 +28,7 @@ def Meth_Comp (
     min_diff_llr:float=2,
     sample_id_list:[str]=None,
     pvalue_adj_method:str="fdr_bh",
-    pvalue_adj_alpha:float=0.01,
+    pvalue_threshold:float=0.01,
     verbose:bool=False,
     quiet:bool=False,
     progress:bool=False,
@@ -54,7 +54,7 @@ def Meth_Comp (
         list of sample ids to annotate results in tsv file
     * pvalue_adj_method
         Method to use for pValue multiple test adjustment
-    * pvalue_adj_alpha
+    * pvalue_threshold
         Alpha parameter (family-wise error rate) for pValue adjustment
     """
 
@@ -63,40 +63,37 @@ def Meth_Comp (
     log = get_logger (name="pycoMeth_CpG_Comp", verbose=verbose, quiet=quiet)
 
     log.warning("Checking options and input files")
-
-    log.debug ("Options summary")
-    for i,j in opt_summary_dict.items():
-        log.debug ("\t{}: {}".format(i,j))
+    log_dict(opt_summary_dict, log.debug, "Options summary")
 
     # Init collections
     coordgen = CoordGen(ref_fasta_fn, verbose, quiet)
-    log.debug ("Coordinate reference summary")
-    for i in coordgen:
-        log.debug ("\t{}".format(i))
+    log_list(coordgen, log.debug, "Coordinate reference summary")
 
     # At least one output file is required, otherwise it doesn't make any sense
     log.debug ("Checking required output")
     if not output_bed_fn and not output_tsv_fn:
         raise pycoMethError ("At least 1 output file is requires (-t or -b)")
 
-    # Automatically define tests depending on number of files to compare
-    if len(aggregate_fn_list) >= 3:
-        test = "Kruskal"
-        log.debug("Multiple comparison mode (Kruskal-wallis test)")
-    elif len(aggregate_fn_list) == 2:
-        test = "Mann_Withney"
-        log.debug("Pairwise comparison mode (Kruskal-wallis test)")
+    # Automatically define tests and maximal missing samples depending on number of files to compare
+    all_samples = len(aggregate_fn_list)
+    min_samples = all_samples-max_missing
+
+    # 3 values = Kruskal Wallis test
+    if all_samples >= 3:
+        pvalue_method = "KW"
+        log.debug("Multiple comparison mode (Kruskal_Wallis test)")
+        if min_samples < 3:
+            log.debug("Automatically raise number of minimal samples to 3")
+            min_samples = 3
+    # 2 values = Mann_Withney test
+    elif all_samples == 2:
+        pvalue_method = "MW"
+        log.debug("Pairwise comparison mode (Mann_Withney test)")
+        if min_samples:
+            log.debug("No missing samples allowed for 2 samples comparison")
+            min_samples = 2
     else:
         raise pycoMethError ("Meth_Comp needs at least 2 input files")
-
-    # Define minimal samples per sites depending on test
-    min_samples = len(aggregate_fn_list)-max_missing
-    if test=="Kruskal" and min_samples < 3 :
-        min_samples = 3
-        log.debug("Automatically raise number of minimal samples to 3")
-    elif test=="Mann_Withney" and min_samples < 2 :
-        min_samples = 2
-        log.debug("Automatically raise number of minimal samples to 2")
 
     log.warning("Parsing files")
     try:
@@ -125,7 +122,12 @@ def Meth_Comp (
             fp_list.append(fp)
 
         # Define StatsResults to collect valid sites and perform stats
-        stats_results = StatsResults(test=test, min_diff_llr=min_diff_llr, min_samples=min_samples)
+        stats_results = StatsResults(
+            pvalue_method = pvalue_method,
+            pvalue_adj_method = pvalue_adj_method,
+            pvalue_threshold = pvalue_threshold,
+            min_diff_llr = min_diff_llr,
+            min_samples = min_samples)
 
         log.info("Starting asynchronous file parsing")
         with tqdm (total=all_fp_len, unit=" bytes", unit_scale=True, disable=not progress) as pbar:
@@ -152,8 +154,8 @@ def Meth_Comp (
                 lower_coord = sorted(coord_d.keys())[0]
                 coord_fp_list = sorted(coord_d[lower_coord], key=lambda x: x.label)
 
-                # Deal with lower coordinates and compute result is needed
-                stats_results(
+                # Deal with lower coordinates and compute result if needed
+                stats_results.compute_pvalue(
                     coord=lower_coord,
                     line_list=[coord_fp.current() for coord_fp in coord_fp_list],
                     label_list=[coord_fp.label for coord_fp in coord_fp_list])
@@ -185,18 +187,16 @@ def Meth_Comp (
             else:
                 # Convert results to dataframe and correct pvalues for multiple tests
                 log.info("Adjust pvalues")
-                stats_results.multitest_adjust(method=pvalue_adj_method, alpha=pvalue_adj_alpha)
+                stats_results.multitest_adjust()
 
                 # Write output file
                 log.info("Writing output file")
-                for res in tqdm(stats_results, unit=" sites", unit_scale=True, disable=not progress):
+                for res in tqdm(stats_results.res_list, unit=" sites", unit_scale=True, disable=not progress):
                     writer.write (res)
 
     finally:
         # Print counters
-        log.info ("Results summary")
-        for i,j in stats_results.counter.items():
-            log.info ("\t{}: {:,}".format(i,j))
+        log_dict(stats_results.counter, log.info, "Results summary")
 
         # Close input and output files
         for fp in fp_list:
@@ -208,16 +208,21 @@ def Meth_Comp (
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~StatsResults HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class StatsResults():
-    def __init__ (self, test="Kruskal", min_diff_llr=1, min_samples=3):
+    def __init__ (self, pvalue_method="Kruskal", pvalue_adj_method="fdr_bh", pvalue_threshold=0.01, min_diff_llr=1, min_samples=3):
         """"""
         # Save self variables
-        self.test = test
+        self.pvalue_method = pvalue_method
+        self.pvalue_adj_method = pvalue_adj_method
+        self.pvalue_threshold = pvalue_threshold
         self.min_diff_llr = min_diff_llr
         self.min_samples = min_samples
 
         # Init self collections
         self.res_list = []
         self.counter = Counter()
+
+        # Get minimal non-zero float value
+        self.min_pval = np.nextafter(float(0), float(1))
 
     #~~~~~~~~~~~~~~MAGIC AND PROPERTY METHODS~~~~~~~~~~~~~~#
 
@@ -233,7 +238,7 @@ class StatsResults():
 
     #~~~~~~~~~~~~~~PUBLIC METHODS~~~~~~~~~~~~~~#
 
-    def __call__ (self, coord, line_list, label_list):
+    def compute_pvalue (self, coord, line_list, label_list):
         """"""
 
         # Not enough samples
@@ -264,50 +269,61 @@ class StatsResults():
         raw_llr_list = [str_to_list(line.llr_list) for line in line_list]
 
         # Run stat test
-        if self.test == "Kruskal":
-            stat_res = kruskal(*raw_llr_list)
-        elif self.test == "Mann_Withney":
-            stat_res = mannwhitneyu(raw_llr_list[0], raw_llr_list[1])
+        if self.pvalue_method == "KW":
+            statistics, pvalue = kruskal(*raw_llr_list)
+        elif self.pvalue_method == "MW":
+            statistics, pvalue = mannwhitneyu(raw_llr_list[0], raw_llr_list[1])
 
-        # Store valid data
-        self.res_list.append(Res(
-            coord = coord,
-            stat_res = stat_res,
-            n_samples = n_samples,
-            neg_med = neg_med,
-            pos_med = pos_med,
-            ambiguous_med = ambiguous_med,
-            label_list = label_list,
-            med_llr_list = med_llr_list,
-            raw_llr_list = raw_llr_list))
+        # Fix and categorize p-values
+        if pvalue is np.nan or pvalue is None or pvalue>1 or pvalue<0:
+            pvalue = 1.0
+            self.counter["Sites with invalid pvalue"]+=1
+        elif pvalue <= self.pvalue_threshold:
+            # Correct very low pvalues to minimal float size
+            if pvalue == 0:
+                pvalue = self.min_pval
+            self.counter["Sites with significant pvalue"]+=1
+        else:
+            self.counter["Sites with non-significant pvalue"]+=1
 
-        if stat_res.pvalue <= 0.05:
-            self.counter["Sites with significant pvalue (< 0.01)"]+=1
+        self.res_list.append(
+            OrderedDict(
+                chromosome = coord.chr_name,
+                start = coord.start,
+                end = coord.end,
+                pvalue = pvalue,
+                adj_pvalue = 1.0, # to be filled
+                n_samples = n_samples,
+                neg_med = neg_med,
+                pos_med = pos_med,
+                ambiguous_med = ambiguous_med,
+                label_list = label_list,
+                med_llr_list = med_llr_list,
+                raw_llr_list = raw_llr_list))
 
-    def multitest_adjust(self, method="fdr_bh", alpha=0.01):
+    def multitest_adjust(self):
         """"""
-        pvalue_list = [res.pvalue for res in self.res_list]
-        adj_pvalue_list = multipletests(pvalue_list, alpha=alpha, method=method)[1]
-        for i, adj_pvalue in enumerate(adj_pvalue_list):
-            self.res_list[i].adj_pvalue = adj_pvalue
-            if adj_pvalue <= 0.05:
-                self.counter["Sites with significant FDR adj pvalue (< 0.01)"]+=1
+        adj_pvalue_list = multipletests(
+            pvals = [res["pvalue"] for res in self.res_list],
+            alpha = self.pvalue_threshold,
+            method = self.pvalue_adj_method)[1]
 
-class Res():
-    def __init__ (self, coord, stat_res, n_samples, neg_med, pos_med, ambiguous_med, label_list, med_llr_list, raw_llr_list):
-        self.chr_name = coord.chr_name
-        self.start = coord.start
-        self.end = coord.end
-        self.pvalue = stat_res.pvalue
-        self.statistic = stat_res.statistic
-        self.n_samples = n_samples
-        self.neg_med = neg_med
-        self.pos_med = pos_med
-        self.ambiguous_med = ambiguous_med
-        self.label_list = label_list
-        self.med_llr_list = med_llr_list
-        self.raw_llr_list = raw_llr_list
-        self.adj_pvalue = None
+        for i, adj_pvalue in enumerate(adj_pvalue_list):
+
+            # Fix and categorize p-values
+            if adj_pvalue is np.nan or adj_pvalue is None or adj_pvalue>1 or adj_pvalue<0:
+                adj_pvalue = 1.0
+                self.counter["Sites with invalid adjusted pvalue"]+=1
+            elif adj_pvalue <= self.pvalue_threshold:
+                # Correct very low pvalues to minimal float size
+                if adj_pvalue == 0:
+                    adj_pvalue = self.min_pval
+                self.counter["Sites with significant adjusted pvalue"]+=1
+            else:
+                self.counter["Sites with non-significant adjusted pvalue"]+=1
+
+            # Add adjusted pvalue to counter
+            self.res_list[i]["adj_pvalue"] = adj_pvalue
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~Comp_Writer HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Comp_Writer():
@@ -366,39 +382,46 @@ class Comp_Writer():
 
     def _write_bed (self, res):
         """Write line to BED file"""
-        # calculate a score compatible with bed format
-        score = -np.log10(res.adj_pvalue)
-        if score > 1000:
-            score = 1000
+        # Log transform pvalue
+        score = -np.log10(res["adj_pvalue"])
+        # scale-down very unlikely insanely high or negative pValue for bed compatibility
+        score = np.clip(score, 0, 1000)
+
         # Define color for bed file
         for min_score, color in self.colors.items():
             if score >= min_score:
                 break
+
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3}\t.\t{}\t{}\t{}\n".format(
-            res.chr_name, res.start, res.end, score, res.start, res.end, color))
+        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.2f}\t.\t{}\t{}\t{}\n".format(
+            res["chromosome"],
+            res["start"],
+            res["end"],
+            score,
+            res["start"],
+            res["end"],
+            color))
 
     def _init_tsv (self):
         """Open TSV file and write file header"""
         self.log.debug("Initialise output tsv file")
         mkbasedir (self.tsv_fn, exist_ok=True)
         fp = gzip.open(self.tsv_fn, "wt") if self.tsv_fn.endswith(".gz") else open(self.tsv_fn, "w")
-        fp.write("chromosome\tstart\tend\tn_samples\tpvalue\tstatistic\tadj_pvalue\tneg_med\tpos_med\tambiguous_med\tlabels\tmed_llr_list\traw_llr_list\n")
+        fp.write("chromosome\tstart\tend\tn_samples\tpvalue\tadj_pvalue\tneg_med\tpos_med\tambiguous_med\tlabels\tmed_llr_list\traw_llr_list\n")
         return fp
 
     def _write_tsv (self, res):
         """Write line to TSV file"""
-        self.tsv_fp.write ("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
-            res.chr_name,
-            res.start,
-            res.end,
-            res.n_samples,
-            res.pvalue,
-            res.statistic,
-            res.adj_pvalue,
-            res.neg_med,
-            res.pos_med,
-            res.ambiguous_med,
-            list_to_str(res.label_list),
-            list_to_str(res.med_llr_list),
-            list_to_str(res.raw_llr_list)))
+        self.tsv_fp.write ("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
+            res["chromosome"],
+            res["start"],
+            res["end"],
+            res["n_samples"],
+            res["pvalue"],
+            res["adj_pvalue"],
+            res["neg_med"],
+            res["pos_med"],
+            res["ambiguous_med"],
+            list_to_str(res["label_list"]),
+            list_to_str(res["med_llr_list"]),
+            list_to_str(res["raw_llr_list"])))

@@ -1,20 +1,23 @@
 # Installation
 
-## Create a clean virtual environment
+## Create a clean virtual environment (optional but recommended)
 
-Ideally, before installation, create a clean **python3.6+** virtual environment to deploy the package. **Python 2 is not supported**.
+Ideally, before installation, create a clean **python3.6+** virtual environment to deploy the package.
+Earlier version of Python3 should also work but **Python 2 is not supported**.
 For example one can use conda or virtualenvwrapper.
 
 With [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/install.html):
 
 ```bash
 mkvirtualenv pycoMeth -p python3.6
+workon pycoMeth
 ```
 
 With [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
 
 ```bash
 conda create -n pycoMeth python=3.6
+conda activate pycoMeth
 ```
 
 You might also want to install [Nanopolish](https://github.com/jts/nanopolish) in the same virtual environment so you can pipe nanopolish output directly into `pycoMeth`
@@ -36,20 +39,31 @@ The correct versions of packages are installed together with the software when u
 Install or upgrade the package with pip from pypi
 
 ```bash
-# First installation
 pip install pycoMeth
-
-# Update to last version
-pip install pycoMeth --upgrade
 ```
 
-If you feel more adventurous you can install the development version from test.pypi
+You can also update to the **unstable** development version from test.pypi repository
 
 ```bash
-pip install --index-url https://test.pypi.org/simple/ pycoMeth
+pip install --index-url https://test.pypi.org/simple/ pycoMeth -U
 ```
 
-## Option 2: Installation with pip from Github
+## Option 2: Installation with conda from Anacounda cloud
+
+**If you want to be sure to get the last version don't forget to add my channel and to specify the last version number**
+
+```bash
+# First installation
+conda install -c aleg pycometh=[VERSION]
+```
+
+You can also get the **unstable** development version from my dev channel
+
+```bash
+conda update -c aleg_dev pycometh=[VERSION]
+```
+
+## Option 3: Installation with pip from Github
 
 Or from github to get the last version
 
@@ -64,7 +78,7 @@ pip install git+https://github.com/a-slide/pycoMeth.git@dev
 pip install git+https://github.com/a-slide/pycoMeth.git --upgrade
 ```
 
-## Option 3: Clone the repository and install locally in develop mode
+## Option 4: Clone the repository and install locally in develop mode
 
 With this option, the package will be locally installed in *editable* or *develop mode*. This allows the package to be both installed and editable in project form. This is the recommended option if you wish to modify the code and/or participate to the development of the package (see [contribution guidelines](contributing.md)).
 

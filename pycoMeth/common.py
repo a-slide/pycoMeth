@@ -139,7 +139,6 @@ def make_arg_dict (func):
                 d[name]["help"] = " ".join(docstr_dict[name])
         return d
 
-
 def arg_from_docstr (parser, func, arg_name, short_name=None):
     """Get options corresponding to argument name from docstring and deal with special cases"""
 
@@ -219,7 +218,6 @@ def jhelp (f:"python function or method"):
 
     # Display in Jupyter
     display (Markdown(s))
-
 
 def head (fp, n=10, sep="\t", comment=None):
     """
@@ -306,6 +304,28 @@ class CustomFormatter(logging.Formatter):
         log_fmt = self.FORMATS[record.levelno]
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
+
+def log_dict (d, logger, header="", indent="\t", level=1):
+    """ log a multilevel dict """
+    if header:
+        logger(header)
+    if isinstance(d, Counter):
+        for i, j in d.most_common():
+            logger("{}{}: {:,}".format(indent*level, i, j))
+    else:
+        for i, j in d.items():
+            if isinstance(j, dict):
+                logger("{}{}".format(indent*level, i, j))
+                log_dict(j, logger, level=level+1)
+            else:
+                logger("{}{}: {}".format(indent*level, i, j))
+
+def log_list (l, logger, header="", indent="\t"):
+    """ log a list """
+    if header:
+        logger(header)
+    for i in l:
+        logger("{}*{}".format(indent, i))
 
 #~~~~~~~~~~~~~~CUSTOM EXCEPTION AND WARN CLASSES~~~~~~~~~~~~~~#
 class pycoMethError (Exception):
