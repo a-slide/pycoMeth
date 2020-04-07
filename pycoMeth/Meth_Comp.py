@@ -120,6 +120,15 @@ def Meth_Comp (
             elif not colnames == set(fp.colnames):
                 raise ValueError (f"Invalid field {fp.colnames} in file {fn}")
             fp_list.append(fp)
+            # Get input file type
+            if not input_type:
+                input_type = fp.input_type
+            elif input_type != fp.input_type:
+                raise ValueError (f"Inconsistent input types")
+
+        # Check that aggregate_fn_list contains valid input types
+        if not input_type in ["CpG_Aggregate", "Interval_Aggregate"]:
+            raise pycoMethError("Invalid input file type passed (aggregate_fn_list). Expecting pycoMeth CpG_Aggregate or Interval_Aggregate output TSV files")
 
         # Define StatsResults to collect valid sites and perform stats
         stats_results = StatsResults(

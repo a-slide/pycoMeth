@@ -86,6 +86,9 @@ def Interval_Aggregate(
             quiet=quiet,
             include_byte_len=True)
 
+        if not fp_in.input_type == "CpG_Aggregate":
+            raise pycoMethError("Invalid input file type passed (cpg_aggregate_fn). Expecting pycoMeth CpG_Aggregate output TSV file")
+
         fp_out = Interval_Writer (
             bed_fn=output_bed_fn,
             tsv_fn=output_tsv_fn,

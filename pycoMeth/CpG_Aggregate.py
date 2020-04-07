@@ -64,6 +64,8 @@ def CpG_Aggregate(
     # Possible fields chromosome	strand	start	end	read_name	log_lik_ratio	log_lik_methylated	log_lik_unmethylated	num_calling_strands	num_motifs	sequence
     dtypes = {"start":int, "end":int, "log_lik_ratio":float, "num_motifs":int}
     with FileParser(fn=nanopolish_fn, dtypes=dtypes, verbose=verbose, quiet=quiet, include_byte_len=progress) as input_fp:
+        if not fp_in.input_type == "call_methylation":
+            raise pycoMethError("Invalid input file type passed (nanopolish_fn). Expecting Nanopolish call_methylation output TSV file")
 
         log.info ("Starting to parse file Nanopolish methylation call file")
         with tqdm (total=len(input_fp), unit=" bytes", unit_scale=True, disable=not progress) as pbar:
