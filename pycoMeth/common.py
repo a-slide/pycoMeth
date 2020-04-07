@@ -41,6 +41,15 @@ def str_to_list (s, parse_int=None, parse_float=None):
     """Generate a list from a string"""
     return json.loads(s, parse_int=parse_int, parse_float=parse_float)
 
+def all_in (l1, l2):
+    """Check if all element in l1 are in l2"""
+    s1 = set(l1)
+    s2 = set(l2)
+    if s1.difference(s2):
+        return False
+    else:
+        return True
+
 def file_readable (fn, **kwargs):
     """Check if the file is readable"""
     return os.path.isfile (fn) and os.access (fn, os.R_OK)
