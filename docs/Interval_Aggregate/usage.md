@@ -27,10 +27,11 @@ Optional **sorted** and BED file containing **non-overlapping** intervals to bin
 
 This tabulated file contains the following fields:
 
-* chromosome / start / end : Genomic coordinates of the interval containing CpG sites
-* num_motifs: Number of motifs (CpG) found in the interval.
-* median_llr: Median of log likelihood ratios for each CpG cluster aggregated
-* llr_list: List of median llr values for all CpG cluster aggregated
+* chromosome / start / end : Genomic coordinates of the interval containing CpGs
+* num_motifs: Number of CpG positions/cluster found in the interval
+* median_llr: Median of all log likelihood ratios (llr) for the interval
+* llr_list: List of median llr values of all CpG positions/cluster found in the interval
+* pos_list: List of genomic coordinates of the center of all CpG positions/cluster found. The order matches values in llr_list
 
 ### BED file
 

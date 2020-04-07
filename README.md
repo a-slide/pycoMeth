@@ -32,7 +32,15 @@ Please be aware that `pycoMeth` is a research package that is still under develo
 
 ### pycoMeth example output IGV rendering
 
-![](docs/pictures/pycoMeth_all.png)
+![IGV](docs/pictures/pycoMeth_all.png)
+
+### pycoMeth example HTML report
+
+[Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary.html)
+
+![HTML](docs/pictures/pycoMeth_HTML.gif)
+
+---
 
 ### Citing
 

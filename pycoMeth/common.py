@@ -16,8 +16,10 @@ import gzip
 from pycoMeth import __version__ as pkg_version
 from pycoMeth import __name__ as pkg_name
 
-#~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~#
+# Third party imports
+import colorlog
 
+#~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~#
 def opt_summary (local_opt):
     """Simplifiy option dict creation"""
     d=OrderedDict()
@@ -28,6 +30,11 @@ def opt_summary (local_opt):
         d[i]=j
     return d
 
+def str_join (l, sep="\t", line_end=""):
+    """Join a list of mixed types into a single str"""
+    s = sep.join(map(str, l))+line_end
+    return s
+
 def list_to_str (l):
     """Generate a string from any list"""
     return str(json.dumps(l)).replace(" ", "")
@@ -35,6 +42,15 @@ def list_to_str (l):
 def str_to_list (s, parse_int=None, parse_float=None):
     """Generate a list from a string"""
     return json.loads(s, parse_int=parse_int, parse_float=parse_float)
+
+def all_in (l1, l2):
+    """Check if all element in l1 are in l2"""
+    s1 = set(l1)
+    s2 = set(l2)
+    if s1.difference(s2):
+        return False
+    else:
+        return True
 
 def file_readable (fn, **kwargs):
     """Check if the file is readable"""
@@ -219,7 +235,7 @@ def jhelp (f:"python function or method"):
     # Display in Jupyter
     display (Markdown(s))
 
-def head (fp, n=10, sep="\t", comment=None):
+def head (fp, n=10, sep="\t", max_char_col=50, comment=None):
     """
     Emulate linux head cmd. Handle gziped files and bam files
     * fp
@@ -255,7 +271,9 @@ def head (fp, n=10, sep="\t", comment=None):
             for ls in line_list:
                 for i in range (len(ls)):
                     len_col = len(ls[i])
-                    if len_col > col_len_list[i]:
+                    if len_col > max_char_col:
+                        col_len_list[i] = max_char_col
+                    elif len_col > col_len_list[i]:
                         col_len_list[i] = len_col
 
             # Add padding
@@ -265,7 +283,10 @@ def head (fp, n=10, sep="\t", comment=None):
                 for i in range (len(ls)):
                     len_col = col_len_list[i]
                     len_cur_col = len(ls[i])
-                    s += ls[i][0:len_col] + " "*(len_col-len_cur_col)+" "
+                    if len_cur_col <= len_col:
+                        s += ls[i] + " "*(len_col-len_cur_col)+" "
+                    else:
+                        s += ls[i][0:len_col-3]+"..."
                 line_list_tab.append(s)
             line_list = line_list_tab
 
@@ -277,33 +298,48 @@ def head (fp, n=10, sep="\t", comment=None):
         print (l)
     print()
 
+def stdout_print (*args):
+    """
+    Emulate print but uses sys stdout instead. It could sometimes be useful in specific situations where print
+    is in is not behaving optimaly (like with tqdm for example)
+    """
+    s =  " ".join([str(i) for i in args])
+    sys.stdout.write(s)
+    sys.stdout.flush()
+
 def get_logger (name=None, verbose=False, quiet=False):
-    """Set logger to appropriate log level"""
+    """Multilevel colored log using colorlog"""
+
+    # Define conditional color formatter
+    formatter = colorlog.LevelFormatter(
+        fmt = {
+            'DEBUG':'%(log_color)s\t[DEBUG]: %(msg)s',
+            'INFO': '%(log_color)s\t%(msg)s',
+            'WARNING': '%(log_color)s## %(msg)s ##',
+            'ERROR': '%(log_color)sERROR: %(msg)s',
+            'CRITICAL': '%(log_color)sCRITICAL: %(msg)s'},
+        log_colors={
+            'DEBUG': 'white',
+            'INFO': 'green',
+            'WARNING': 'bold_blue',
+            'ERROR': 'bold_red',
+            'CRITICAL': 'bold_purple'},
+        reset=True)
+
+    # Define logger with custom formatter
     logging.basicConfig(format='%(message)s')
-    logging.getLogger().handlers[0].setFormatter(CustomFormatter())
-    logger = logging.getLogger(name)
+    logging.getLogger().handlers[0].setFormatter(formatter)
+    log = logging.getLogger(name)
 
-    # Define overall verbose level
+    # Define logging level depending on verbosity
     if verbose:
-        logger.setLevel(logging.DEBUG)
+        log.setLevel(logging.DEBUG)
     elif quiet:
-        logger.setLevel(logging.WARNING)
+        log.setLevel(logging.WARNING)
     else:
-        logger.setLevel(logging.INFO)
+        log.setLevel(logging.INFO)
 
-    return logger
-
-class CustomFormatter(logging.Formatter):
-    """"""
-    FORMATS = {
-        logging.WARNING: "## %(msg)s ##",
-        logging.INFO: "\t%(msg)s",
-        logging.DEBUG: "\t[DEBUG] [%(name)s] %(msg)s"}
-
-    def format(self, record):
-        log_fmt = self.FORMATS[record.levelno]
-        formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)
+    return log
 
 def log_dict (d, logger, header="", indent="\t", level=1):
     """ log a multilevel dict """

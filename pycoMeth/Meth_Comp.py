@@ -4,6 +4,7 @@
 # Standard library imports
 from collections import OrderedDict, namedtuple, Counter
 import gzip
+import itertools
 
 # Third party imports
 from tqdm import tqdm
@@ -99,6 +100,7 @@ def Meth_Comp (
     try:
         log.info("Reading input files header and checking consistancy between headers")
         colnames = set()
+        input_type = ""
         fp_list = []
         all_fp_len = 0
 
@@ -113,13 +115,23 @@ def Meth_Comp (
                 verbose=verbose, quiet=quiet,
                 include_byte_len=True)
             all_fp_len+=len(fp)
+            fp_list.append(fp)
 
             # Check colnames
             if not colnames:
                 colnames = set(fp.colnames)
-            elif not colnames == set(fp.colnames):
+            elif colnames != set(fp.colnames):
                 raise ValueError (f"Invalid field {fp.colnames} in file {fn}")
-            fp_list.append(fp)
+
+            # Get input file type
+            if not input_type:
+                input_type = fp.input_type
+            elif input_type != fp.input_type:
+                raise ValueError (f"Inconsistent input types")
+
+        # Check that aggregate_fn_list contains valid input types
+        if not input_type in ["CpG_Aggregate", "Interval_Aggregate"]:
+            raise pycoMethError("Invalid input file type passed (aggregate_fn_list). Expecting pycoMeth CpG_Aggregate or Interval_Aggregate output TSV files")
 
         # Define StatsResults to collect valid sites and perform stats
         stats_results = StatsResults(
@@ -127,10 +139,11 @@ def Meth_Comp (
             pvalue_adj_method = pvalue_adj_method,
             pvalue_threshold = pvalue_threshold,
             min_diff_llr = min_diff_llr,
-            min_samples = min_samples)
+            min_samples = min_samples,
+            input_type=input_type)
 
         log.info("Starting asynchronous file parsing")
-        with tqdm (total=all_fp_len, unit=" bytes", unit_scale=True, disable=not progress) as pbar:
+        with tqdm (total=all_fp_len, unit=" bytes", unit_scale=True, desc="\tProgress", disable=not progress) as pbar:
 
             coord_d = defaultdict(list)
 
@@ -150,7 +163,7 @@ def Meth_Comp (
             log.debug("Starting deep parsing")
             fp_done = 0
             while True:
-                # Get lower coord has enough samples
+                # Get lower coord if has enough samples
                 lower_coord = sorted(coord_d.keys())[0]
                 coord_fp_list = sorted(coord_d[lower_coord], key=lambda x: x.label)
 
@@ -178,7 +191,7 @@ def Meth_Comp (
                     break
 
         # Init file writter
-        with Comp_Writer(bed_fn=output_bed_fn, tsv_fn=output_tsv_fn, verbose=verbose) as writer:
+        with Comp_Writer(bed_fn=output_bed_fn, tsv_fn=output_tsv_fn, input_type=input_type, verbose=verbose) as writer:
 
             # Exit condition
             if not stats_results.res_list:
@@ -191,7 +204,7 @@ def Meth_Comp (
 
                 # Write output file
                 log.info("Writing output file")
-                for res in tqdm(stats_results.res_list, unit=" sites", unit_scale=True, disable=not progress):
+                for res in tqdm(stats_results.res_list, unit=" sites", unit_scale=True, desc="\tProgress", disable=not progress):
                     writer.write (res)
 
     finally:
@@ -208,7 +221,13 @@ def Meth_Comp (
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~StatsResults HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class StatsResults():
-    def __init__ (self, pvalue_method="Kruskal", pvalue_adj_method="fdr_bh", pvalue_threshold=0.01, min_diff_llr=1, min_samples=3):
+    def __init__ (self,
+        pvalue_method="Kruskal",
+        pvalue_adj_method="fdr_bh",
+        pvalue_threshold=0.01,
+        min_diff_llr=1,
+        min_samples=3,
+        input_type="Interval_Aggregate"):
         """"""
         # Save self variables
         self.pvalue_method = pvalue_method
@@ -216,6 +235,7 @@ class StatsResults():
         self.pvalue_threshold = pvalue_threshold
         self.min_diff_llr = min_diff_llr
         self.min_samples = min_samples
+        self.input_type = input_type
 
         # Init self collections
         self.res_list = []
@@ -240,7 +260,6 @@ class StatsResults():
 
     def compute_pvalue (self, coord, line_list, label_list):
         """"""
-
         # Not enough samples
         n_samples = len(line_list)
         if n_samples < self.min_samples:
@@ -257,49 +276,59 @@ class StatsResults():
             else:
                 ambiguous_med+=1
 
+        # Sufficient samples and effect size
         if not neg_med or not pos_med:
             self.counter["Sites with insufficient effect size"]+=1
-            return
 
         # Sufficient samples and effect size
-        self.counter["Valid sites"]+=1
-
-        # collect med_llr and raw_llr lists
-        med_llr_list = [line.median_llr for line in line_list]
-        raw_llr_list = [str_to_list(line.llr_list) for line in line_list]
-
-        # Run stat test
-        if self.pvalue_method == "KW":
-            statistics, pvalue = kruskal(*raw_llr_list)
-        elif self.pvalue_method == "MW":
-            statistics, pvalue = mannwhitneyu(raw_llr_list[0], raw_llr_list[1])
-
-        # Fix and categorize p-values
-        if pvalue is np.nan or pvalue is None or pvalue>1 or pvalue<0:
-            pvalue = 1.0
-            self.counter["Sites with invalid pvalue"]+=1
-        elif pvalue <= self.pvalue_threshold:
-            # Correct very low pvalues to minimal float size
-            if pvalue == 0:
-                pvalue = self.min_pval
-            self.counter["Sites with significant pvalue"]+=1
         else:
-            self.counter["Sites with non-significant pvalue"]+=1
+            self.counter["Valid sites"]+=1
 
-        self.res_list.append(
-            OrderedDict(
-                chromosome = coord.chr_name,
-                start = coord.start,
-                end = coord.end,
-                pvalue = pvalue,
-                adj_pvalue = 1.0, # to be filled
-                n_samples = n_samples,
-                neg_med = neg_med,
-                pos_med = pos_med,
-                ambiguous_med = ambiguous_med,
-                label_list = label_list,
-                med_llr_list = med_llr_list,
-                raw_llr_list = raw_llr_list))
+            # collect med_llr, raw_llr and raw_pos lists
+            med_llr_list = []
+            raw_llr_list = []
+            raw_pos_list = []
+            for line in line_list:
+                med_llr_list.append(line.median_llr)
+                raw_llr_list.append(str_to_list(line.llr_list))
+                if self.input_type == "Interval_Aggregate":
+                    raw_pos_list.append(str_to_list(line.pos_list))
+
+            # Run stat test
+            if self.pvalue_method == "KW":
+                statistics, pvalue = kruskal(*raw_llr_list)
+            elif self.pvalue_method == "MW":
+                statistics, pvalue = mannwhitneyu(raw_llr_list[0], raw_llr_list[1])
+
+            # Fix and categorize p-values
+            if pvalue is np.nan or pvalue is None or pvalue>1 or pvalue<0:
+                pvalue = 1.0
+                self.counter["Sites with invalid pvalue"]+=1
+            elif pvalue <= self.pvalue_threshold:
+                # Correct very low pvalues to minimal float size
+                if pvalue == 0:
+                    pvalue = self.min_pval
+                self.counter["Sites with significant pvalue"]+=1
+            else:
+                self.counter["Sites with non-significant pvalue"]+=1
+
+            res = OrderedDict()
+            res["chromosome"] = coord.chr_name
+            res["start"] = coord.start
+            res["end"] = coord.end
+            res["pvalue"] = pvalue
+            res["n_samples"] = n_samples
+            res["neg_med"] = neg_med
+            res["pos_med"] = pos_med
+            res["ambiguous_med"] = ambiguous_med
+            res["label_list"] = label_list
+            res["med_llr_list"] = med_llr_list
+            res["raw_llr_list"] = raw_llr_list
+            if self.input_type == "Interval_Aggregate":
+                res["raw_pos_list"] = raw_pos_list
+                res["unique_cpg_pos"] = len(set(itertools.chain.from_iterable(raw_pos_list)))
+
+            self.res_list.append(res)
 
     def multitest_adjust(self):
         """"""
@@ -329,11 +358,18 @@ class StatsResults():
 class Comp_Writer():
     """Extract data for valid sites and write to BED and/or TSV file"""
 
-    def __init__ (self, bed_fn=None, tsv_fn=None, verbose=True):
+    def __init__ (self,
+        bed_fn=None,
+        tsv_fn=None,
+        input_type="Interval_Aggregate",
+        verbose=True):
         """"""
         self.log = get_logger (name="Comp_Writer", verbose=verbose)
         self.bed_fn = bed_fn
         self.tsv_fn = tsv_fn
+        self.input_type = input_type
+
+        # Init file pointers
         self.bed_fp = self._init_bed () if bed_fn else None
         self.tsv_fp = self._init_tsv () if tsv_fn else None
 
@@ -348,7 +384,7 @@ class Comp_Writer():
         self.colors[4]='163,43,97'
         self.colors[3]='187,55,84'
         self.colors[2]='209,70,67'
-        self.colors[1]='228,90,49'
+        self.colors[1]='230,230,230'
         self.colors[0]='230,230,230'
 
     #~~~~~~~~~~~~~~PUBLIC METHODS~~~~~~~~~~~~~~#
@@ -377,51 +413,46 @@ class Comp_Writer():
         self.log.debug("Initialise output bed file")
         mkbasedir (self.bed_fn, exist_ok=True)
         fp = gzip.open(self.bed_fn, "wt") if self.bed_fn.endswith(".gz") else open(self.bed_fn, "w")
+        # Write header line
         fp.write("track name=meth_comp itemRgb=On\n")
         return fp
 
     def _write_bed (self, res):
         """Write line to BED file"""
-        # Log transform pvalue
-        score = -np.log10(res["adj_pvalue"])
-        # scale-down very unlikely insanely high or negative pValue for bed compatibility
-        score = np.clip(score, 0, 1000)
-
+        # Log transform pvalue and cast to int
+        score = int(-np.log10(res["adj_pvalue"]))
         # Define color for bed file
-        for min_score, color in self.colors.items():
-            if score >= min_score:
-                break
-
+        color = self.colors.get(score, self.colors[10])
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.2f}\t.\t{}\t{}\t{}\n".format(
-            res["chromosome"],
-            res["start"],
-            res["end"],
-            score,
-            res["start"],
-            res["end"],
-            color))
+        res_line =  [res["chromosome"], res["start"], res["end"], ".", score, ".", res["start"], res["end"], color]
+        self.bed_fp.write(str_join(res_line, sep="\t", line_end="\n"))
 
     def _init_tsv (self):
         """Open TSV file and write file header"""
         self.log.debug("Initialise output tsv file")
         mkbasedir (self.tsv_fn, exist_ok=True)
         fp = gzip.open(self.tsv_fn, "wt") if self.tsv_fn.endswith(".gz") else open(self.tsv_fn, "w")
-        fp.write("chromosome\tstart\tend\tn_samples\tpvalue\tadj_pvalue\tneg_med\tpos_med\tambiguous_med\tlabels\tmed_llr_list\traw_llr_list\n")
+        # Write header line
+        if self.input_type == "Interval_Aggregate":
+            header = [
+                "chromosome","start","end","n_samples","pvalue","adj_pvalue","neg_med","pos_med",
+                "ambiguous_med","unique_cpg_pos","labels","med_llr_list","raw_llr_list","raw_pos_list"]
+        elif self.input_type == "CpG_Aggregate":
+            header = [
+                "chromosome","start","end","n_samples","pvalue","adj_pvalue","neg_med","pos_med",
+                "ambiguous_med","labels","med_llr_list","raw_llr_list"]
+        fp.write(str_join(header, sep="\t", line_end="\n"))
         return fp
 
     def _write_tsv (self, res):
         """Write line to TSV file"""
-        self.tsv_fp.write ("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
-            res["chromosome"],
-            res["start"],
-            res["end"],
-            res["n_samples"],
-            res["pvalue"],
-            res["adj_pvalue"],
-            res["neg_med"],
-            res["pos_med"],
-            res["ambiguous_med"],
-            list_to_str(res["label_list"]),
-            list_to_str(res["med_llr_list"]),
-            list_to_str(res["raw_llr_list"])))
+
+        if self.input_type == "Interval_Aggregate":
+            res_line = [
+                res["chromosome"], res["start"], res["end"], res["n_samples"], res["pvalue"], res["adj_pvalue"], res["neg_med"], res["pos_med"], res["ambiguous_med"],
+                res["unique_cpg_pos"], list_to_str(res["label_list"]), list_to_str(res["med_llr_list"]), list_to_str(res["raw_llr_list"]), list_to_str(res["raw_pos_list"])]
+        elif self.input_type == "CpG_Aggregate":
+            res_line = [
+                res["chromosome"], res["start"], res["end"], res["n_samples"], res["pvalue"], res["adj_pvalue"], res["neg_med"], res["pos_med"], res["ambiguous_med"],
+                list_to_str(res["label_list"]), list_to_str(res["med_llr_list"]), list_to_str(res["raw_llr_list"])]
+        self.tsv_fp.write(str_join(res_line, sep="\t", line_end="\n"))

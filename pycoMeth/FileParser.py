@@ -93,6 +93,17 @@ class FileParser ():
         else:
             raise ValueError("Invalid column name option")
 
+        # Define input file type:
+        if all_in(["chromosome", "start", "end", "sequence", "num_motifs", "median_llr", "llr_list"], self.colnames):
+            self.input_type = "CpG_Aggregate"
+        elif all_in(["chromosome", "start", "end", "num_motifs", "median_llr", "llr_list", "pos_list"], self.colnames):
+            self.input_type = "Interval_Aggregate"
+        elif all_in(["chromosome", "strand", "start", "end" , "read_name", "log_lik_ratio", "log_lik_methylated", "log_lik_unmethylated"], self.colnames):
+            self.input_type = "call_methylation"
+        else:
+            self.input_type = "unknown"
+        self.log.debug("Input file type: {}".format(self.input_type))
+
         # Save initial number of columns
         self.ncols = len(self.colnames)
 

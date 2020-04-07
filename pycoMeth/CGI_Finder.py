@@ -96,7 +96,7 @@ def CGI_Finder (
                         valid_win_end = i+min_win_len
                         previous_valid = True
 
-                    for i in trange(1, len(seq)-min_win_len, unit=" bases", unit_scale=True, disable=not progress):
+                    for i in trange(1, len(seq)-min_win_len, unit=" bases", unit_scale=True, desc="\tProgress", disable=not progress):
 
                         # Decrement counters based on changes at previous start
                         prev_start = i-1
@@ -237,6 +237,9 @@ def compute_win (win_seq):
             cg_count+=1
 
     cg_freq = (c_count+g_count)/win_len
-    obs_exp = cg_count/(c_count*g_count/win_len)
+    if c_count == 0 or g_count == 0:
+        obs_exp = 0
+    else:
+        obs_exp = cg_count/(c_count*g_count/win_len)
 
     return (win_len, cg_count, cg_freq, obs_exp)

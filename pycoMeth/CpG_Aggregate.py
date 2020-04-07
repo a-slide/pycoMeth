@@ -63,16 +63,19 @@ def CpG_Aggregate(
     # Open file parser
     # Possible fields chromosome	strand	start	end	read_name	log_lik_ratio	log_lik_methylated	log_lik_unmethylated	num_calling_strands	num_motifs	sequence
     dtypes = {"start":int, "end":int, "log_lik_ratio":float, "num_motifs":int}
-    with FileParser(fn=nanopolish_fn, dtypes=dtypes, verbose=verbose, quiet=quiet, include_byte_len=progress) as input_fp:
+    with FileParser(fn=nanopolish_fn, dtypes=dtypes, verbose=verbose, quiet=quiet, include_byte_len=progress) as fp_in:
+
+        if not fp_in.input_type == "call_methylation":
+            raise pycoMethError("Invalid input file type passed (nanopolish_fn). Expecting Nanopolish call_methylation output TSV file")
 
         log.info ("Starting to parse file Nanopolish methylation call file")
-        with tqdm (total=len(input_fp), unit=" bytes", unit_scale=True, disable=not progress) as pbar:
-            for lt in input_fp:
+        with tqdm (total=len(fp_in), unit=" bytes", unit_scale=True, desc="\tProgress", disable=not progress) as pbar:
+            for lt in fp_in:
                 sites_index.add(lt)
                 # Update progress_bar
                 if progress: pbar.update(lt.byte_len)
 
-        log_dict(input_fp.counter, log.info, "Parsing summary")
+        log_dict(fp_in.counter, log.info, "Parsing summary")
 
         log.info ("Filtering out low coverage sites")
         sites_index.filter_low_count(min_depth)
@@ -84,11 +87,11 @@ def CpG_Aggregate(
 
     log.warning("Processing valid sites found and write to file")
 
-    with CpG_Writer(bed_fn=output_bed_fn, tsv_fn=output_tsv_fn, sample_id=sample_id, min_llr=min_llr, verbose=verbose) as writer:
-        for coord, val_dict in tqdm(sites_index, unit=" sites", unit_scale=True, disable=not progress):
-            writer.write (coord, val_dict)
+    with CpG_Writer(bed_fn=output_bed_fn, tsv_fn=output_tsv_fn, sample_id=sample_id, min_llr=min_llr, verbose=verbose) as fp_out:
+        for coord, val_dict in tqdm(sites_index, unit=" sites", unit_scale=True, desc="\tProgress", disable=not progress):
+            fp_out.write (coord, val_dict)
 
-        log_dict(writer.counter, log.info, "Results summary")
+        log_dict(fp_out.counter, log.info, "Results summary")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~SitesIndex HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -247,7 +250,6 @@ class CpG_Writer():
 
     def _write_bed (self, coord, med_llr):
         """Write line to BED file"""
-
         # define track color dependign on med llr
         if med_llr>=0:
             for min_llr, color in self.pos_colors.items():
@@ -258,19 +260,20 @@ class CpG_Writer():
                 if med_llr <= min_llr:
                     break
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3f}\t.\t{}\t{}\t{}\n".format(
-            coord.chr_name, coord.start, coord.end, med_llr, coord.start, coord.end, color))
+        res_line = [coord.chr_name, coord.start, coord.end, ".", round(med_llr, 3), ".", coord.start, coord.end, color]
+        self.bed_fp.write(str_join(res_line, sep="\t", line_end="\n"))
 
     def _init_tsv (self):
         """Open TSV file and write file header"""
         self.log.debug("Initialise output tsv file")
         mkbasedir (self.tsv_fn, exist_ok=True)
         fp = gzip.open(self.tsv_fn, "wt") if self.tsv_fn.endswith(".gz") else open(self.tsv_fn, "w")
-        fp.write("chromosome\tstart\tend\tsequence\tnum_motifs\tmedian_llr\tllr_list\n")
+        # Write header line
+        header = ["chromosome","start","end","sequence","num_motifs","median_llr","llr_list"]
+        fp.write(str_join(header, sep="\t", line_end="\n"))
         return fp
 
     def _write_tsv (self, coord, val_dict, med_llr):
         """Write line to TSV file"""
-        llr_str = list_to_str(val_dict["llr"])
-        self.tsv_fp.write ("{}\t{}\t{}\t{}\t{}\t{:.3f}\t{}\n".format(
-            coord.chr_name, coord.start, coord.end, val_dict["sequence"], val_dict["num_motifs"], med_llr, llr_str))
+        res_line = [coord.chr_name, coord.start, coord.end, val_dict["sequence"], val_dict["num_motifs"], round(med_llr, 3), list_to_str(val_dict["llr"])]
+        self.tsv_fp.write(str_join(res_line, sep="\t", line_end="\n"))
