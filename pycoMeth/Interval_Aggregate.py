@@ -97,7 +97,7 @@ def Interval_Aggregate(
             min_cpg_per_interval=min_cpg_per_interval,
             verbose=verbose)
         try:
-            with tqdm (total=len(fp_in), unit=" bytes", unit_scale=True, disable=not progress) as pbar:
+            with tqdm (total=len(fp_in), unit=" bytes", unit_scale=True, desc="\tProgress", disable=not progress) as pbar:
                 # Get first line
                 line = fp_in.next()
                 line_coord = coordgen(line.chromosome, line.start, line.end)
@@ -190,7 +190,7 @@ class Interval_Writer():
             self.counter["Low CpG intervals skipped"]+=1
         else:
             self.counter["Valid intervals written"]+=1
-            med_llr = round(np.median(llr_list), 3)
+            med_llr = round(np.median(llr_list), 3) # No points going further as nanopolish precision if 2 digits only
             if self.bed_fn:
                 self._write_bed (coord, med_llr)
             if self.tsv_fn:
@@ -215,7 +215,7 @@ class Interval_Writer():
     def _write_bed (self, coord, med_llr):
         """Write line to BED file"""
 
-        # define track color dependign on med llr
+        # Define track color depending on med_llr value
         if med_llr>=0:
             for min_llr, color in self.pos_colors.items():
                 if med_llr >= min_llr:
@@ -224,9 +224,10 @@ class Interval_Writer():
             for min_llr, color in self.neg_colors.items():
                 if med_llr <= min_llr:
                     break
+
         # Write line
-        self.bed_fp.write ("{}\t{}\t{}\t.\t{:.3f}\t.\t{}\t{}\t{}\n".format(
-            coord.chr_name, coord.start, coord.end, med_llr, coord.start, coord.end, color))
+        res_line = [coord.chr_name, coord.start, coord.end, ".", med_llr, ".", coord.start, coord.end, color]
+        self.bed_fp.write(str_join(res_line, sep="\t", line_end="\n"))
 
     def _init_tsv (self):
         """Open TSV file and write file header"""
