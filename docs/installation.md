@@ -29,8 +29,14 @@ You might also want to install [Nanopolish](https://github.com/jts/nanopolish) i
 `pycoMeth` relies on a the following robustly maintained third party python libraries:
 
 * numpy>=1.14.0
-* tqdm>=4.23.4
-* pandas>=0.25.1
+* scipy>=1.4.1
+* statsmodels>=0.11.1
+* pandas>=1.0.3
+* Jinja2>=2.11.1
+* plotly>=4.6.0
+* pyfaidx>=0.5.8
+* tqdm>=4.45.0
+* colorlog>=4.1.0
 
 The correct versions of packages are installed together with the software when using pip.
 
@@ -48,7 +54,7 @@ You can also update to the **unstable** development version from test.pypi repos
 pip install --index-url https://test.pypi.org/simple/ pycoMeth -U
 ```
 
-## Option 2: Installation with conda from Anacounda cloud
+## Option 2: Installation with conda from Anaconda cloud
 
 **If you want to be sure to get the last version don't forget to add my channel and to specify the last version number**
 
