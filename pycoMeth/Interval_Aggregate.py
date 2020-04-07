@@ -109,6 +109,7 @@ def Interval_Aggregate(
                 for win_coord in intervals_gen:
                     counter["Total number of intervals"]+=1
                     llr_list = []
+                    pos_list = []
                     num_motifs = 0
 
                     while True:
@@ -117,12 +118,13 @@ def Interval_Aggregate(
 
                         # Center of CpG is greater than current windows = write off current vals and go to next window
                         if center=="greater":
-                            fp_out.write (coord=win_coord, num_motifs=num_motifs, llr_list=llr_list)
+                            fp_out.write (coord=win_coord, num_motifs=num_motifs, llr_list=llr_list, pos_list=pos_list)
                             break
 
                         # Center of CpG falls inside current windows =  save llr value
                         if center=="inside":
                             llr_list.append(line.median_llr)
+                            pos_list.append(int(line_coord.center))
                             num_motifs+=line.num_motifs
 
                         # Center of CpG lower or inside the current windows = keep reading lines
@@ -134,7 +136,7 @@ def Interval_Aggregate(
         # Stop when reaching end of input file
         except StopIteration:
             # Write last interval
-            fp_out.write (coord=win_coord, num_motifs=num_motifs, llr_list=llr_list)
+            fp_out.write (coord=win_coord, num_motifs=num_motifs, llr_list=llr_list, pos_list=pos_list)
 
     finally:
         # Print counters
@@ -182,7 +184,7 @@ class Interval_Writer():
         self.neg_colors[0]='230,230,230'
 
     #~~~~~~~~~~~~~~PUBLIC METHODS~~~~~~~~~~~~~~#
-    def write (self, coord, num_motifs, llr_list):
+    def write (self, coord, num_motifs, llr_list, pos_list):
         """"""
         if not llr_list:
              self.counter["Empty intervals skipped"]+=1
@@ -194,7 +196,7 @@ class Interval_Writer():
             if self.bed_fn:
                 self._write_bed (coord, med_llr)
             if self.tsv_fn:
-                self._write_tsv (coord, num_motifs, med_llr, llr_list)
+                self._write_tsv (coord, num_motifs, med_llr, llr_list, pos_list)
 
     def close (self):
         for fp in (self.bed_fp, self.tsv_fp):
@@ -234,14 +236,16 @@ class Interval_Writer():
         self.log.debug("Initialise output tsv file")
         mkbasedir (self.tsv_fn, exist_ok=True)
         fp = gzip.open(self.tsv_fn, "wt") if self.tsv_fn.endswith(".gz") else open(self.tsv_fn, "w")
-        fp.write("chromosome\tstart\tend\tnum_motifs\tmedian_llr\tllr_list\n")
+        fp.write
+        # Write header line
+        header = ["chromosome","start","end","num_motifs","median_llr","llr_list","pos_list"]
+        fp.write(str_join(header, sep="\t", line_end="\n"))
         return fp
 
-    def _write_tsv (self, coord, num_motifs, med_llr, llr_list):
+    def _write_tsv (self, coord, num_motifs, med_llr, llr_list, pos_list):
         """Write line to TSV file"""
-        llr_str = list_to_str(llr_list)
-        self.tsv_fp.write ("{}\t{}\t{}\t{}\t{}\t{}\n".format(
-            coord.chr_name, coord.start, coord.end, num_motifs, med_llr, llr_str))
+        res_line = [coord.chr_name, coord.start, coord.end, num_motifs, med_llr, list_to_str(llr_list), list_to_str(pos_list)]
+        self.tsv_fp.write(str_join(res_line, sep="\t", line_end="\n"))
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~Interval generator helper functions~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def sliding_intervals_gen (coordgen, interval_size=1000):
