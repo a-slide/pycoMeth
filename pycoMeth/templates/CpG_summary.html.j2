@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+
+        <title>PycoMeth report</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <style>
+            .tf {
+                position: fixed;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+            z-index: 99 !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="columns">
+                <div class="column col-12 col-mx-auto tf">
+                    <header class="navbar">
+                        <section class="navbar-section">
+                            <div>
+                                <a href="https://a-slide.github.io/pycoMeth/" class="navbar-brand mr-2" target="_blank">PycoMeth</a>
+                            <div/>
+                            <div>
+                                <a href="https://a-slide.github.io/pycoMeth/" class="btn btn-link" target="_blank">Documentation</a>
+                            <div/>
+                            <div>
+                                <a href="https://github.com/a-slide/pycoMeth" class="btn btn-link" target="_blank">GitHub</a>
+                            <div/>
+                        </section>
+                        <section class="navbar-section">
+                            <div class="dropdown dropdown-right">
+                                <a href="#/" class="btn btn-link dropdown-toggle" tabindex="0">Menu <i class="icon icon-menu"></i></a>
+                                <ul class="menu">
+                                    <li class="menu-item">
+                                        <a href="#Overall summary">Overall summary</a>
+                                        <a href="#Methylation Categories">Methylation Categories</a>
+                                        <a href="#CpG intervals heatmap">CpG intervals heatmap</a>
+                                        <a href="#CpG interval ridgeplot">CpG interval ridgeplot</a>
+                                        <a href="#Top pvalues">Top pvalues</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </header>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column col-9 col-mx-auto">
+                    <div class="text-center">
+                        <br>
+                        <img src=https://raw.githubusercontent.com/a-slide/pycoMeth/master/docs/pictures/pycoMeth_long.png class="center" alt="" style="max-height: 80px;">
+                        <div class="divider"></div>
+                        <h4>MethComp summary report generated on {{ date }} with pycoMeth {{ version }}</h4>
+                        <div class="divider"></div>
+                    </div>
+                    <div class="columns">
+                        <div id="Overall summary" class="column col-11 col-mx-auto">
+                            <h5 style="margin-top: 50px;">Overall summary</h5>
+                            {{ summary_html }}
+                            <div class="divider"></div>
+                        </div>
+                        <div id="Methylation Categories" class="column col-11 col-mx-auto">
+                            <h5 style="margin-top: 50px;">Methylation category counts by sample</h5>
+                            {{ catplot_html }}
+                            <div class="divider"></div>
+                        </div>
+                        <div id="CpG intervals heatmap" class="column col-11 col-mx-auto">
+                            <h5 style="margin-top: 50px;">Methylation log-likelihood ratio by CpG interval</h5>
+                            {{ heatmap_html }}
+                            <div class="divider"></div>
+                        </div>
+                        <div id="CpG interval ridgeplot" class="column col-11 col-mx-auto">
+                            <h5 style="margin-top: 50px;">Distribution of CpG methylation log-likelihood ratio by sample</h5>
+                            {{ ridgeplot_html }}
+                            <div class="divider"></div>
+                        </div>
+                        <div id="Top pvalues" class="column col-11 col-mx-auto">
+                            <h5 style="margin-top: 50px;">Top differentially methylated intervals</h5>
+                            {{ top_html }}
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+                        <div class="text-left">
+                            <br>
+                            <p>Source file: {{ src_file }} </p>
+                            <p> MD5 hash: {{ md5 }} </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
