@@ -296,6 +296,15 @@ def head (fp, n=10, sep="\t", max_char_col=50, comment=None):
         print (l)
     print()
 
+def stdout_print (*args):
+    """
+    Emulate print but uses sys stdout instead. It could sometimes be useful in specific situations where print
+    is in is not behaving optimaly (like with tqdm for example)
+    """
+    s =  " ".join([str(i) for i in args])
+    sys.stdout.write(s)
+    sys.stdout.flush()
+
 def get_logger (name=None, verbose=False, quiet=False):
     """Set logger to appropriate log level"""
     logging.basicConfig(format='%(message)s')
