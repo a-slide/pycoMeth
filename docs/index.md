@@ -39,11 +39,15 @@ The API, command line interface, and implementation might change without retro-c
 
 ### pycoMeth example output IGV rendering
 
-![](pictures/pycoMeth_all.png)
+![IGV](pictures/pycoMeth_all.png)
 
 ### pycoMeth example HTML report
 
 [Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary.html)
+
+![HTML](pictures/pycoMeth_HTML.gif)
+
+---
 
 ### Citing
 
