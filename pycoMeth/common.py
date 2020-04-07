@@ -28,6 +28,11 @@ def opt_summary (local_opt):
         d[i]=j
     return d
 
+def str_join (l, sep="\t", line_end=""):
+    """Join a list of mixed types into a single str"""
+    s = sep.join(map(str, l))+line_end
+    return s
+
 def list_to_str (l):
     """Generate a string from any list"""
     return str(json.dumps(l)).replace(" ", "")
