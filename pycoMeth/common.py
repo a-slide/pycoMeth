@@ -233,7 +233,7 @@ def jhelp (f:"python function or method"):
     # Display in Jupyter
     display (Markdown(s))
 
-def head (fp, n=10, sep="\t", comment=None):
+def head (fp, n=10, sep="\t", max_char_col=50, comment=None):
     """
     Emulate linux head cmd. Handle gziped files and bam files
     * fp
@@ -269,7 +269,9 @@ def head (fp, n=10, sep="\t", comment=None):
             for ls in line_list:
                 for i in range (len(ls)):
                     len_col = len(ls[i])
-                    if len_col > col_len_list[i]:
+                    if len_col > max_char_col:
+                        col_len_list[i] = max_char_col
+                    elif len_col > col_len_list[i]:
                         col_len_list[i] = len_col
 
             # Add padding
@@ -279,7 +281,10 @@ def head (fp, n=10, sep="\t", comment=None):
                 for i in range (len(ls)):
                     len_col = col_len_list[i]
                     len_cur_col = len(ls[i])
-                    s += ls[i][0:len_col] + " "*(len_col-len_cur_col)+" "
+                    if len_cur_col <= len_col:
+                        s += ls[i] + " "*(len_col-len_cur_col)+" "
+                    else:
+                        s += ls[i][0:len_col-3]+"..."
                 line_list_tab.append(s)
             line_list = line_list_tab
 
