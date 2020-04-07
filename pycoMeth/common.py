@@ -16,8 +16,10 @@ import gzip
 from pycoMeth import __version__ as pkg_version
 from pycoMeth import __name__ as pkg_name
 
-#~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~#
+# Third party imports
+import colorlog
 
+#~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~#
 def opt_summary (local_opt):
     """Simplifiy option dict creation"""
     d=OrderedDict()
@@ -306,32 +308,38 @@ def stdout_print (*args):
     sys.stdout.flush()
 
 def get_logger (name=None, verbose=False, quiet=False):
-    """Set logger to appropriate log level"""
+    """Multilevel colored log using colorlog"""
+
+    # Define conditional color formatter
+    formatter = colorlog.LevelFormatter(
+        fmt = {
+            'DEBUG':'%(log_color)s\t[DEBUG]: %(msg)s',
+            'INFO': '%(log_color)s\t%(msg)s',
+            'WARNING': '%(log_color)s## %(msg)s ##',
+            'ERROR': '%(log_color)sERROR: %(msg)s',
+            'CRITICAL': '%(log_color)sCRITICAL: %(msg)s'},
+        log_colors={
+            'DEBUG': 'white',
+            'INFO': 'green',
+            'WARNING': 'bold_blue',
+            'ERROR': 'bold_red',
+            'CRITICAL': 'bold_purple'},
+        reset=True)
+
+    # Define logger with custom formatter
     logging.basicConfig(format='%(message)s')
-    logging.getLogger().handlers[0].setFormatter(CustomFormatter())
-    logger = logging.getLogger(name)
+    logging.getLogger().handlers[0].setFormatter(formatter)
+    log = logging.getLogger(name)
 
-    # Define overall verbose level
+    # Define logging level depending on verbosity
     if verbose:
-        logger.setLevel(logging.DEBUG)
+        log.setLevel(logging.DEBUG)
     elif quiet:
-        logger.setLevel(logging.WARNING)
+        log.setLevel(logging.WARNING)
     else:
-        logger.setLevel(logging.INFO)
+        log.setLevel(logging.INFO)
 
-    return logger
-
-class CustomFormatter(logging.Formatter):
-    """"""
-    FORMATS = {
-        logging.WARNING: "## %(msg)s ##",
-        logging.INFO: "\t%(msg)s",
-        logging.DEBUG: "\t[DEBUG] [%(name)s] %(msg)s"}
-
-    def format(self, record):
-        log_fmt = self.FORMATS[record.levelno]
-        formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)
+    return log
 
 def log_dict (d, logger, header="", indent="\t", level=1):
     """ log a multilevel dict """
