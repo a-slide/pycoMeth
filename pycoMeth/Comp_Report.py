@@ -248,15 +248,19 @@ def get_ensembl_tx (gff_fn):
 
     with open_fun (gff_fn, open_mode) as fp:
 
-        # Check that file is a ggf3
-        first_line = next(fp).strip()
-        if not first_line.startswith ("##gff-version 3"):
-            raise pycoMethError("Invalid annotation file format, please provide an Ensembl GFF3 file")
-
+        valid_file = False
         for line in fp:
-            if not line.startswith("#"):
-                ls = line.strip().split("\t")
+            # Verify that GFF3 tag is present in header
+            if line.startswith ("##gff-version 3"):
+                valid_file = True
 
+            elif not line.startswith ("#"):
+
+                # Raise error if GFF3 tag not previously found in header
+                if not valid_file:
+                    raise pycoMethError("GFF3 tag not found in file header. Please provide an Ensembl GFF3 file")
+
+                ls = line.strip().split("\t")
                 # Define transcript as feature type containing RNA or transcript and with a gene as a Parent
                 if ("RNA" in ls[2] or "transcript" in ls[2]) and "Parent=gene" in ls[8]:
 
