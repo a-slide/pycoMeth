@@ -273,6 +273,6 @@ def bed_intervals_gen (coordgen, interval_bed_fn):
         for line in bed:
             ct = coordgen(line.chrom, line.start, line.end)
             if prev_ct and ct < prev_ct:
-                raise ValueError("Unsorted coordinate found in bed file {} found after {}".format(ct, prev_ct))
+                raise ValueError("Unsorted coordinate found in bed file {} found after {}. Chromosomes have to be ordered as in fasta reference file".format(ct, prev_ct))
             prev_ct = ct
             yield (ct)

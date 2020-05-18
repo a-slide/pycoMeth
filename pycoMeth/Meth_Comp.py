@@ -30,6 +30,7 @@ def Meth_Comp (
     sample_id_list:[str]=None,
     pvalue_adj_method:str="fdr_bh",
     pvalue_threshold:float=0.01,
+    only_tested_sites:bool=False,
     verbose:bool=False,
     quiet:bool=False,
     progress:bool=False,
@@ -57,6 +58,8 @@ def Meth_Comp (
         Method to use for pValue multiple test adjustment
     * pvalue_threshold
         Alpha parameter (family-wise error rate) for pValue adjustment
+    * only_tested_sites
+        Do not include sites that were not tested because of insufficient samples or effect size in the report
     """
 
     # Init method
@@ -140,7 +143,8 @@ def Meth_Comp (
             pvalue_threshold = pvalue_threshold,
             min_diff_llr = min_diff_llr,
             min_samples = min_samples,
-            input_type=input_type)
+            input_type=input_type,
+            only_tested_sites=only_tested_sites)
 
         log.info("Starting asynchronous file parsing")
         with tqdm (total=all_fp_len, unit=" bytes", unit_scale=True, desc="\tProgress", disable=not progress) as pbar:
@@ -227,7 +231,8 @@ class StatsResults():
         pvalue_threshold=0.01,
         min_diff_llr=1,
         min_samples=3,
-        input_type="Interval_Aggregate"):
+        input_type="Interval_Aggregate",
+        only_tested_sites=False):
         """"""
         # Save self variables
         self.pvalue_method = pvalue_method
@@ -236,6 +241,7 @@ class StatsResults():
         self.min_diff_llr = min_diff_llr
         self.min_samples = min_samples
         self.input_type = input_type
+        self.only_tested_sites = only_tested_sites
 
         # Init self collections
         self.res_list = []
@@ -260,13 +266,14 @@ class StatsResults():
 
     def compute_pvalue (self, coord, line_list, label_list):
         """"""
-        # Not enough samples
-        n_samples = len(line_list)
-        if n_samples < self.min_samples:
-            self.counter["Sites with insufficient samples"]+=1
-            return
 
         # Collect median llr
+        med_llr_list = []
+        raw_llr_list = []
+        raw_pos_list = []
+        n_samples = len(line_list)
+
+        # Evaluate median llr value
         neg_med = pos_med = ambiguous_med = 0
         for line in line_list:
             if line.median_llr <= -self.min_diff_llr:
@@ -276,18 +283,20 @@ class StatsResults():
             else:
                 ambiguous_med+=1
 
+        # Not enough samples
+        if n_samples < self.min_samples:
+            comment="Insufficient samples"
+            pvalue=np.nan
+
         # Sufficient samples and effect size
-        if not neg_med or not pos_med:
-            self.counter["Sites with insufficient effect size"]+=1
+        elif not neg_med or not pos_med:
+            comment="Insufficient effect size"
+            pvalue=np.nan
 
         # Sufficient samples and effect size
         else:
-            self.counter["Valid sites"]+=1
-
+            comment="Valid"
             # collect med_llr, raw_llr and raw_pos lists
-            med_llr_list = []
-            raw_llr_list = []
-            raw_pos_list = []
             for line in line_list:
                 med_llr_list.append(line.median_llr)
                 raw_llr_list.append(str_to_list(line.llr_list))
@@ -304,54 +313,74 @@ class StatsResults():
             if pvalue is np.nan or pvalue is None or pvalue>1 or pvalue<0:
                 pvalue = 1.0
                 self.counter["Sites with invalid pvalue"]+=1
-            elif pvalue <= self.pvalue_threshold:
-                # Correct very low pvalues to minimal float size
-                if pvalue == 0:
-                    pvalue = self.min_pval
-                self.counter["Sites with significant pvalue"]+=1
-            else:
-                self.counter["Sites with non-significant pvalue"]+=1
 
-            res = OrderedDict()
-            res["chromosome"] = coord.chr_name
-            res["start"] = coord.start
-            res["end"] = coord.end
-            res["pvalue"] = pvalue
-            res["n_samples"] = n_samples
-            res["neg_med"] = neg_med
-            res["pos_med"] = pos_med
-            res["ambiguous_med"] = ambiguous_med
-            res["label_list"] = label_list
-            res["med_llr_list"] = med_llr_list
-            res["raw_llr_list"] = raw_llr_list
-            if self.input_type == "Interval_Aggregate":
-                res["raw_pos_list"] = raw_pos_list
-                res["unique_cpg_pos"] = len(set(itertools.chain.from_iterable(raw_pos_list)))
+            # Correct very low pvalues to minimal float size
+            elif pvalue == 0:
+                pvalue = self.min_pval
 
-            self.res_list.append(res)
+        # Update counters result table
+        self.counter[comment]+=1
+
+        # filter out non tested site is required
+        if self.only_tested_sites and pvalue is np.nan:
+            return
+
+        res = OrderedDict()
+        res["chromosome"] = coord.chr_name
+        res["start"] = coord.start
+        res["end"] = coord.end
+        res["pvalue"] = pvalue
+        res["adj_pvalue"] = np.nan
+        res["n_samples"] = n_samples
+        res["neg_med"] = neg_med
+        res["pos_med"] = pos_med
+        res["ambiguous_med"] = ambiguous_med
+        res["label_list"] = label_list
+        res["med_llr_list"] = med_llr_list
+        res["raw_llr_list"] = raw_llr_list
+        res["comment"] = comment
+        if self.input_type == "Interval_Aggregate":
+            res["raw_pos_list"] = raw_pos_list
+            res["unique_cpg_pos"] = len(set(itertools.chain.from_iterable(raw_pos_list)))
+
+        self.res_list.append(res)
 
     def multitest_adjust(self):
         """"""
+        # Collect non-nan pvalues
+        pvalue_idx = []
+        pvalue_list = []
+        for i, res in enumerate(self.res_list):
+            if not res["pvalue"] is np.nan:
+                pvalue_idx.append(i)
+                pvalue_list.append(res["pvalue"])
+
+        # Adjust values
         adj_pvalue_list = multipletests(
-            pvals = [res["pvalue"] for res in self.res_list],
+            pvals = pvalue_list,
             alpha = self.pvalue_threshold,
             method = self.pvalue_adj_method)[1]
 
-        for i, adj_pvalue in enumerate(adj_pvalue_list):
+        # add adjusted values to appropriate category
+        for i, adj_pvalue in zip(pvalue_idx, adj_pvalue_list):
 
             # Fix and categorize p-values
             if adj_pvalue is np.nan or adj_pvalue is None or adj_pvalue>1 or adj_pvalue<0:
                 adj_pvalue = 1.0
-                self.counter["Sites with invalid adjusted pvalue"]+=1
+                comment="Non-significant pvalue"
+
             elif adj_pvalue <= self.pvalue_threshold:
                 # Correct very low pvalues to minimal float size
                 if adj_pvalue == 0:
                     adj_pvalue = self.min_pval
-                self.counter["Sites with significant adjusted pvalue"]+=1
+                # update counter if pval is still significant after adjustment
+                comment = "Significant pvalue"
             else:
-                self.counter["Sites with non-significant adjusted pvalue"]+=1
+                comment= "Non-significant pvalue"
 
-            # Add adjusted pvalue to counter
+            # update counters and update comment and adj pavalue
+            self.counter[comment]+=1
+            self.res_list[i]["comment"] = comment
             self.res_list[i]["adj_pvalue"] = adj_pvalue
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~Comp_Writer HELPER CLASS~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -420,7 +449,10 @@ class Comp_Writer():
     def _write_bed (self, res):
         """Write line to BED file"""
         # Log transform pvalue and cast to int
-        score = int(-np.log10(res["adj_pvalue"]))
+        if res["adj_pvalue"] is np.nan:
+            score = 0
+        else:
+            score = int(-np.log10(res["adj_pvalue"]))
         # Define color for bed file
         color = self.colors.get(score, self.colors[10])
         # Write line
@@ -436,11 +468,11 @@ class Comp_Writer():
         if self.input_type == "Interval_Aggregate":
             header = [
                 "chromosome","start","end","n_samples","pvalue","adj_pvalue","neg_med","pos_med",
-                "ambiguous_med","unique_cpg_pos","labels","med_llr_list","raw_llr_list","raw_pos_list"]
+                "ambiguous_med","unique_cpg_pos","labels","med_llr_list","raw_llr_list","raw_pos_list", "comment"]
         elif self.input_type == "CpG_Aggregate":
             header = [
                 "chromosome","start","end","n_samples","pvalue","adj_pvalue","neg_med","pos_med",
-                "ambiguous_med","labels","med_llr_list","raw_llr_list"]
+                "ambiguous_med","labels","med_llr_list","raw_llr_list", "comment"]
         fp.write(str_join(header, sep="\t", line_end="\n"))
         return fp
 
@@ -449,10 +481,11 @@ class Comp_Writer():
 
         if self.input_type == "Interval_Aggregate":
             res_line = [
-                res["chromosome"], res["start"], res["end"], res["n_samples"], res["pvalue"], res["adj_pvalue"], res["neg_med"], res["pos_med"], res["ambiguous_med"],
-                res["unique_cpg_pos"], list_to_str(res["label_list"]), list_to_str(res["med_llr_list"]), list_to_str(res["raw_llr_list"]), list_to_str(res["raw_pos_list"])]
+                res["chromosome"], res["start"], res["end"], res["n_samples"], res["pvalue"], res["adj_pvalue"], res["neg_med"], res["pos_med"],
+                res["ambiguous_med"], res["unique_cpg_pos"], list_to_str(res["label_list"]), list_to_str(res["med_llr_list"]), list_to_str(res["raw_llr_list"]),
+                list_to_str(res["raw_pos_list"]), res["comment"]]
         elif self.input_type == "CpG_Aggregate":
             res_line = [
                 res["chromosome"], res["start"], res["end"], res["n_samples"], res["pvalue"], res["adj_pvalue"], res["neg_med"], res["pos_med"], res["ambiguous_med"],
-                list_to_str(res["label_list"]), list_to_str(res["med_llr_list"]), list_to_str(res["raw_llr_list"])]
+                list_to_str(res["label_list"]), list_to_str(res["med_llr_list"]), list_to_str(res["raw_llr_list"]), res["comment"]]
         self.tsv_fp.write(str_join(res_line, sep="\t", line_end="\n"))

@@ -5,7 +5,7 @@ from setuptools import setup
 
 # Define package info
 name = "pycoMeth"
-version = "0.4.3"
+version = "0.4.5"
 description = "DNA methylation analysis downstream to Nanopolish for Oxford Nanopore DNA sequencing datasets"
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -20,7 +20,7 @@ setup(
     url = "https://github.com/a-slide/pycoMeth",
     author = 'Adrien Leger',
     author_email = 'aleg@ebi.ac.uk',
-    license= "MIT",
+    license= "GPL",
     python_requires ='>=3.6',
     classifiers = [
         'Development Status :: 3 - Alpha',
