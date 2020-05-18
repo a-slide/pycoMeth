@@ -1,4 +1,4 @@
-{% set version = "0.4.3" %}
+{% set version = "0.4.5" %}
 {% set name = "pycoMeth" %}
 
 package:
@@ -49,5 +49,5 @@ test:
 
 about:
   home: "https://github.com/a-slide/pycoMeth"
-  license: "MIT"
+  license: "GPL"
   summary: "DNA methylation analysis for Oxford Nanopore DNA sequencing datasets downstream to Nanopolish"
