@@ -31,11 +31,11 @@ FASTA reference file used for read alignment and Nanopolish. This file is requir
 
 ## Output files
 
-### Summary HTML report (pycoMeth_summary.html)
+### Summary HTML report (pycoMeth_summary_report.html)
 
 Entry point to the report containing information of methylation status at genomic level.
 
-[Example Summary report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary.html)
+[Example Summary report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary_report.html)
 
 The report contains the following items:
 
@@ -53,9 +53,9 @@ The report contains the following items:
   Interactive plotly ridgeplot of median llr distribution for all sample at interval resolution.
   Samples are ordered by descending overall median llr.
 
-* Ideogram of the distribution of significant CpG intervals by chromosomic intervals 
+* Ideogram of the distribution of significant CpG intervals by chromosomic intervals
 
-  Interative chromosome ideogram plot showing the number of significant sites binned in large intervals. 
+  Interative chromosome ideogram plot showing the number of significant sites binned in large intervals.
 
 * Top differentially methylated intervals
   Table containing details of the n top differentially methylated candidates ranked by adjusted pvalue.
@@ -66,7 +66,7 @@ The report contains the following items:
 Individual reports for the top differentially methylated interval candidates.
 The right side navigation bar allows to explore all the other intervals or go back to the summary report.
 
-[Example Interval report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/interval_tables/interval_0001_chr15-13014693-13015794.tsv)
+[Example Interval report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/interval_reports/interval_0001_chr15-13014693-13015794.html)
 
 The report contains the following items:
 
