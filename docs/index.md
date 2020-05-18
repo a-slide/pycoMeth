@@ -43,7 +43,7 @@ The API, command line interface, and implementation might change without retro-c
 
 ### pycoMeth example HTML report
 
-[Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary.html)
+[Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary_report.html)
 
 ![HTML](pictures/pycoMeth_HTML.gif)
 

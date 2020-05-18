@@ -36,7 +36,7 @@ Please be aware that `pycoMeth` is a research package that is still under develo
 
 ### pycoMeth example HTML report
 
-[Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary.html)
+[Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary_report.html)
 
 ![HTML](docs/pictures/pycoMeth_HTML.gif)
 
