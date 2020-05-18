@@ -21,7 +21,7 @@ FASTA reference file used for read alignment and Nanopolish. This file is requir
 
 ### Tabulated TSV file
 
-This tabulated file contains the following fields:
+By default this file contains all the sites found in a least one of the source CpG/interval aggregate file. This tabulated file contains the following fields:
 
 * chromosome / start / end / strand: Genomic coordinates of the CpG/interval containing CpGs
 * n_samples: Number of valid samples in the CpG/interval
@@ -33,10 +33,12 @@ This tabulated file contains the following fields:
 * med_llr_list: List of median llr values for each samples compared.
 * raw_llr_list: List of lists of raw llr values for each samples compared
 * [optional] raw_pos_list: List of lists of genomic coordinates of the center of all CpG positions/clusters found for each samples compared. The order matches values in llr_list. ONLY if Meth_Comp was ran from files generated with Interval_Aggregate.
+And at last a comment field
+* comment: Can take one of the following self explanatory values: `Insufficient samples`, `Insufficient effect size`, `Non-significant pvalue` or `Significant pvalue`
 
 ### BED file
 
-Standard genomic [BED9 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) including an RGB color field. The score correspond to the -log10(Adjusted Pvalue) capped to 1000. The file is sorted by coordinates and can be rendered with a genome browser such as IGV
+Standard genomic [BED9 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) including an RGB color field. The score correspond to the -log10(Adjusted Pvalue) capped to 1000. The file is sorted by coordinates and can be rendered with a genome browser such as IGV. 
 
 The sites are color-coded as follow:
 

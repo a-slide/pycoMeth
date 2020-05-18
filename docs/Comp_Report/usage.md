@@ -25,6 +25,10 @@ An **Ensembl GFF3** file containing genomic annotations to extract transcripts w
 * Ensembl Protists: http://protists.ensembl.org/index.html
 * Ensembl Metazoa: http://metazoa.ensembl.org/index.html
 
+### Reference FASTA file
+
+FASTA reference file used for read alignment and Nanopolish. This file is required and used to sort the chromosomes in the ideogram plot.
+
 ## Output files
 
 ### Summary HTML report (pycoMeth_summary.html)
@@ -36,29 +40,33 @@ Entry point to the report containing information of methylation status at genomi
 The report contains the following items:
 
 * Overall summary
-Simple table containing counts of intervals and CpGs significantly differentially methylated.
+  Simple table containing counts of intervals and CpGs significantly differentially methylated.
 
 * Methylation category counts by sample
-Interactive plotly stacked bar plot showing the number of methylated, unmethylated and ambiguous intervals for each samples.
+  Interactive plotly stacked bar plot showing the number of methylated, unmethylated and ambiguous intervals for each samples.
 
 * Methylation log-likelihood ratio by CpG interval
-Interactive plotly heatmap of the median llr for all significant intervals.
-Sites are ordered by genomic coordinates and samples are clustered by hierarchical clustering.
+  Interactive plotly heatmap of the median llr for all significant intervals.
+  Sites are ordered by genomic coordinates and samples are clustered by hierarchical clustering.
 
 * Distribution of CpG methylation log-likelihood ratio by sample
-Interactive plotly ridgeplot of median llr distribution for all sample at interval resolution.
-Samples are ordered by descending overall median llr.
+  Interactive plotly ridgeplot of median llr distribution for all sample at interval resolution.
+  Samples are ordered by descending overall median llr.
+
+* Ideogram of the distribution of significant CpG intervals by chromosomic intervals 
+
+  Interative chromosome ideogram plot showing the number of significant sites binned in large intervals. 
 
 * Top differentially methylated intervals
-Table containing details of the n top differentially methylated candidates ranked by adjusted pvalue.
-The table contains links to individual intervals HTML reports.
+  Table containing details of the n top differentially methylated candidates ranked by adjusted pvalue.
+  The table contains links to individual intervals HTML reports.
 
 ### Top intervals HTML reports
 
 Individual reports for the top differentially methylated interval candidates.
 The right side navigation bar allows to explore all the other intervals or go back to the summary report.
 
-[Example Interval report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_interval_0001_chr15-13014693-13015794.html)
+[Example Interval report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/interval_tables/interval_0001_chr15-13014693-13015794.tsv)
 
 The report contains the following items:
 
