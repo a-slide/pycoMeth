@@ -20,7 +20,7 @@ setup(
     url = "https://github.com/a-slide/pycoMeth",
     author = 'Adrien Leger',
     author_email = 'aleg@ebi.ac.uk',
-    license= "MIT",
+    license= "GPL",
     python_requires ='>=3.6',
     classifiers = [
         'Development Status :: 3 - Alpha',
