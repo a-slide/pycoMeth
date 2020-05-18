@@ -70,6 +70,7 @@ def main(args=None):
     arg_from_docstr(sp_met_ms, f, "sample_id_list", "s")
     arg_from_docstr(sp_met_ms, f, "pvalue_adj_method")
     arg_from_docstr(sp_met_ms, f, "pvalue_threshold")
+    arg_from_docstr(sp_met_ms, f, "only_tested_sites")
 
     # Comp_Report subparser
     f = Comp_Report
@@ -78,12 +79,14 @@ def main(args=None):
     sp_cr_io = sp_cr.add_argument_group("Input/Output options")
     arg_from_docstr(sp_cr_io, f, "methcomp_fn", "i")
     arg_from_docstr(sp_cr_io, f, "gff3_fn", "g")
+    arg_from_docstr(sp_cr_io, f, "ref_fasta_fn", "f")
     arg_from_docstr(sp_cr_io, f, "outdir", "o")
     sp_cr_ms = sp_cr.add_argument_group("Misc options")
     arg_from_docstr(sp_cr_ms, f, "n_top", "n")
     arg_from_docstr(sp_cr_ms, f, "max_tss_distance", "d")
     arg_from_docstr(sp_cr_ms, f, "pvalue_threshold")
     arg_from_docstr(sp_cr_ms, f, "min_diff_llr")
+    arg_from_docstr(sp_cr_ms, f, "n_len_bin")
 
     # CGI_Finder subparser
     f = CGI_Finder
