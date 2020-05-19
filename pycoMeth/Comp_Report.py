@@ -184,7 +184,9 @@ def Comp_Report (
                 heatmap_fig = heatmap_fig,
                 ridgeplot_fig = ridgeplot_fig)
 
-            transcript_df.to_csv(table_out_path, sep="\t", index=False)
+            # Write out TSV table
+            if not transcript_df.empty:
+                transcript_df.to_csv(table_out_path, sep="\t", index=False)
 
     # Collect data at CpG interval level
     log.info("Generating summary report")
@@ -203,7 +205,7 @@ def Comp_Report (
     summary_df = get_summary_df(df, sig_df)
     top_df = get_top_df(top_cpg_list)
 
-
+    # Write out HTML report
     write_summary_html(
         out_file = html_out_path,
         src_file = src_file,
@@ -215,8 +217,10 @@ def Comp_Report (
         ridgeplot_fig = all_ridgeplot_fig,
         ideogram_fig = ideogram_fig)
 
-    top_df = top_df.drop(columns=["detailled report"])
-    top_df.to_csv(table_out_path, sep="\t", index=False)
+    # Write out TSV table
+    if not top_df.empty:
+        top_df = top_df.drop(columns=["detailled report"])
+        top_df.to_csv(table_out_path, sep="\t", index=False)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~HTML generating functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
