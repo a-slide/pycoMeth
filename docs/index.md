@@ -25,7 +25,10 @@ The package contains the following modules:
 * [Meth_Comp](Meth_Comp/usage): Compare Methylation level between several samples from either `pycoMeth CpG_Aggregate` or `pycoMeth Interval_Aggregate`.
 * [Comp_Report](Comp_Report/usage): Generate an interactive HTML report for top significant differentially methylated intervals found with `pycoMeth Meth_Comp`
 
-`pycoMeth` generates extensive tabulated reports and BED files which can be loaded in a genome browser. However, this is not a visualisation tool *per se*. An excellent complementary tool to visualise and explore methylation status for specific loci is [`Methplotlib`](https://github.com/wdecoster/methplotlib) developed by [Wouter de coster](https://twitter.com/wouter_decoster).
+`pycoMeth` generates extensive tabulated reports and BED files which can be loaded in a genome browser. In addition, an interactive HTML report of differentially
+methylated intervals/islands can also generated at the end of the analysis.
+
+[`Methplotlib`](https://github.com/wdecoster/methplotlib) developed by [Wouter de coster](https://twitter.com/wouter_decoster) is an excellent complementary tool to visualise and explore methylation status for specific loci.
 
 
 Please be aware that `pycoMeth` is a research package that is still under development.
@@ -43,7 +46,10 @@ The API, command line interface, and implementation might change without retro-c
 
 ### pycoMeth example HTML report
 
-[Example HTML report](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary_report.html)
+
+[Example HTML report 1](https://a-slide.github.io/pycoMeth/Comp_Report/medaka_html/pycoMeth_summary_report.html)
+
+[Example HTML report 2](https://a-slide.github.io/pycoMeth/Comp_Report/human_html/pycoMeth_summary_report.html)
 
 ![HTML](pictures/pycoMeth_HTML.gif)
 

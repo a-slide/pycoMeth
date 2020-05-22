@@ -1,0 +1,42 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsf@hx-noah-13-03>
+Subject: Job 6243079: <pycoMeth Comp_Report -i pycometh_meth_comp_CGI_3/out.tsv.gz -f ../input/genome/genome.fa -g ../input/annotation/annotation.gff3 -o pycometh_comp_report_CGI_3 -d 500000 -n 200 -v> in cluster <EBI> Done
+
+Job <pycoMeth Comp_Report -i pycometh_meth_comp_CGI_3/out.tsv.gz -f ../input/genome/genome.fa -g ../input/annotation/annotation.gff3 -o pycometh_comp_report_CGI_3 -d 500000 -n 200 -v> was submitted from host <hx-noah-05-08> by user <aleg> in cluster <EBI> at Wed May 20 17:24:00 2020
+Job was executed on host(s) <3*hx-noah-13-03>, in queue <research-rh74>, as user <aleg> in cluster <EBI> at Wed May 20 17:25:45 2020
+</homes/aleg> was used as the home directory.
+</hps/research1/birney/users/adrien/analyses/cancer_DNA_promethion/run_1_2_3_4/DNA_pipeline_2/results/methylation> was used as the working directory.
+Started at Wed May 20 17:25:45 2020
+Terminated at Wed May 20 17:57:38 2020
+Results reported at Wed May 20 17:57:38 2020
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   171.60 sec.
+    Max Memory :                                 505 MB
+    Average Memory :                             491.93 MB
+    Total Requested Memory :                     20000.00 MB
+    Delta Memory :                               19495.00 MB
+    Max Swap :                                   1197 MB
+    Max Processes :                              3
+    Max Threads :                                6
+    Run time :                                   1913 sec.
+    Turnaround time :                            2018 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <pycometh_comp_report_CGI_3/out_stderr.txt> for stderr output of this job.
+
