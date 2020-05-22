@@ -1,0 +1,231 @@
+[01;34m## Checking options and input files ##[0m
+[37m	[DEBUG]: Options summary[0m
+[37m	[DEBUG]: 	Package name: pycoMeth[0m
+[37m	[DEBUG]: 	Package version: 0.4.6[0m
+[37m	[DEBUG]: 	Timestamp: 2020-05-20 17:25:49.357468[0m
+[37m	[DEBUG]: 	methcomp_fn: pycometh_meth_comp_CGI_3/out.tsv.gz[0m
+[37m	[DEBUG]: 	gff3_fn: ../input/annotation/annotation.gff3[0m
+[37m	[DEBUG]: 	ref_fasta_fn: ../input/genome/genome.fa[0m
+[37m	[DEBUG]: 	outdir: pycometh_comp_report_CGI_3[0m
+[37m	[DEBUG]: 	n_top: 200[0m
+[37m	[DEBUG]: 	max_tss_distance: 500000[0m
+[37m	[DEBUG]: 	pvalue_threshold: 0.01[0m
+[37m	[DEBUG]: 	min_diff_llr: 1[0m
+[37m	[DEBUG]: 	n_len_bin: 500[0m
+[37m	[DEBUG]: 	verbose: True[0m
+[37m	[DEBUG]: 	quiet: False[0m
+[37m	[DEBUG]: 	progress: False[0m
+[37m	[DEBUG]: 	kwargs[0m
+[37m	[DEBUG]: 		subcommands: Comp_Report[0m
+[37m	[DEBUG]: 		func: <function Comp_Report at 0x2b506d8e3ef0>[0m
+[01;34m## Loading and preparing data ##[0m
+[32m	Loading Methcomp data from TSV file[0m
+[32m	Loading transcripts info from GFF file[0m
+[01;31mERROR: Not all the chromosomes found in the data file are present in the GFF3 file. This will lead to missing transcript ids[0m
+[32m	Loading chromosome info from reference FASTA file[0m
+[32m	Number of significant intervals found (adjusted pvalue<0.01): 7930[0m
+[32m	Generating file names for top candidates reports[0m
+[32m	Computing source md5[0m
+[01;34m## Parsing methcomp data ##[0m
+[32m	Iterating over significant intervals and generating top candidates reports[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 976586, 978571)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 1332513, 1333703)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 3062986, 3064284)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 16646922, 16648717)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 18482252, 18483305)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 43348388, 43349760)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 90719323, 90720202)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 90835271, 90836499)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 145167533, 145169830)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 180234214, 180236317)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 203075448, 203076659)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 217137129, 217138574)[0m
+[37m	[DEBUG]: Ploting top candidates: ('1', 229407010, 229408217)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 2935661, 2936694)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 43395730, 43397662)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 48450148, 48451244)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 75395143, 75397856)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 86363012, 86364273)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 92690986, 92692269)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 93059948, 93061756)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 99521271, 99522611)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 101778627, 101780425)[0m
+[37m	[DEBUG]: Ploting top candidates: ('10', 133166368, 133167794)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 979911, 980652)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 22340923, 22341888)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 60950585, 60952014)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 65646176, 65647982)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 113314191, 113315414)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 118609436, 118611360)[0m
+[37m	[DEBUG]: Ploting top candidates: ('11', 128689675, 128690759)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 49263835, 49265711)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 54018428, 54019691)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 57224680, 57225762)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 57726081, 57727919)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 57737069, 57739227)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 80707849, 80709118)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 132270984, 132272270)[0m
+[37m	[DEBUG]: Ploting top candidates: ('12', 132835523, 132836850)[0m
+[37m	[DEBUG]: Ploting top candidates: ('13', 50132274, 50133978)[0m
+[37m	[DEBUG]: Ploting top candidates: ('13', 99988942, 99990064)[0m
+[37m	[DEBUG]: Ploting top candidates: ('13', 99996875, 99998262)[0m
+[37m	[DEBUG]: Ploting top candidates: ('13', 113729703, 113730407)[0m
+[37m	[DEBUG]: Ploting top candidates: ('13', 113820374, 113821613)[0m
+[37m	[DEBUG]: Ploting top candidates: ('13', 114043702, 114044738)[0m
+[37m	[DEBUG]: Ploting top candidates: ('14', 56797809, 56798963)[0m
+[37m	[DEBUG]: Ploting top candidates: ('14', 69571220, 69573973)[0m
+[37m	[DEBUG]: Ploting top candidates: ('14', 73718430, 73719600)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 28454584, 28455597)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 52794405, 52796114)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 65395552, 65397126)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 82679964, 82681226)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 89378319, 89379811)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 89406944, 89408372)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 89408959, 89410257)[0m
+[37m	[DEBUG]: Ploting top candidates: ('15', 93065800, 93066857)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 693807, 696068)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 912164, 913539)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 1019132, 1020232)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 2236530, 2238140)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 4380941, 4382016)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 31475670, 31477781)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 49277180, 49278574)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 54281497, 54282666)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 54288263, 54289879)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 54936192, 54939415)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 55330647, 55332251)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 67165262, 67166195)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 67652623, 67654020)[0m
+[37m	[DEBUG]: Ploting top candidates: ('16', 88634016, 88635175)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 28384274, 28385453)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 31008224, 31009540)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 44314868, 44316217)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 45240959, 45242226)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 45261651, 45262576)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 45428957, 45431152)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 48550301, 48551868)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 61403712, 61405954)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 61454234, 61455475)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 61456303, 61457574)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 64780064, 64781774)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 72116370, 72118672)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 74356576, 74357824)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 79802607, 79803543)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 79814738, 79816386)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 81527850, 81529362)[0m
+[37m	[DEBUG]: Ploting top candidates: ('17', 83133989, 83135844)[0m
+[37m	[DEBUG]: Ploting top candidates: ('18', 5890207, 5891836)[0m
+[37m	[DEBUG]: Ploting top candidates: ('18', 57439921, 57441962)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 1070971, 1072321)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 1465074, 1471294)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 3648956, 3650054)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 5058595, 5059854)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 6475043, 6476116)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 7868132, 7870134)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 8525815, 8527115)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 13097401, 13099852)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 13962302, 13964169)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 15457038, 15458549)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 17328027, 17329755)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 17841311, 17842723)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 18777071, 18778254)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 18869785, 18870857)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 40612973, 40614827)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 44756986, 44758607)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 46493059, 46495487)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 46648377, 46650496)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 47446997, 47448525)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 48442368, 48444808)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 49337904, 49339149)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 53554050, 53555123)[0m
+[37m	[DEBUG]: Ploting top candidates: ('19', 58355910, 58357548)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 44944047, 44945194)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 63059286, 63060202)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 66445077, 66447024)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 70888459, 70889814)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 104863596, 104864466)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 104866992, 104868029)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 130692515, 130693970)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 154698540, 154699822)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 156319615, 156320997)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 172080093, 172081574)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 176066755, 176068252)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 219447906, 219449258)[0m
+[37m	[DEBUG]: Ploting top candidates: ('2', 236159308, 236160358)[0m
+[37m	[DEBUG]: Ploting top candidates: ('20', 20363429, 20365644)[0m
+[37m	[DEBUG]: Ploting top candidates: ('20', 40682660, 40683906)[0m
+[37m	[DEBUG]: Ploting top candidates: ('20', 46057007, 46058998)[0m
+[37m	[DEBUG]: Ploting top candidates: ('21', 39385121, 39386159)[0m
+[37m	[DEBUG]: Ploting top candidates: ('21', 46160485, 46162232)[0m
+[37m	[DEBUG]: Ploting top candidates: ('22', 19722855, 19724692)[0m
+[37m	[DEBUG]: Ploting top candidates: ('22', 19765660, 19767542)[0m
+[37m	[DEBUG]: Ploting top candidates: ('22', 23838197, 23839612)[0m
+[37m	[DEBUG]: Ploting top candidates: ('22', 27796653, 27799585)[0m
+[37m	[DEBUG]: Ploting top candidates: ('22', 50719863, 50721434)[0m
+[37m	[DEBUG]: Ploting top candidates: ('3', 9945833, 9948110)[0m
+[37m	[DEBUG]: Ploting top candidates: ('3', 50275125, 50277017)[0m
+[37m	[DEBUG]: Ploting top candidates: ('3', 50364514, 50365648)[0m
+[37m	[DEBUG]: Ploting top candidates: ('3', 194396715, 194398455)[0m
+[37m	[DEBUG]: Ploting top candidates: ('4', 576907, 578189)[0m
+[37m	[DEBUG]: Ploting top candidates: ('4', 1001583, 1003754)[0m
+[37m	[DEBUG]: Ploting top candidates: ('4', 8856713, 8858934)[0m
+[37m	[DEBUG]: Ploting top candidates: ('4', 8866964, 8868473)[0m
+[37m	[DEBUG]: Ploting top candidates: ('4', 80201275, 80203807)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 2748080, 2750204)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 3599098, 3600332)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 3601878, 3603265)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 3606229, 3607148)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 6773361, 6774577)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 11384413, 11385577)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 73230217, 73231331)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 93570321, 93571592)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 93571867, 93573562)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 141414667, 141415625)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 141430472, 141433184)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 141491307, 141492957)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 159104866, 159105808)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 171313349, 171317243)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 173228696, 173229703)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 177366903, 177367884)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 177984160, 177986165)[0m
+[37m	[DEBUG]: Ploting top candidates: ('5', 179974119, 179975388)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 1392675, 1394273)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 3224545, 3225483)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 10417025, 10418033)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 26188238, 26189254)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 27830671, 27831771)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 35317842, 35318953)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 108174295, 108176232)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 137487832, 137489432)[0m
+[37m	[DEBUG]: Ploting top candidates: ('6', 137495170, 137496226)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 767536, 768780)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 989495, 990877)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 5295984, 5297370)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 25852165, 25853174)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 27113387, 27114325)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 27141823, 27143630)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 27251341, 27252745)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 44962443, 44963350)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 102494140, 102495276)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 102593401, 102594445)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 128915264, 128916729)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 149764357, 149766480)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 150322740, 150324008)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 155453612, 155455178)[0m
+[37m	[DEBUG]: Ploting top candidates: ('7', 157500761, 157501976)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 902134, 903249)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 9898069, 9899160)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 41566734, 41567976)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 140097670, 140099673)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 140099765, 140101001)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 143278147, 143279510)[0m
+[37m	[DEBUG]: Ploting top candidates: ('8', 144547649, 144548633)[0m
+[37m	[DEBUG]: Ploting top candidates: ('9', 124014988, 124016512)[0m
+[37m	[DEBUG]: Ploting top candidates: ('9', 127754034, 127755653)[0m
+[37m	[DEBUG]: Ploting top candidates: ('9', 137450268, 137452038)[0m
+[37m	[DEBUG]: Ploting top candidates: ('X', 1465367, 1466722)[0m
+[37m	[DEBUG]: Ploting top candidates: ('X', 3346387, 3347488)[0m
+[37m	[DEBUG]: Ploting top candidates: ('X', 21655641, 21659118)[0m
+[37m	[DEBUG]: Ploting top candidates: ('X', 40091300, 40092577)[0m
+[37m	[DEBUG]: Ploting top candidates: ('X', 48826215, 48827761)[0m
+[32m	Generating summary report[0m

@@ -195,8 +195,7 @@ def Comp_Report (
     html_out_path = os.path.join(outdir, summary_report_fn)
     table_out_path = os.path.join(outdir, top_intervals_fn)
 
-    # # Generate figures and tables
-
+    # Generate figures and tables
     all_cpg_df = convert_cpg_dict(all_cpg_d)
     all_heatmap_fig = cpg_heatmap(all_cpg_df, lim_llr=4, min_diff_llr=min_diff_llr)
     all_ridgeplot_fig = cpg_ridgeplot(all_cpg_df, box=True, scatter=False, min_diff_llr=min_diff_llr)
