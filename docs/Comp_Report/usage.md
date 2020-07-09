@@ -55,7 +55,7 @@ The report contains the following items:
 
 * Ideogram of the distribution of significant CpG intervals by chromosomic intervals
 
-  Interative chromosome ideogram plot showing the number of significant sites binned in large intervals.
+  Interactive chromosome ideogram plot showing the number of significant sites binned in large intervals.
 
 * Top differentially methylated intervals
   Table containing details of the n top differentially methylated candidates ranked by adjusted pvalue.

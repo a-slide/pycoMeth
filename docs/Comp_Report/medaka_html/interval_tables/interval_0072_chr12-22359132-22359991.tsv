@@ -1,5 +1,0 @@
-distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
--95204	ensorlt00000015177	sorlg00000012131	si:dkey-28o19.1-201	12	22115120	22263928	-	mRNA	protein_coding
--112805	ensorlt00000027321	sorlg00000012131	si:dkey-28o19.1-202	12	22115120	22246327	-	mRNA	protein_coding
--262310	ensorlt00000040877	sorlg00000024069	-	12	22093796	22096822	-	mRNA	protein_coding
-476356	ensorlt00000031192	sorlg00000027396	-	12	22836347	22843496	+	mRNA	protein_coding

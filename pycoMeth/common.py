@@ -97,6 +97,10 @@ def dict_to_str (d, sep="\t", nsep=0, exclude_list=[]):
     else:
         return m[:-1]
 
+def iter_idx_tuples (df):
+    for idx, line in zip(df.index, df.itertuples(index=False, name='line')):
+        yield (idx, line)
+
 def doc_func (func):
     """Parse the function description string"""
 
@@ -362,6 +366,22 @@ def log_list (l, logger, header="", indent="\t"):
         logger(header)
     for i in l:
         logger("{}*{}".format(indent, i))
+
+def static_display (fig, width=None, height=None):
+    """
+    Function to render a plotly figure in SVG inside jupyter
+    Requires jupyter and Orca to be installed
+    """
+    # if not orca_running():
+    #     raise ImportError ("plotly-orca is required for static image export")
+
+    # function specific imports
+    from tempfile import NamedTemporaryFile
+    from IPython.core.display import display, SVG
+
+    with NamedTemporaryFile(suffix=".svg") as temp_svg:
+        fig.write_image(temp_svg.name, width=width, height=height)
+        display(SVG(temp_svg.name))
 
 #~~~~~~~~~~~~~~CUSTOM EXCEPTION AND WARN CLASSES~~~~~~~~~~~~~~#
 class pycoMethError (Exception):

@@ -5,7 +5,7 @@ from setuptools import setup
 
 # Define package info
 name = "pycoMeth"
-version = "0.4.7"
+version = "0.4.8"
 description = "DNA methylation analysis downstream to Nanopolish for Oxford Nanopore DNA sequencing datasets"
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -30,14 +30,15 @@ setup(
         'Programming Language :: Python :: 3'],
     install_requires = [
         "numpy>=1.14.0",
-        "scipy>=1.4.1",
+        "scipy==1.4.1",
         "statsmodels>=0.11.1",
         "pandas>=1.0.3",
         "Jinja2>=2.11.1",
-        "plotly>=4.6.0",
+        "plotly==4.7.1",
         "pyfaidx>=0.5.8",
         "tqdm>=4.45.0",
-        "colorlog>=4.1.0"],
+        "colorlog>=4.1.0",
+        "nbformat>=4.2.0"],
     packages = [name],
     package_dir = {name: name},
     package_data = {name: ['templates/*']},
