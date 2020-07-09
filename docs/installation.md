@@ -9,14 +9,14 @@ For example one can use conda or virtualenvwrapper.
 With [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/install.html):
 
 ```bash
-mkvirtualenv pycoMeth -p python3.6
+mkvirtualenv pycoMeth -p python3.7
 workon pycoMeth
 ```
 
 With [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
 
 ```bash
-conda create -n pycoMeth python=3.6
+conda create -n pycoMeth python=3.7
 conda activate pycoMeth
 ```
 
@@ -28,17 +28,25 @@ You might also want to install [Nanopolish](https://github.com/jts/nanopolish) i
 
 `pycoMeth` relies on a the following robustly maintained third party python libraries:
 
-* numpy>=1.14.0
-* scipy>=1.4.1
-* statsmodels>=0.11.1
-* pandas>=1.0.3
-* Jinja2>=2.11.1
-* plotly>=4.6.0
-* pyfaidx>=0.5.8
-* tqdm>=4.45.0
-* colorlog>=4.1.0
+* `numpy>=1.14.0`
+* `scipy>=1.4.1`
+* `statsmodels>=0.11.1`
+* `pandas>=1.0.3`
+* `Jinja2>=2.11.1`
+* `plotly>=4.6.0`
+* `pyfaidx>=0.5.8`
+* `tqdm>=4.45.0`
+* `colorlog>=4.1.0`
 
-The correct versions of packages are installed together with the software when using pip.
+The correct versions of packages are installed together with the software when using pip
+
+in addition if you want to enable static images export you will also need the following dependencies:
+
+* `plotly-orca==1.2.1`
+* `psutil>=5.7.0`
+* `requests>=2.24.0`
+
+Those dependencies will only be installed with conda as `orca` is not a python package.
 
 ## Option 1: Installation with pip from pypi
 
@@ -56,17 +64,17 @@ pip install --index-url https://test.pypi.org/simple/ pycoMeth -U
 
 ## Option 2: Installation with conda from Anaconda cloud
 
-**If you want to be sure to get the last version don't forget to add my channel and to specify the last version number**
+This option will also install `orca` which is required for static images export
 
 ```bash
 # First installation
-conda install -c aleg pycometh=[VERSION]
+conda install -c aleg -c plotly pycometh
 ```
 
-You can also get the **unstable** development version from my dev channel
+You can also get the **unstable** development version from the dev channel
 
 ```bash
-conda update -c aleg_dev pycometh=[VERSION]
+conda update -c aleg_dev -c plotly pycometh
 ```
 
 ## Option 3: Installation with pip from Github
