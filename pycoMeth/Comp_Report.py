@@ -30,12 +30,14 @@ def Comp_Report (
     methcomp_fn:str,
     gff3_fn:str,
     ref_fasta_fn:str,
-    outdir:str="",
+    outdir:str="./",
     n_top:int=100,
     max_tss_distance:int=500000,
     pvalue_threshold:float=0.01,
     min_diff_llr:float=1,
     n_len_bin:int=500,
+    api_mode:bool=False,
+    export_static_plots:bool=False,
     verbose:bool=False,
     quiet:bool=False,
     progress:bool=False,
@@ -62,6 +64,11 @@ def Comp_Report (
         Minimal llr boundary for negative and positive median llr. 1 is recommanded for vizualization purposes.
     * n_len_bin
         Number of genomic intervals for the longest chromosome of the ideogram figure
+    * api_mode
+        Don't generate reports or tables, just parse data and return a tuple containing an overall median CpG dataframe and a dictionary of CpG dataframes
+        for the top candidates found. These dataframes can then be used to with the plotting functions containned in this module
+    * export_static_plots
+        Export all the plots from the reports in SVG format. Requires Orca to be installed (https://plotly.com/python/static-image-export/)
     """
 
     # Init method
@@ -70,16 +77,6 @@ def Comp_Report (
 
     log.warning("Checking options and input files")
     log_dict(opt_summary_dict, log.debug, "Options summary")
-
-    # Create output structure and file names
-    summary_report_fn = "pycoMeth_summary_report.html"
-    top_intervals_fn = "pycoMeth_top_intervals.tsv"
-
-    reports_outdir = "interval_reports"
-    tables_outdir = "interval_tables"
-    mkdir (outdir, exist_ok=True)
-    mkdir (os.path.join(outdir, reports_outdir), exist_ok=True)
-    mkdir (os.path.join(outdir, tables_outdir), exist_ok=True)
 
     log.warning("Loading and preparing data")
 
@@ -120,33 +117,51 @@ def Comp_Report (
         log.error("Number of significant intervals lower than number of top candidates to plot")
 
     # List top candidates
-    log.info("Generating file names for top candidates reports")
+    log.info("Finding top candidates")
     top_dict = OrderedDict()
     top_candidates = sig_df.sort_values(by="adj_pvalue").head(n_top)
-    for rank, (idx, line) in enumerate(top_candidates.iterrows()):
+    for rank, (idx, line) in enumerate(iter_idx_tuples(top_candidates), 1):
         coord = "{}-{}-{}".format(line.chromosome,line.start,line.end)
-        bn = "interval_{:04}_chr{}".format(rank+1, coord)
-        top_dict[idx] = {"rank":rank+1, "coord":coord, "bn":bn}
+        bn = "interval_{:04}_chr{}".format(rank, coord)
+        top_dict[idx] = {"rank":rank, "coord":coord, "bn":bn}
     rank_fn_dict = {i["rank"]:i["bn"] for i in top_dict.values()}
 
-    # Prepare src file for report and compute md5
-    log.info("Computing source md5")
-    src_file = os.path.abspath(methcomp_fn)
-    md5 = md5_str(methcomp_fn)
-
-    # Init collections
     all_cpg_d = OrderedDict()
     top_cpg_list = []
 
+    # Init dict to collect data for api_mode
+    if api_mode:
+        top_cpg_df_d = OrderedDict()
+
+    # In normal mode, create output structure and file names
+    else:
+        log.info("Creating output directory structure")
+        summary_report_fn = "pycoMeth_summary_report.html"
+        top_intervals_fn = "pycoMeth_top_intervals.tsv"
+        reports_outdir = "interval_reports"
+        tables_outdir = "interval_tables"
+        mkdir (outdir, exist_ok=True)
+        mkdir (os.path.join(outdir, reports_outdir), exist_ok=True)
+        mkdir (os.path.join(outdir, tables_outdir), exist_ok=True)
+        if export_static_plots:
+            plot_outdir = "static_plots"
+            mkdir (os.path.join(outdir, plot_outdir), exist_ok=True)
+
+        # Prepare src file for report and compute md5
+        log.info("Computing source md5")
+        src_file = os.path.abspath(methcomp_fn)
+        md5 = md5_str(methcomp_fn)
+
     # Extract info from each intervals
     log.warning("Parsing methcomp data")
-    log.info("Iterating over significant intervals and generating top candidates reports")
-    for idx, line in tqdm(sig_df.iterrows(), total=len(sig_df), unit=" intervals", unit_scale=True, desc="\tProgress", disable=not progress):
+    log.info("Iterating over significant intervals")
+    for idx, line in tqdm(iter_idx_tuples(sig_df), total=len(sig_df), unit=" intervals", unit_scale=True, desc="\tProgress", disable=not progress):
 
         # collect median llr for all significant intervals
         lab_list = ["Sample {}".format(lab) for lab in str_to_list(line.labels)]
         med_list = str_to_list(line.med_llr_list)
-        coord = (line.chromosome,line.start,line.end)
+        #coord = (line.chromosome,line.start,line.end)
+        coord = "{}-{}-{}".format(line.chromosome,line.start,line.end)
         all_cpg_d[coord] = {lab:llr for lab, llr in zip(lab_list, med_list)}
 
         # Extract more data for reports of top results
@@ -155,71 +170,101 @@ def Comp_Report (
 
             # Extract data from line
             cpg_df = get_cpg_df(line)
-
             # Define outfiles
             rank = top_dict[idx]["rank"]
-            html_out_path = os.path.join(outdir, reports_outdir, top_dict[idx]["bn"]+".html")
-            table_out_path = os.path.join(outdir, tables_outdir, top_dict[idx]["bn"]+".tsv")
+
+            # In API mode just collect the
+            if api_mode:
+                top_cpg_df_d[rank] = cpg_df
 
             # Generate figures and tables
-            heatmap_fig = cpg_heatmap(cpg_df, lim_llr=10, min_diff_llr=min_diff_llr)
-            ridgeplot_fig = cpg_ridgeplot(cpg_df, box=False, scatter=True, min_diff_llr=min_diff_llr)
-            interval_df = get_interval_df(line=line, rank=rank)
-            transcript_df = get_close_tx_df(tx_df=tx_df, chromosome=line.chromosome, start=line.start, end=line.end, max_tss_distance=max_tss_distance)
+            else:
+                heatmap_fig = cpg_heatmap(cpg_df, lim_llr=10, min_diff_llr=min_diff_llr)
+                ridgeplot_fig = cpg_ridgeplot(cpg_df, box=False, scatter=True, min_diff_llr=min_diff_llr)
+                interval_df = get_interval_df(line=line, rank=rank)
+                transcript_df = get_close_tx_df(tx_df=tx_df, chromosome=line.chromosome, start=line.start, end=line.end, max_tss_distance=max_tss_distance)
 
-            # Collect Interval minimal info
-            top_cpg_list.append((rank, line, transcript_df, os.path.join(reports_outdir, top_dict[idx]["bn"]+".html")))
+                # Collect Interval minimal info
+                top_cpg_list.append((rank, line, transcript_df, os.path.join(reports_outdir, top_dict[idx]["bn"]+".html")))
 
-            # Render interval HTML report
-            write_cpg_interval_html(
-                out_file = html_out_path,
-                src_file = src_file,
-                md5 = md5,
-                summary_link = "../{}".format(summary_report_fn),
-                previous_link = prev_fn(rank_fn_dict, rank)+".html",
-                next_link = next_fn(rank_fn_dict, rank)+".html",
-                max_tss_distance = max_tss_distance,
-                interval_df = interval_df,
-                transcript_df = transcript_df,
-                heatmap_fig = heatmap_fig,
-                ridgeplot_fig = ridgeplot_fig)
+                # Render interval HTML report
+                html_out_path = os.path.join(outdir, reports_outdir, top_dict[idx]["bn"]+".html")
+                write_cpg_interval_html(
+                    out_file = html_out_path,
+                    src_file = src_file,
+                    md5 = md5,
+                    summary_link = "../{}".format(summary_report_fn),
+                    previous_link = prev_fn(rank_fn_dict, rank)+".html",
+                    next_link = next_fn(rank_fn_dict, rank)+".html",
+                    max_tss_distance = max_tss_distance,
+                    interval_df = interval_df,
+                    transcript_df = transcript_df,
+                    heatmap_fig = heatmap_fig,
+                    ridgeplot_fig = ridgeplot_fig)
 
-            # Write out TSV table
-            if not transcript_df.empty:
-                transcript_df.to_csv(table_out_path, sep="\t", index=False)
+                # Write out TSV table
+                if not transcript_df.empty:
+                    table_out_path = os.path.join(outdir, tables_outdir, top_dict[idx]["bn"]+".tsv")
+                    transcript_df.to_csv(table_out_path, sep="\t", index=False)
 
-    # Collect data at CpG interval level
-    log.info("Generating summary report")
+                # Try to export static plots if orca is installed
+                if export_static_plots:
+                    try:
+                        heatmap_fig.write_image(os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"), width=1400)
+                        ridgeplot_fig.write_image(os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"), width=1400)
+                    except Exception:
+                        pass
 
-    # Define outfiles
-    html_out_path = os.path.join(outdir, summary_report_fn)
-    table_out_path = os.path.join(outdir, top_intervals_fn)
+    # Convert to DataFrame
+    all_cpg_df = pd.DataFrame.from_dict(all_cpg_d)
 
-    # Generate figures and tables
-    all_cpg_df = convert_cpg_dict(all_cpg_d)
-    all_heatmap_fig = cpg_heatmap(all_cpg_df, lim_llr=4, min_diff_llr=min_diff_llr)
-    all_ridgeplot_fig = cpg_ridgeplot(all_cpg_df, box=True, scatter=False, min_diff_llr=min_diff_llr)
-    catplot_fig = category_barplot(all_cpg_df, min_diff_llr=min_diff_llr)
-    ideogram_fig = chr_ideogram_plot(all_cpg_d, chr_len_d, n_len_bin=n_len_bin)
-    summary_df = get_summary_df(df, sig_df)
-    top_df = get_top_df(top_cpg_list)
+    if api_mode:
+        # Sort dictionary by rank
+        top_cpg_df_d = OrderedDict(sorted(top_cpg_df_d.items(), key=lambda t: t[0]))
+        # Return all dataframe and sorted dataframe dictionary
+        return all_cpg_df, top_cpg_df_d
 
-    # Write out HTML report
-    write_summary_html(
-        out_file = html_out_path,
-        src_file = src_file,
-        md5 = md5,
-        summary_df = summary_df,
-        top_df = top_df,
-        catplot_fig = catplot_fig,
-        heatmap_fig = all_heatmap_fig,
-        ridgeplot_fig = all_ridgeplot_fig,
-        ideogram_fig = ideogram_fig)
+    else:
+        # Collect data at CpG interval level
+        log.info("Generating summary report")
 
-    # Write out TSV table
-    if not top_df.empty:
-        top_df = top_df.drop(columns=["detailled report"])
-        top_df.to_csv(table_out_path, sep="\t", index=False)
+        # Generate figures and tables
+
+        all_heatmap_fig = cpg_heatmap(all_cpg_df, lim_llr=4, min_diff_llr=min_diff_llr)
+        all_ridgeplot_fig = cpg_ridgeplot(all_cpg_df, box=True, scatter=False, min_diff_llr=min_diff_llr)
+        catplot_fig = category_barplot(all_cpg_df, min_diff_llr=min_diff_llr)
+        ideogram_fig = chr_ideogram_plot(all_cpg_df, ref_fasta_fn, n_len_bin=n_len_bin)
+        summary_df = get_summary_df(df, sig_df)
+        top_df = get_top_df(top_cpg_list)
+
+        # Write out HTML report
+        html_out_path = os.path.join(outdir, summary_report_fn)
+        write_summary_html(
+            out_file = html_out_path,
+            src_file = src_file,
+            md5 = md5,
+            summary_df = summary_df,
+            top_df = top_df,
+            catplot_fig = catplot_fig,
+            heatmap_fig = all_heatmap_fig,
+            ridgeplot_fig = all_ridgeplot_fig,
+            ideogram_fig = ideogram_fig)
+
+        # Write out TSV table
+        table_out_path = os.path.join(outdir, top_intervals_fn)
+        if not top_df.empty:
+            top_df = top_df.drop(columns=["detailled report"])
+            top_df.to_csv(table_out_path, sep="\t", index=False)
+
+        # Try to export static plots if orca is installed
+        if export_static_plots:
+            try:
+                all_heatmap_fig.write_image(os.path.join(outdir, plot_outdir, "all_heatmap.svg"), width=1400)
+                all_ridgeplot_fig.write_image(os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"), width=1400)
+                catplot_fig.write_image(os.path.join(outdir, plot_outdir, "all_catplot.svg"), width=1400)
+                ideogram_fig.write_image(os.path.join(outdir, plot_outdir, "all_ideogram.svg"), width=1400)
+            except Exception:
+                pass
 
 #~~~~~~~~~~~~~~~~~~~~~~~~HTML generating functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -353,7 +398,7 @@ def get_cpg_df (line):
 
     cpg_df = pd.DataFrame()
     for lab, llr, pos in zip(lab_list, llr_list, pos_list):
-        pos = ["{}-{:,}".format(line.chromosome,pos) for pos in pos]
+        pos = ["{}-{:,}".format(line.chromosome, pos) for pos in pos]
         cpg_sdf = pd.DataFrame(index=pos, data=llr, columns=[lab])
         if cpg_df.empty:
             cpg_df = cpg_sdf
@@ -366,7 +411,7 @@ def get_close_tx_df (tx_df, chromosome, start, end, max_tss_distance=100000):
     """Find transcripts with a TSS within a given genomic interval"""
     rdf = tx_df.query("chromosome == '{}' and tss >= {} and tss <= {}".format(chromosome, start-max_tss_distance, end+max_tss_distance))
     tss_dist = []
-    for tx, line in rdf.iterrows():
+    for tx, line in iter_idx_tuples(rdf):
         if line.tss > end:
             tss_dist.append(line.tss-end)
         elif line.tss < start:
@@ -381,12 +426,18 @@ def get_close_tx_df (tx_df, chromosome, start, end, max_tss_distance=100000):
 
 def get_interval_df (line, rank):
     """Generate a single line dataframe describing the current interval"""
-    line["pvalue rank"] = f"#{rank}"
-    line["length"] = line["end"]-line["start"]
-    line = line[["pvalue rank", "chromosome", "start", "end", "length", "n_samples", "unique_cpg_pos", "pvalue", "adj_pvalue"]]
-    df = line.to_frame().T
-    df = df.rename(columns={"n_samples":"number of samples", "unique_cpg_pos":"number of CpGs", "adj_pvalue":"adjusted pvalue"})
-    return df
+
+    line_dict = OrderedDict()
+    line_dict["pvalue rank"] = f"#{rank}"
+    line_dict["chromosome"] = line.chromosome
+    line_dict["start"] = line.start
+    line_dict["end"] = line.end
+    line_dict["length"] = line.end-line.start
+    line_dict["number of samples"] = line.n_samples
+    line_dict["number of CpGs"] = line.unique_cpg_pos
+    line_dict["adjusted pvalue"] = line.adj_pvalue
+
+    return pd.DataFrame.from_dict(line_dict, orient="index").T
 
 def get_summary_df (df, sig_df):
     """Generate a single line dataframe with summary information"""
@@ -408,10 +459,10 @@ def get_top_df (top_cpg_list):
         d = OrderedDict()
         d["rank"] = f"#{rank}"
         d["detailled report"] = f"<a href='{out_file}'>report link</a>"
-        d["chromosome"] = line["chromosome"]
-        d["start"] = line["start"]
-        d["end"] = line["end"]
-        d["pvalue"] = line["adj_pvalue"]
+        d["chromosome"] = line.chromosome
+        d["start"] = line.start
+        d["end"] = line.end
+        d["pvalue"] = line.adj_pvalue
 
         if transcript_df.empty:
             d["Number of nearby TSS"] = 0
@@ -429,52 +480,6 @@ def get_top_df (top_cpg_list):
 
     df = pd.DataFrame(l)
     return df
-
-def get_cov_df(all_cpg_d, chr_len_d, n_len_bin=1000):
-    """Bin site coordinates per genomic intervals and return a dataframe"""
-    # Autodefine length of bins based on longest sequence
-    longest_seq = max(chr_len_d.values())
-    # Failsafe in case of very short references
-    if longest_seq < n_len_bin:
-        n_len_bin = longest_seq
-    bin_len = longest//n_len_bin
-
-    # Filter out sequences shorter than bin length and store idx for numpy array indexing
-    filt_chr_len_d = OrderedDict()
-    filt_chr_idx_d = OrderedDict()
-    idx = 0
-    for seq_name, seq_len in chr_len_d.items():
-        if seq_len > bin_len:
-            filt_chr_len_d[seq_name] = seq_len
-            filt_chr_idx_d[seq_name] = idx
-            idx+=1
-
-    # Create zero filled array to count coverage per genomic windows
-    cov_array = np.zeros((len(filt_chr_len_d), (longest//bin_len+1)))
-
-    # Fill in array significant site coordinates
-    for chrom, start, end in all_cpg_d.keys():
-        if chrom in filt_chr_idx_d:
-            chr_idx = filt_chr_idx_d[chrom]
-            bin_pos = int((start+(end-start)/2)/bin_len)
-            cov_array[chr_idx][bin_pos]+=1
-    cov_array[cov_array==0] = np.nan
-
-    # Define x and y labels and convert to dataframe to bring everything together
-    y_lab = ["chr {}".format(i) for i in filt_chr_len_d.keys()]
-    x_lab = [i*bin_len for i in range(0,longest//bin_len+1)]
-    cov_df = pd.DataFrame(data=cov_array, columns=x_lab, index=y_lab)
-
-    return cov_df
-
-def convert_cpg_dict(all_cpg_d):
-    """Convert data colected in all_cpg_d to dataframe"""
-    coord_merge_d = OrderedDict()
-    for i, j in all_cpg_d.items():
-        coord_merge = "{}:{}-{}".format(i[0],i[1],i[2])
-        coord_merge_d[coord_merge] = j
-
-    return pd.DataFrame.from_dict(coord_merge_d)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~Plotting functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -557,7 +562,7 @@ def cpg_ridgeplot (
 
     # Sorted labels by median llr
     d = OrderedDict()
-    for lab, row in df.iterrows():
+    for lab, row in iter_idx_tuples(df):
         d[lab] = np.nanmedian(row)
     sorted_labels = [i for i,j in sorted(d.items(), key=lambda t: t[1])]
 
@@ -659,16 +664,20 @@ def category_barplot (
     return fig
 
 def chr_ideogram_plot(
-    all_cpg_d,
-    chr_len_d,
+    all_cpg_df,
+    ref_fasta_fn,
     n_len_bin:int=1000,
     colorscale:str = "Reds",
     fig_width:int=None,
     fig_height:int=None):
     """Plot an ideogram of significant sites distribution per chromosome """
 
+    # Load chromosome length
+    chr_len_d = get_chr_len(ref_fasta_fn)
+
     # Autodefine length of bins based on longest sequence
     longest_seq = max(chr_len_d.values())
+
     # Failsafe in case of very short references
     if longest_seq < n_len_bin:
         n_len_bin = longest_seq
@@ -688,17 +697,23 @@ def chr_ideogram_plot(
     # Create zero filled array to count coverage per genomic windows
     cov_array = np.zeros((len(chr_d), n_len_bin+1))
     # Fill in array significant site coordinates
-    for chrom, start, end in all_cpg_d.keys():
+    # for chrom, start, end in all_cpg_d.keys():
+    for coord in all_cpg_df.columns:
+        chrom, start, end = coord.split("-")
+        start = int(start)
+        end = int(end)
+
         if chrom in chr_d:
             chr_idx = chr_d[chrom]["idx"]
             bin_pos = int((start+(end-start)/2)/bin_len)
             cov_array[chr_idx][bin_pos]+=1
+
     cov_array[cov_array==0] = np.nan
     # If no data entered in cov_array
     if np.all(np.isnan(cov_array)):
         return None
 
-    # Define x and y labels and convert to dataframe to bring everything together
+    # Define x and y labels
     y_lab = ["chr {}".format(i) for i in chr_d.keys()]
     x_lab = [i*bin_len for i in range(0, n_len_bin+1)]
 
