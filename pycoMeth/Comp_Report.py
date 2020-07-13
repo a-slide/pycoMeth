@@ -504,7 +504,8 @@ def cpg_heatmap (
     lim_llr:float = 10,
     min_diff_llr:float = 1,
     fig_width:int=None,
-    fig_height:int=None):
+    fig_height:int=None,
+    column_widths=[0.95, 0.05]):
     """
     Plot the values per CpG as a heatmap
     """
@@ -520,7 +521,7 @@ def cpg_heatmap (
         rows=1,
         cols=2,
         shared_yaxes=True,
-        column_widths=[0.95, 0.05],
+        column_widths=column_widths,
         specs=[[{"type": "heatmap"},{"type": "scatter"}]])
 
     # Plot dendogramm
@@ -538,7 +539,11 @@ def cpg_heatmap (
 
     # Define colorscale
     offset = min_diff_llr/lim_llr*0.5
-    colorscale = colorscale=[[0.0, unmethylated_color],[0.5-offset, ambiguous_color], [0.5+offset, ambiguous_color],[1.0, methylated_color]]
+    colorscale = [
+        [0.0, unmethylated_color],
+        [0.5-offset, ambiguous_color],
+        [0.5+offset, ambiguous_color],
+        [1.0, methylated_color]]
 
     # plot heatmap
     heatmap = go.Heatmap(name="heatmap", x=df.columns, y=df.index, z=df.values, zmin=-lim_llr, zmax=lim_llr, zmid=0, colorscale=colorscale, colorbar_title="Median LLR")
