@@ -31,9 +31,7 @@ requirements:
     - tqdm>=4.45.0
     - colorlog>=4.1.0
     - nbformat>=4.2.0
-    - pip>=19.2.1
-    - pip :
-        - kaleido
+    - python-kaleido
 
 test:
   imports:

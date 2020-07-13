@@ -60,13 +60,13 @@ pip install --index-url https://test.pypi.org/simple/ pycoMeth -U
 
 ```bash
 # First installation
-conda install -c aleg pycometh
+conda install -c aleg -c plotly pycometh
 ```
 
 You can also get the **unstable** development version from the dev channel
 
 ```bash
-conda update -c aleg_dev pycometh
+conda update -c aleg_dev -c plotly pycometh
 ```
 
 ## Option 3: Installation with pip from Github
