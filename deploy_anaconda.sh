@@ -12,13 +12,13 @@ conda config --set always_yes yes --set changeps1 no --set anaconda_upload no
 conda update -q conda
 
 echo "Install packages needed for package build and upload"
-conda install -q python=3.6 conda-build anaconda-client ripgrep conda-verify
+conda install -q python=3.7 conda-build anaconda-client ripgrep conda-verify
 
 echo "compile package from setup.py"
 python setup.py sdist
 
 echo "Build noarch package..."
-conda build meta.yaml --python 3.6 --numpy 1.1 --output-folder conda_build  -c bioconda -c conda-forge
+conda build meta.yaml --python 3.7 --numpy 1.1 --output-folder conda_build -c bioconda -c conda-forge -c plotly
 
 echo "Deploying to Anaconda.org..."
 anaconda -v -t $1 upload conda_build/**/*.tar.bz2

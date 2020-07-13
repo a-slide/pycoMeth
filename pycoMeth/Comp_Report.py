@@ -144,6 +144,7 @@ def Comp_Report (
         mkdir (os.path.join(outdir, reports_outdir), exist_ok=True)
         mkdir (os.path.join(outdir, tables_outdir), exist_ok=True)
         if export_static_plots:
+            kaleido = Kaleido()
             plot_outdir = "static_plots"
             mkdir (os.path.join(outdir, plot_outdir), exist_ok=True)
 
@@ -207,13 +208,16 @@ def Comp_Report (
                     table_out_path = os.path.join(outdir, tables_outdir, top_dict[idx]["bn"]+".tsv")
                     transcript_df.to_csv(table_out_path, sep="\t", index=False)
 
-                # Try to export static plots if orca is installed
+                # Try to export static plots if required
                 if export_static_plots:
-                    try:
-                        heatmap_fig.write_image(os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"), width=1400)
-                        ridgeplot_fig.write_image(os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"), width=1400)
-                    except Exception:
-                        pass
+                    kaleido.export_plotly_svg (
+                        fig = heatmap_fig,
+                        fn = os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"),
+                        width = 1400)
+                    kaleido.export_plotly_svg (
+                        fig = ridgeplot_fig,
+                        fn = os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"),
+                        width = 1400)
 
     # Convert to DataFrame
     all_cpg_df = pd.DataFrame.from_dict(all_cpg_d)
@@ -256,15 +260,24 @@ def Comp_Report (
             top_df = top_df.drop(columns=["detailled report"])
             top_df.to_csv(table_out_path, sep="\t", index=False)
 
-        # Try to export static plots if orca is installed
+        # Try to export static plots if required
         if export_static_plots:
-            try:
-                all_heatmap_fig.write_image(os.path.join(outdir, plot_outdir, "all_heatmap.svg"), width=1400)
-                all_ridgeplot_fig.write_image(os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"), width=1400)
-                catplot_fig.write_image(os.path.join(outdir, plot_outdir, "all_catplot.svg"), width=1400)
-                ideogram_fig.write_image(os.path.join(outdir, plot_outdir, "all_ideogram.svg"), width=1400)
-            except Exception:
-                pass
+            kaleido.export_plotly_svg (
+                fig=all_heatmap_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_heatmap.svg"),
+                width=1400)
+            kaleido.export_plotly_svg (
+                fig=all_ridgeplot_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"),
+                width=1400)
+            kaleido.export_plotly_svg (
+                fig=catplot_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_catplot.svg"),
+                width=1400)
+            kaleido.export_plotly_svg (
+                fig=ideogram_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_ideogram.svg"),
+                width=1400)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~HTML generating functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -491,7 +504,8 @@ def cpg_heatmap (
     lim_llr:float = 10,
     min_diff_llr:float = 1,
     fig_width:int=None,
-    fig_height:int=None):
+    fig_height:int=None,
+    column_widths=[0.95, 0.05]):
     """
     Plot the values per CpG as a heatmap
     """
@@ -507,7 +521,7 @@ def cpg_heatmap (
         rows=1,
         cols=2,
         shared_yaxes=True,
-        column_widths=[0.95, 0.05],
+        column_widths=column_widths,
         specs=[[{"type": "heatmap"},{"type": "scatter"}]])
 
     # Plot dendogramm
@@ -525,7 +539,11 @@ def cpg_heatmap (
 
     # Define colorscale
     offset = min_diff_llr/lim_llr*0.5
-    colorscale = colorscale=[[0.0, unmethylated_color],[0.5-offset, ambiguous_color], [0.5+offset, ambiguous_color],[1.0, methylated_color]]
+    colorscale = [
+        [0.0, unmethylated_color],
+        [0.5-offset, ambiguous_color],
+        [0.5+offset, ambiguous_color],
+        [1.0, methylated_color]]
 
     # plot heatmap
     heatmap = go.Heatmap(name="heatmap", x=df.columns, y=df.index, z=df.values, zmin=-lim_llr, zmax=lim_llr, zmid=0, colorscale=colorscale, colorbar_title="Median LLR")
@@ -536,7 +554,7 @@ def cpg_heatmap (
         dict1 = {'showlegend':False, 'hovermode':'closest', "plot_bgcolor":'rgba(0,0,0,0)',"width":fig_width, "height":fig_height, "margin":{"t":50,"b":50}},
         xaxis2 = {"fixedrange":True, 'showgrid':False, 'showline':False, "showticklabels":False,'zeroline':False,'ticks':""},
         yaxis2 = {"fixedrange":True, 'showgrid':False, 'showline':False, "showticklabels":False,'zeroline':False,'ticks':"", "automargin":True},
-        xaxis = {"fixedrange":False, "domain":[0, 0.95], "showticklabels":False, "title":"CpG positions"},
+        xaxis = {"fixedrange":False, "domain":[0, column_widths[0]], "showticklabels":False, "title":"CpG positions"},
         yaxis = {"fixedrange":True, "domain":[0, 1], "ticks":"outside", "automargin":True})
 
     return fig
