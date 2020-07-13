@@ -554,7 +554,7 @@ def cpg_heatmap (
         dict1 = {'showlegend':False, 'hovermode':'closest', "plot_bgcolor":'rgba(0,0,0,0)',"width":fig_width, "height":fig_height, "margin":{"t":50,"b":50}},
         xaxis2 = {"fixedrange":True, 'showgrid':False, 'showline':False, "showticklabels":False,'zeroline':False,'ticks':""},
         yaxis2 = {"fixedrange":True, 'showgrid':False, 'showline':False, "showticklabels":False,'zeroline':False,'ticks':"", "automargin":True},
-        xaxis = {"fixedrange":False, "domain":[0, 0.95], "showticklabels":False, "title":"CpG positions"},
+        xaxis = {"fixedrange":False, "domain":[0, column_widths[0]], "showticklabels":False, "title":"CpG positions"},
         yaxis = {"fixedrange":True, "domain":[0, 1], "ticks":"outside", "automargin":True})
 
     return fig
