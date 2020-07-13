@@ -2,7 +2,7 @@
 
 ## Create a clean virtual environment (optional but recommended)
 
-Ideally, before installation, create a clean **python3.6+** virtual environment to deploy the package.
+Ideally, before installation, create a clean **python3.7+** virtual environment to deploy the package.
 Earlier version of Python3 should also work but **Python 2 is not supported**.
 For example one can use conda or virtualenvwrapper.
 
@@ -37,16 +37,9 @@ You might also want to install [Nanopolish](https://github.com/jts/nanopolish) i
 * `pyfaidx>=0.5.8`
 * `tqdm>=4.45.0`
 * `colorlog>=4.1.0`
+* `kaleido` *New library being developed by the plotly team for static image export*
 
-The correct versions of packages are installed together with the software when using pip
-
-in addition if you want to enable static images export you will also need the following dependencies:
-
-* `plotly-orca==1.2.1`
-* `psutil>=5.7.0`
-* `requests>=2.24.0`
-
-Those dependencies will only be installed with conda as `orca` is not a python package.
+The correct versions of packages are installed together with the software when using pip or conda
 
 ## Option 1: Installation with pip from pypi
 
@@ -64,17 +57,16 @@ pip install --index-url https://test.pypi.org/simple/ pycoMeth -U
 
 ## Option 2: Installation with conda from Anaconda cloud
 
-This option will also install `orca` which is required for static images export
 
 ```bash
 # First installation
-conda install -c aleg -c plotly pycometh
+conda install -c aleg pycometh
 ```
 
 You can also get the **unstable** development version from the dev channel
 
 ```bash
-conda update -c aleg_dev -c plotly pycometh
+conda update -c aleg_dev pycometh
 ```
 
 ## Option 3: Installation with pip from Github

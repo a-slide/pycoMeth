@@ -19,6 +19,16 @@ from pycoMeth import __name__ as pkg_name
 # Third party imports
 import colorlog
 
+# Optional static export deps
+try:
+    from kaleido.scopes.plotly import PlotlyScope
+    from IPython.core.display import SVG, display
+    STATIC_EXPORT=True
+except (ModuleNotFoundError, ImportError) as E:
+    print("Cannot import dependencies required for static image export")
+    STATIC_EXPORT=False
+    pass
+
 #~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~#
 def opt_summary (local_opt):
     """Simplifiy option dict creation"""
@@ -367,21 +377,30 @@ def log_list (l, logger, header="", indent="\t"):
     for i in l:
         logger("{}*{}".format(indent, i))
 
-def static_display (fig, width=None, height=None):
-    """
-    Function to render a plotly figure in SVG inside jupyter
-    Requires jupyter and Orca to be installed
-    """
-    # if not orca_running():
-    #     raise ImportError ("plotly-orca is required for static image export")
 
-    # function specific imports
-    from tempfile import NamedTemporaryFile
-    from IPython.core.display import display, SVG
+class Kaleido:
+    def __init__ (self):
+        # Init scopes
+        if not STATIC_EXPORT:
+            raise ImportError ("Static export is not possible due to missing dependencies")
+        self.plotly_scope = PlotlyScope()
 
-    with NamedTemporaryFile(suffix=".svg") as temp_svg:
-        fig.write_image(temp_svg.name, width=width, height=height)
-        display(SVG(temp_svg.name))
+    def render_plotly_svg (self, fig, width=None, height=None):
+        """
+        Function to render a plotly figure in SVG inside jupyter
+        """
+        if STATIC_EXPORT:
+            svg_fig = self.plotly_scope.transform(fig, format="svg", width=width, height=height)
+            return SVG(svg_fig)
+
+    def export_plotly_svg (self, fig, fn, width=None, height=None):
+        """
+        Function to export a plotly figure to SVG
+        """
+        if STATIC_EXPORT:
+            svg_fig = self.plotly_scope.transform(fig, format="svg", width=width, height=height)
+            with open (fn, mode="wb") as fp:
+                fp.write(svg_fig)
 
 #~~~~~~~~~~~~~~CUSTOM EXCEPTION AND WARN CLASSES~~~~~~~~~~~~~~#
 class pycoMethError (Exception):

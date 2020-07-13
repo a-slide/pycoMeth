@@ -144,6 +144,7 @@ def Comp_Report (
         mkdir (os.path.join(outdir, reports_outdir), exist_ok=True)
         mkdir (os.path.join(outdir, tables_outdir), exist_ok=True)
         if export_static_plots:
+            kaleido = Kaleido()
             plot_outdir = "static_plots"
             mkdir (os.path.join(outdir, plot_outdir), exist_ok=True)
 
@@ -207,13 +208,16 @@ def Comp_Report (
                     table_out_path = os.path.join(outdir, tables_outdir, top_dict[idx]["bn"]+".tsv")
                     transcript_df.to_csv(table_out_path, sep="\t", index=False)
 
-                # Try to export static plots if orca is installed
+                # Try to export static plots if required
                 if export_static_plots:
-                    try:
-                        heatmap_fig.write_image(os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"), width=1400)
-                        ridgeplot_fig.write_image(os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"), width=1400)
-                    except Exception:
-                        pass
+                    kaleido.export_plotly_svg (
+                        fig = heatmap_fig,
+                        fn = os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"),
+                        width = 1400)
+                    kaleido.export_plotly_svg (
+                        fig = ridgeplot_fig,
+                        fn = os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"),
+                        width = 1400)
 
     # Convert to DataFrame
     all_cpg_df = pd.DataFrame.from_dict(all_cpg_d)
@@ -256,15 +260,24 @@ def Comp_Report (
             top_df = top_df.drop(columns=["detailled report"])
             top_df.to_csv(table_out_path, sep="\t", index=False)
 
-        # Try to export static plots if orca is installed
+        # Try to export static plots if required
         if export_static_plots:
-            try:
-                all_heatmap_fig.write_image(os.path.join(outdir, plot_outdir, "all_heatmap.svg"), width=1400)
-                all_ridgeplot_fig.write_image(os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"), width=1400)
-                catplot_fig.write_image(os.path.join(outdir, plot_outdir, "all_catplot.svg"), width=1400)
-                ideogram_fig.write_image(os.path.join(outdir, plot_outdir, "all_ideogram.svg"), width=1400)
-            except Exception:
-                pass
+            kaleido.export_plotly_svg (
+                fig=all_heatmap_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_heatmap.svg"),
+                width=1400)
+            kaleido.export_plotly_svg (
+                fig=all_ridgeplot_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"),
+                width=1400)
+            kaleido.export_plotly_svg (
+                fig=catplot_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_catplot.svg"),
+                width=1400)
+            kaleido.export_plotly_svg (
+                fig=ideogram_fig,
+                fn=os.path.join(outdir, plot_outdir, "all_ideogram.svg"),
+                width=1400)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~HTML generating functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
