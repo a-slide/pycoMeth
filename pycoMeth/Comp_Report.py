@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import jinja2
 from pyfaidx import Fasta
+from scipy.ndimage import gaussian_filter1d
 
 # Plotly imports
 import plotly.graph_objs as go
@@ -32,12 +33,13 @@ def Comp_Report (
     ref_fasta_fn:str,
     outdir:str="./",
     n_top:int=100,
-    max_tss_distance:int=500000,
+    max_tss_distance:int=100000,
     pvalue_threshold:float=0.01,
     min_diff_llr:float=1,
     n_len_bin:int=500,
     api_mode:bool=False,
     export_static_plots:bool=False,
+    report_non_significant:bool=False,
     verbose:bool=False,
     quiet:bool=False,
     progress:bool=False,
@@ -68,7 +70,9 @@ def Comp_Report (
         Don't generate reports or tables, just parse data and return a tuple containing an overall median CpG dataframe and a dictionary of CpG dataframes
         for the top candidates found. These dataframes can then be used to with the plotting functions containned in this module
     * export_static_plots
-        Export all the plots from the reports in SVG format. Requires Orca to be installed (https://plotly.com/python/static-image-export/)
+        Export all the plots from the reports in SVG format.
+    * report_non_significant
+        Report all valid CpG islands, significant or not in the text report. This option also adds a non-significant track to the TSS_distance plot
     """
 
     # Init method
@@ -107,12 +111,14 @@ def Comp_Report (
     if not all_in(df["chromosome"], chr_len_d.keys()):
         log.error ("Not all the chromosomes found in the data file are present in the Fasta file. This will lead to missing reference sequences in the ideogram")
 
-    # Select only significant sites
-    sig_df = df[df.adj_pvalue <= pvalue_threshold]
-    log.info("Number of significant intervals found (adjusted pvalue<{}): {}".format(pvalue_threshold, len(sig_df)))
+    # Select only sites with a valid pvalue
+    valid_df = df.dropna(subset=["adj_pvalue"])
 
+    # Check number of valid pvalues
+    sig_df = valid_df[valid_df.adj_pvalue <= pvalue_threshold]
+    log.info("Number of significant intervals found (adjusted pvalue<{}): {}".format(pvalue_threshold, len(sig_df)))
     if len(sig_df)<5:
-        log.error("Low number of significant sites. The summary report will likely contains errors")
+        log.error("Low number of significant sites. The summary report will likely contain errors")
     if len(sig_df)<n_top:
         log.error("Number of significant intervals lower than number of top candidates to plot")
 
@@ -127,7 +133,8 @@ def Comp_Report (
     rank_fn_dict = {i["rank"]:i["bn"] for i in top_dict.values()}
 
     all_cpg_d = OrderedDict()
-    top_cpg_list = []
+    all_interval_summary = []
+    top_interval_summary = []
 
     # Init dict to collect data for api_mode
     if api_mode:
@@ -137,7 +144,7 @@ def Comp_Report (
     else:
         log.info("Creating output directory structure")
         summary_report_fn = "pycoMeth_summary_report.html"
-        top_intervals_fn = "pycoMeth_top_intervals.tsv"
+        top_intervals_fn = "pycoMeth_summary_intervals.tsv"
         reports_outdir = "interval_reports"
         tables_outdir = "interval_tables"
         mkdir (outdir, exist_ok=True)
@@ -156,42 +163,53 @@ def Comp_Report (
     # Extract info from each intervals
     log.warning("Parsing methcomp data")
     log.info("Iterating over significant intervals")
-    for idx, line in tqdm(iter_idx_tuples(sig_df), total=len(sig_df), unit=" intervals", unit_scale=True, desc="\tProgress", disable=not progress):
+
+    for idx, line in tqdm(iter_idx_tuples(valid_df), total=len(valid_df), unit=" intervals", unit_scale=True, desc="\tProgress", disable=not progress):
+
+        # collect summary stats for significant intervals or all if required
+        if line.adj_pvalue <= pvalue_threshold or report_non_significant:
+            close_tx_df = get_close_tx_df(tx_df=tx_df, chromosome=line.chromosome, start=line.start, end=line.end, max_tss_distance=max_tss_distance)
+            all_interval_summary.append(get_interval_summary(line=line, close_tx_df=close_tx_df))
 
         # collect median llr for all significant intervals
-        lab_list = ["Sample {}".format(lab) for lab in str_to_list(line.labels)]
-        med_list = str_to_list(line.med_llr_list)
-        #coord = (line.chromosome,line.start,line.end)
-        coord = "{}-{}-{}".format(line.chromosome,line.start,line.end)
-        all_cpg_d[coord] = {lab:llr for lab, llr in zip(lab_list, med_list)}
+        if line.adj_pvalue <= pvalue_threshold:
+            lab_list = ["Sample {}".format(lab) for lab in str_to_list(line.labels)]
+            med_list = str_to_list(line.med_llr_list)
+            coord = "{}-{}-{}".format(line.chromosome,line.start,line.end)
+            all_cpg_d[coord] = {lab:llr for lab, llr in zip(lab_list, med_list)}
 
-        # Extract more data for reports of top results
+        # Extract more data for reports of top hits
         if idx in top_dict:
-            log.debug (f"Ploting top candidates: {coord}")
+            rank = top_dict[idx]["rank"]
+            log.debug (f"Ploting top candidates rank: #{rank}")
 
             # Extract data from line
             cpg_df = get_cpg_df(line)
-            # Define outfiles
-            rank = top_dict[idx]["rank"]
 
-            # In API mode just collect the
+            # In API mode just collect the CpG data
             if api_mode:
                 top_cpg_df_d[rank] = cpg_df
 
             # Generate figures and tables
             else:
-                heatmap_fig = cpg_heatmap(cpg_df, lim_llr=10, min_diff_llr=min_diff_llr)
-                ridgeplot_fig = cpg_ridgeplot(cpg_df, box=False, scatter=True, min_diff_llr=min_diff_llr)
-                interval_df = get_interval_df(line=line, rank=rank)
-                transcript_df = get_close_tx_df(tx_df=tx_df, chromosome=line.chromosome, start=line.start, end=line.end, max_tss_distance=max_tss_distance)
+                try:
+                    heatmap_fig = cpg_heatmap(cpg_df, lim_llr=10, min_diff_llr=min_diff_llr)
+                    ridgeplot_fig = cpg_ridgeplot(cpg_df, box=False, scatter=True, min_diff_llr=min_diff_llr)
+                    interval_df = get_interval_df(line=line, rank=rank)
+                except ValueError as E:
+                    from IPython.core.display import display
+                    print(line)
+                    display(cpg_df)
+                    raise E
 
                 # Collect Interval minimal info
-                top_cpg_list.append((rank, line, transcript_df, os.path.join(reports_outdir, top_dict[idx]["bn"]+".html")))
+                link_out_file = os.path.join(reports_outdir, top_dict[idx]["bn"]+".html")
+                top_interval_summary.append(get_interval_summary(line=line, close_tx_df=close_tx_df, rank=rank, out_file=link_out_file))
 
                 # Render interval HTML report
-                html_out_path = os.path.join(outdir, reports_outdir, top_dict[idx]["bn"]+".html")
+                html_out_file = os.path.join(outdir, reports_outdir, top_dict[idx]["bn"]+".html")
                 write_cpg_interval_html(
-                    out_file = html_out_path,
+                    out_file = html_out_file,
                     src_file = src_file,
                     md5 = md5,
                     summary_link = "../{}".format(summary_report_fn),
@@ -199,47 +217,42 @@ def Comp_Report (
                     next_link = next_fn(rank_fn_dict, rank)+".html",
                     max_tss_distance = max_tss_distance,
                     interval_df = interval_df,
-                    transcript_df = transcript_df,
+                    close_tx_df = close_tx_df,
                     heatmap_fig = heatmap_fig,
                     ridgeplot_fig = ridgeplot_fig)
 
                 # Write out TSV table
-                if not transcript_df.empty:
+                if not close_tx_df.empty:
                     table_out_path = os.path.join(outdir, tables_outdir, top_dict[idx]["bn"]+".tsv")
-                    transcript_df.to_csv(table_out_path, sep="\t", index=False)
+                    close_tx_df.to_csv(table_out_path, sep="\t", index=False)
 
                 # Try to export static plots if required
                 if export_static_plots:
-                    kaleido.export_plotly_svg (
-                        fig = heatmap_fig,
-                        fn = os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"),
-                        width = 1400)
-                    kaleido.export_plotly_svg (
-                        fig = ridgeplot_fig,
-                        fn = os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"),
-                        width = 1400)
+                    kaleido.export_plotly_svg (fig=heatmap_fig, fn=os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_heatmap.svg"), width=1400)
+                    kaleido.export_plotly_svg (fig=ridgeplot_fig, fn=os.path.join(outdir, plot_outdir, top_dict[idx]["bn"]+"_ridgeplot.svg"), width=1400)
 
     # Convert to DataFrame
     all_cpg_df = pd.DataFrame.from_dict(all_cpg_d)
+    all_summary_df = get_interval_summary_df(all_interval_summary)
 
     if api_mode:
         # Sort dictionary by rank
         top_cpg_df_d = OrderedDict(sorted(top_cpg_df_d.items(), key=lambda t: t[0]))
         # Return all dataframe and sorted dataframe dictionary
-        return all_cpg_df, top_cpg_df_d
+        return (all_summary_df, all_cpg_df, top_cpg_df_d)
 
     else:
         # Collect data at CpG interval level
         log.info("Generating summary report")
 
         # Generate figures and tables
-
+        summary_df = get_summary_df(df, sig_df)
+        top_interval_summary_df = get_interval_summary_df(top_interval_summary)
         all_heatmap_fig = cpg_heatmap(all_cpg_df, lim_llr=4, min_diff_llr=min_diff_llr)
         all_ridgeplot_fig = cpg_ridgeplot(all_cpg_df, box=True, scatter=False, min_diff_llr=min_diff_llr)
         catplot_fig = category_barplot(all_cpg_df, min_diff_llr=min_diff_llr)
         ideogram_fig = chr_ideogram_plot(all_cpg_df, ref_fasta_fn, n_len_bin=n_len_bin)
-        summary_df = get_summary_df(df, sig_df)
-        top_df = get_top_df(top_cpg_list)
+        tss_dist_fig = tss_dist_plot(all_summary_df, pvalue_threshold=pvalue_threshold, max_distance=max_tss_distance)
 
         # Write out HTML report
         html_out_path = os.path.join(outdir, summary_report_fn)
@@ -248,47 +261,36 @@ def Comp_Report (
             src_file = src_file,
             md5 = md5,
             summary_df = summary_df,
-            top_df = top_df,
+            top_interval_summary_df = top_interval_summary_df,
             catplot_fig = catplot_fig,
             heatmap_fig = all_heatmap_fig,
             ridgeplot_fig = all_ridgeplot_fig,
-            ideogram_fig = ideogram_fig)
+            ideogram_fig = ideogram_fig,
+            tss_dist_fig = tss_dist_fig)
 
         # Write out TSV table
         table_out_path = os.path.join(outdir, top_intervals_fn)
-        if not top_df.empty:
-            top_df = top_df.drop(columns=["detailled report"])
-            top_df.to_csv(table_out_path, sep="\t", index=False)
+        if not all_summary_df.empty:
+            all_summary_df.to_csv(table_out_path, sep="\t", index=False)
 
         # Try to export static plots if required
         if export_static_plots:
-            kaleido.export_plotly_svg (
-                fig=all_heatmap_fig,
-                fn=os.path.join(outdir, plot_outdir, "all_heatmap.svg"),
-                width=1400)
-            kaleido.export_plotly_svg (
-                fig=all_ridgeplot_fig,
-                fn=os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"),
-                width=1400)
-            kaleido.export_plotly_svg (
-                fig=catplot_fig,
-                fn=os.path.join(outdir, plot_outdir, "all_catplot.svg"),
-                width=1400)
-            kaleido.export_plotly_svg (
-                fig=ideogram_fig,
-                fn=os.path.join(outdir, plot_outdir, "all_ideogram.svg"),
-                width=1400)
+            kaleido.export_plotly_svg (fig=all_heatmap_fig, fn=os.path.join(outdir, plot_outdir, "all_heatmap.svg"), width=1400)
+            kaleido.export_plotly_svg (fig=all_ridgeplot_fig, fn=os.path.join(outdir, plot_outdir, "all_ridgeplot.svg"), width=1400)
+            kaleido.export_plotly_svg (fig=catplot_fig, fn=os.path.join(outdir, plot_outdir, "all_catplot.svg"), width=1400)
+            kaleido.export_plotly_svg (fig=ideogram_fig, fn=os.path.join(outdir, plot_outdir, "all_ideogram.svg"), width=1400)
+            kaleido.export_plotly_svg (fig=tss_dist_fig, fn=os.path.join(outdir, plot_outdir, "all_tss_distance.svg"), width=1400)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~HTML generating functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
-def write_cpg_interval_html (out_file, src_file, md5, summary_link, previous_link, next_link, max_tss_distance, interval_df, transcript_df, heatmap_fig, ridgeplot_fig):
+def write_cpg_interval_html (out_file, src_file, md5, summary_link, previous_link, next_link, max_tss_distance, interval_df, close_tx_df, heatmap_fig, ridgeplot_fig):
     """Write CpG interval HTML report"""
     # Get CpG_Interval template
     template = get_jinja_template ("CpG_Interval.html.j2")
 
     # Render pandas dataframes and plotly figures to HTML
     interval_html = render_df(interval_df)
-    transcript_html = render_df(transcript_df, empty_msg=f"No transcripts TTS found within {max_tss_distance} bp upstream or downstream")
+    transcript_html = render_df(close_tx_df, empty_msg=f"No transcripts TTS found within {max_tss_distance} bp upstream or downstream")
     heatmap_html = render_fig (heatmap_fig)
     ridgeplot_html = render_fig (ridgeplot_fig)
 
@@ -310,18 +312,19 @@ def write_cpg_interval_html (out_file, src_file, md5, summary_link, previous_lin
     with open(out_file, "w") as fp:
         fp.write(rendering)
 
-def write_summary_html (out_file, src_file, md5, summary_df, top_df, catplot_fig, heatmap_fig, ridgeplot_fig, ideogram_fig):
+def write_summary_html (out_file, src_file, md5, summary_df, top_interval_summary_df, catplot_fig, heatmap_fig, ridgeplot_fig, ideogram_fig, tss_dist_fig):
     """Write summary HTML report"""
     # Get CpG_Interval template
     template = get_jinja_template("CpG_summary.html.j2")
 
     # Render pandas dataframes and plotly figures to HTML
     summary_html = render_df(summary_df)
-    top_html = render_df(top_df, empty_msg="No significant candidates found")
+    top_html = render_df(top_interval_summary_df, empty_msg="No significant candidates found")
     catplot_html = render_fig (catplot_fig, empty_msg= "Not enough significant candidates to render catplot")
     heatmap_html = render_fig (heatmap_fig, empty_msg= "Not enough significant candidates to render heatmap")
     ridgeplot_html = render_fig (ridgeplot_fig, empty_msg= "Not enough significant candidates to render ridgeplot")
     ideogram_html = render_fig (ideogram_fig, empty_msg= "Not enough significant candidates to render ideogram")
+    tss_dist_html = render_fig (tss_dist_fig, empty_msg= "Not enough significant candidates to render tss distance plot")
 
     # Render HTML report using Jinja
     rendering = template.render(
@@ -335,7 +338,8 @@ def write_summary_html (out_file, src_file, md5, summary_df, top_df, catplot_fig
         catplot_html = catplot_html,
         heatmap_html = heatmap_html,
         ridgeplot_html = ridgeplot_html,
-        ideogram_html = ideogram_html)
+        ideogram_html = ideogram_html,
+        tss_dist_html = tss_dist_html)
 
     with open(out_file, "w") as fp:
         fp.write(rendering)
@@ -383,14 +387,14 @@ def get_ensembl_tx (gff_fn):
                         pass
 
                     # Extract specific attrs
-                    d["transcript id"] = attrs.get("id", "-").strip("transcript:")
-                    d["gene id"] = attrs.get("parent", "-").strip("gene:")
-                    d["transcript biotype"] = attrs.get("biotype", "-")
-                    d["transcript name"] = attrs.get("name", "-")
+                    d["transcript id"] = attrs.get("id", pd.NA).strip("transcript:")
+                    d["gene id"] = attrs.get("parent", pd.NA).strip("gene:")
+                    d["transcript biotype"] = attrs.get("biotype", pd.NA)
+                    d["transcript name"] = attrs.get("name", pd.NA)
                     l.append(d)
 
         df = pd.DataFrame(l)
-        df = df.fillna("")
+        df = df.fillna(pd.NA)
         return df
 
 def get_chr_len(fasta_fn):
@@ -462,37 +466,42 @@ def get_summary_df (df, sig_df):
 
     return s.to_frame().T
 
-def get_top_df (top_cpg_list):
-    """Generate a dataframe containing information for the top interval candidates"""
-    # sort by pvalue rank
-    top_cpg_list.sort(key=lambda r: r[0])
-    # collect data
-    l = []
-    for rank, line, transcript_df, out_file in top_cpg_list:
-        d = OrderedDict()
+def get_interval_summary (line, close_tx_df, rank=None, out_file=None):
+    """Generate a summary dict for intervals"""
+    d = OrderedDict()
+    if rank:
         d["rank"] = f"#{rank}"
+    if out_file:
         d["detailled report"] = f"<a href='{out_file}'>report link</a>"
-        d["chromosome"] = line.chromosome
-        d["start"] = line.start
-        d["end"] = line.end
-        d["pvalue"] = line.adj_pvalue
+    d["pvalue"] = line.adj_pvalue
+    d["chromosome"] = line.chromosome
+    d["start"] = line.start
+    d["end"] = line.end
 
-        if transcript_df.empty:
-            d["Number of nearby TSS"] = 0
-            d["closest tx id"] = "-"
-            d["closest tx name"] = "-"
-            d["closest tx biotype"] = "-"
-            d["distance to tss"] = "-"
-        else:
-            d["Number of nearby TSS"] = len(transcript_df)
-            d["closest tx id"] = transcript_df.iloc[0]["transcript id"]
-            d["closest tx name"] = transcript_df.iloc[0]["transcript name"]
-            d["closest tx biotype"] = transcript_df.iloc[0]["transcript biotype"]
-            d["distance to tss"] = transcript_df.iloc[0]["distance to tss"]
-        l.append(d)
+    if close_tx_df.empty:
+        d["Number of nearby TSS"] = 0
+        d["closest tx id"] = pd.NA
+        d["closest tx name"] = pd.NA
+        d["closest tx biotype"] = pd.NA
+        d["distance to tss"] = pd.NA
+    else:
+        d["Number of nearby TSS"] = len(close_tx_df)
+        d["closest tx id"] = close_tx_df.iloc[0]["transcript id"]
+        d["closest tx name"] = close_tx_df.iloc[0]["transcript name"]
+        d["closest tx biotype"] = close_tx_df.iloc[0]["transcript biotype"]
+        d["distance to tss"] = close_tx_df.iloc[0]["distance to tss"]
+    return  d
 
-    df = pd.DataFrame(l)
-    return df
+def get_interval_summary_df (interval_summary_list):
+    """Generate a dataframe containing information for interval summaries"""
+    # Convert list to df
+    interval_summary_df = pd.DataFrame(interval_summary_list)
+    # return if empty df
+    if interval_summary_df.empty:
+        return interval_summary_df
+    # Sort values by ascending value
+    interval_summary_df.sort_values(by="pvalue", inplace=True, ascending=True)
+    return interval_summary_df
 
 #~~~~~~~~~~~~~~~~~~~~~~~~Plotting functions~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -759,8 +768,72 @@ def chr_ideogram_plot(
 
     fig.update_layout(
         dict1 = {'showlegend':False, 'hovermode':'closest', "plot_bgcolor":'rgba(0,0,0,0)',"width":fig_width, "height":fig_height, "margin":{"t":50,"b":50}},
-        xaxis={"ticks":"outside", 'showgrid':False, 'showline':False, 'zeroline':False, "domain":[0, 1], "title":"Genomic coordinates"},
+        xaxis={"ticks":"outside", "showgrid":True, 'zeroline':False,'zeroline':False, "domain":[0, 1], "title":"Genomic coordinates"},
         yaxis={"fixedrange":True, "ticks":"outside", 'showgrid':False, 'showline':False, 'zeroline':False, "title":"Reference sequences"})
+
+    return fig
+
+def tss_dist_plot (
+    df,
+    sig_color:str='rgba(215,48,39,0.5)',
+    non_sig_color:str='rgba(33,102,172,0.5)',
+    pvalue_threshold:float=0.01,
+    max_distance:int=100000,
+    n_bins:int=500,
+    smooth_sigma:float=2,
+    fig_width:int=None,
+    fig_height:int=None):
+
+    """Plot an ideogram of significant sites distribution per chromosome """
+
+    sig_val = df["distance to tss"][df["pvalue"]<=pvalue_threshold].dropna()
+    non_sig_val = df["distance to tss"][df["pvalue"]>pvalue_threshold].dropna()
+    if sig_val.empty:
+        return None
+
+    if not non_sig_val.empty:
+        x_ns, y_ns = gaussian_hist (
+            val_list=non_sig_val,
+            start=-max_distance,
+            stop=max_distance,
+            num=n_bins,
+            smooth_sigma=smooth_sigma)
+
+    x_sig, y_sig = gaussian_hist (
+        val_list=sig_val,
+        start=-max_distance,
+        stop=max_distance,
+        num=n_bins,
+        smooth_sigma=smooth_sigma)
+
+    fig = go.Figure()
+
+    # Plot significant trace
+    sig_trace = go.Scatter (
+        x=x_sig, y=y_sig,
+        name="Significant",
+        fill='tozeroy',
+        fillcolor=sig_color,
+        line_color=sig_color,
+        mode="lines")
+    fig.add_trace(sig_trace)
+
+    # Add non significant trace if data available
+    if not non_sig_val.empty:
+        ns_trace = go.Scatter (
+            x=x_ns, y=y_ns,
+            name="Non_significant",
+            fill='tozeroy',
+            fillcolor=non_sig_color,
+            line_color=non_sig_color,
+            mode="lines")
+        fig.add_trace(ns_trace)
+
+    # tweak figure layout
+    fig.update_layout(
+        dict1 = {"plot_bgcolor":'rgba(0,0,0,0)',"width":fig_width, "height":fig_height, "margin":{"t":50,"b":50}},
+        xaxis={"fixedrange":False, "showgrid":True, 'zeroline':False, "title":'Distance to closest TSS',},
+        yaxis={"fixedrange":True, "showgrid":True, 'zeroline':False, "title":"CpG Islands density"})
 
     return fig
 
@@ -827,3 +900,14 @@ def md5_str (fn):
         for chunk in iter(lambda: f.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
+
+def gaussian_hist (val_list, start, stop, num, smooth_sigma=1):
+    """return a histogram smoothed with a gaussian filter"""
+    # Compute histogram with numpy
+    y, bins = np.histogram (a=val_list, bins=np.linspace(start=start, stop=stop, num=num))
+    # x labels = middle of each bins
+    x = [(bins[i]+bins[i+1])/2 for i in range(0, len(bins)-1)]
+    # Normalise and smooth y data
+    y = y/y.sum()
+    y = gaussian_filter1d (y, sigma=smooth_sigma)
+    return (x,y)

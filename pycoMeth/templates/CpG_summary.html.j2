@@ -46,6 +46,7 @@
                                         <a href="#CpG intervals heatmap">CpG intervals heatmap</a>
                                         <a href="#CpG interval ridgeplot">CpG interval ridgeplot</a>
                                         <a href="#Chromosome ideogram plot">Chromosome ideogram plot</a>
+                                        <a href="#TSS distance plot">TSS distance plot</a>
                                         <a href="#Top pvalues">Top pvalues</a>
                                     </li>
                                 </ul>
@@ -87,6 +88,11 @@
                         <div id="Chromosome ideogram plot" class="column col-11 col-mx-auto">
                             <h5 style="margin-top: 50px;">Distribution of significant CpG intervals by chromosomic intervals</h5>
                             {{ ideogram_html }}
+                            <div class="divider"></div>
+                        </div>
+                        <div id="TSS distance plot" class="column col-11 col-mx-auto">
+                            <h5 style="margin-top: 50px;">Distance from CpG Islands to closest Gene TSS</h5>
+                            {{ tss_dist_html }}
                             <div class="divider"></div>
                         </div>
                         <div id="Top pvalues" class="column col-11 col-mx-auto">
