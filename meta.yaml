@@ -1,4 +1,4 @@
-{% set version = "0.4.14" %}
+{% set version = "0.4.15" %}
 {% set name = "pycoMeth" %}
 
 package:
