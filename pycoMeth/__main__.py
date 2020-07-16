@@ -88,6 +88,7 @@ def main(args=None):
     arg_from_docstr(sp_cr_ms, f, "min_diff_llr")
     arg_from_docstr(sp_cr_ms, f, "n_len_bin")
     arg_from_docstr(sp_cr_ms, f, "export_static_plots")
+    arg_from_docstr(sp_cr_ms, f, "report_non_significant")
 
     # CGI_Finder subparser
     f = CGI_Finder

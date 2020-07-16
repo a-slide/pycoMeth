@@ -28,3 +28,9 @@
 * Speed improvement to Comp_report
 * Add interactive API to Comp_report
 * Add ability to export static plots using orca
+
+### 16/07/2020 v-0.4.14
+
+* Switch from orca to kaleido for static export
+* Export summary of intervals in table file for all intervals and not just for top hits
+* Add new plot for distance between CpG islands and closest tss
