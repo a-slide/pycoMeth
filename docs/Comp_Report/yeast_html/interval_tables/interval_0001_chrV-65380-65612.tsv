@@ -3,14 +3,14 @@ distance to tss	transcript id	gene id	transcript name	chromosome	start	end	stran
 1185	yel047c_m	yel047c	frd1	V	65385	66797	-	mRNA	protein_coding
 -1652	yel049w_m	yel049w	pau2	V	63728	64090	+	mRNA	protein_coding
 3180	yel046c_m	yel046c	gly1	V	67629	68792	-	mRNA	protein_coding
--3420	g(gcc)e_	tg(gcc)	-	V	61890	61960	-	tRNA	trna
-3653	yel045c_m	yel045c	-	V	68840	69265	-	mRNA	protein_coding
--3681	53_sno	snr53	-	V	61699	61789	+	snoRNA	snorna
--4028	67_sno	snr67	-	V	61352	61433	+	snoRNA	snorna
+-3420	g(gcc)e_	tg(gcc)		V	61890	61960	-	tRNA	trna
+3653	yel045c_m	yel045c		V	68840	69265	-	mRNA	protein_coding
+-3681	53_sno	snr53		V	61699	61789	+	snoRNA	snorna
+-4028	67_sno	snr67		V	61352	61433	+	snoRNA	snorna
 4145	yel044w_m	yel044w	ies6	V	69757	70257	+	mRNA	protein_coding
 -4529	yel050c_m	yel050c	rml2	V	59670	60851	-	mRNA	protein_coding
-4866	yel043w_m	yel043w	-	V	70478	73348	+	mRNA	protein_coding
--5831	yel050w-a_m	yel050w-a	-	V	59549	59740	+	mRNA	protein_coding
+4866	yel043w_m	yel043w		V	70478	73348	+	mRNA	protein_coding
+-5831	yel050w-a_m	yel050w-a		V	59549	59740	+	mRNA	protein_coding
 -7002	yel051w_m	yel051w	vma8	V	58378	59148	+	mRNA	protein_coding
 8159	yel042w_m	yel042w	gda1	V	73771	75327	+	mRNA	protein_coding
 -8809	yel052w_m	yel052w	afg1	V	56571	58100	+	mRNA	protein_coding
@@ -18,8 +18,8 @@ distance to tss	transcript id	gene id	transcript name	chromosome	start	end	stran
 10332	yel041w_m	yel041w	yef1	V	75944	77431	+	mRNA	protein_coding
 -12162	yel054c_m	yel054c	rpl12a	V	52721	53218	-	mRNA	protein_coding
 12441	yel040w_m	yel040w	utr2	V	78053	79456	+	mRNA	protein_coding
--12472	yel053w-a_m	yel053w-a	-	V	52908	53255	+	mRNA	protein_coding
--13060	80_sno	snr80	-	V	52150	52320	-	snoRNA	snorna
+-12472	yel053w-a_m	yel053w-a		V	52908	53255	+	mRNA	protein_coding
+-13060	80_sno	snr80		V	52150	52320	-	snoRNA	snorna
 -13841	yel055c_m	yel055c	pol5	V	48471	51539	-	mRNA	protein_coding
 14365	yel039c_m	yel039c	cyc7	V	79636	79977	-	mRNA	protein_coding
 14850	yel038w_m	yel038w	utr4	V	80462	81145	+	mRNA	protein_coding
@@ -30,10 +30,10 @@ distance to tss	transcript id	gene id	transcript name	chromosome	start	end	stran
 19933	yel035c_m	yel035c	utr5	V	85045	85545	-	mRNA	protein_coding
 20064	yel034w_m	yel034w	hyp2	V	85676	86149	+	mRNA	protein_coding
 20567	yel033w_m	yel033w	mtc7	V	86179	86598	+	mRNA	protein_coding
-20603	yel034c-a_m	yel034c-a	-	V	85613	86215	-	mRNA	protein_coding
-20992	(aga)e_	ts(aga)	-	V	86604	86685	+	tRNA	trna
+20603	yel034c-a_m	yel034c-a		V	85613	86215	-	mRNA	protein_coding
+20992	(aga)e_	ts(aga)		V	86604	86685	+	tRNA	trna
 21325	yel032w_m	yel032w	mcm3	V	86937	89852	+	mRNA	protein_coding
-21589	yel032c-a_m	yel032c-a	-	V	87040	87201	-	mRNA	protein_coding
+21589	yel032c-a_m	yel032c-a		V	87040	87201	-	mRNA	protein_coding
 -22128	yel058w_m	yel058w	pcm1	V	43252	44925	+	mRNA	protein_coding
 -22728	yel059w_m	yel059w	hhy1	V	42652	42960	+	mRNA	protein_coding
 -22756	yel059c-a_m	yel059c-a	som1	V	42400	42624	-	mRNA	protein_coding
@@ -41,59 +41,59 @@ distance to tss	transcript id	gene id	transcript name	chromosome	start	end	stran
 24646	yel031w_m	yel031w	spf1	V	90258	93905	+	mRNA	protein_coding
 -25843	yel061c_m	yel061c	cin8	V	36535	39537	-	mRNA	protein_coding
 29032	yel030w_m	yel030w	ecm10	V	94644	96578	+	mRNA	protein_coding
-29285	yel030c-a_m	yel030c-a	-	V	94583	94897	-	mRNA	protein_coding
+29285	yel030c-a_m	yel030c-a		V	94583	94897	-	mRNA	protein_coding
 -30973	yel062w_m	yel062w	npr2	V	34407	36254	+	mRNA	protein_coding
 -31914	yel063c_m	yel063c	can1	V	31694	33466	-	mRNA	protein_coding
 32184	yel029c_m	yel029c	bud16	V	96858	97796	-	mRNA	protein_coding
-33056	yel028w_m	yel028w	-	V	98668	99129	+	mRNA	protein_coding
+33056	yel028w_m	yel028w		V	98668	99129	+	mRNA	protein_coding
 -34141	yel064c_m	yel064c	avt2	V	29797	31239	-	mRNA	protein_coding
-34521	m(cau)e_	tm(cau)	-	V	100133	100204	+	tRNA	trna
+34521	m(cau)e_	tm(cau)		V	100133	100204	+	tRNA	trna
 35157	yel027w_m	yel027w	vma3	V	100769	101251	+	mRNA	protein_coding
 36331	yel026w_m	yel026w	snu13	V	101943	102323	+	mRNA	protein_coding
 -37723	yel065w_m	yel065w	sit1	V	27657	29543	+	mRNA	protein_coding
--38604	yel067c_m	yel067c	-	V	26189	26776	-	mRNA	protein_coding
+-38604	yel067c_m	yel067c		V	26189	26776	-	mRNA	protein_coding
 -38713	yel066w_m	yel066w	hpa3	V	26667	27206	+	mRNA	protein_coding
--39402	yel068c_m	yel068c	-	V	25646	25978	-	mRNA	protein_coding
-40535	yel025c_m	yel025c	-	V	102581	106147	-	mRNA	protein_coding
+-39402	yel068c_m	yel068c		V	25646	25978	-	mRNA	protein_coding
+40535	yel025c_m	yel025c		V	102581	106147	-	mRNA	protein_coding
 41648	yel024w_m	yel024w	rip1	V	107260	107907	+	mRNA	protein_coding
 -42149	yel069c_m	yel069c	hxt13	V	21537	23231	-	mRNA	protein_coding
-44940	yel023c_m	yel023c	-	V	108504	110552	-	mRNA	protein_coding
+44940	yel023c_m	yel023c		V	108504	110552	-	mRNA	protein_coding
 -45791	yel070w_m	yel070w	dsf1	V	19589	21097	+	mRNA	protein_coding
 45809	yel022w_m	yel022w	gea2	V	111421	115800	+	mRNA	protein_coding
 -49025	yel071w_m	yel071w	dld3	V	16355	17845	+	mRNA	protein_coding
 50555	yel021w_m	yel021w	ura3	V	116167	116970	+	mRNA	protein_coding
 51599	yel020w-a_m	yel020w-a	tim9	V	117211	117474	+	mRNA	protein_coding
 -51660	yel072w_m	yel072w	rmd6	V	13720	14415	+	mRNA	protein_coding
-51768	yel020c-b_m	yel020c-b	-	V	117183	117380	-	mRNA	protein_coding
-52423	1_	rpr1	-	V	117667	118035	-	ncRNA	ncrna
+51768	yel020c-b_m	yel020c-b		V	117183	117380	-	mRNA	protein_coding
+52423	1_	rpr1		V	117667	118035	-	ncRNA	ncrna
 54687	yel020c_m	yel020c	pxp1	V	118617	120299	-	mRNA	protein_coding
 55689	yel019c_m	yel019c	mms21	V	120498	121301	-	mRNA	protein_coding
 55859	yel018w_m	yel018w	eaf5	V	121471	122310	+	mRNA	protein_coding
-56376	yel018c-a_m	yel018c-a	-	V	121455	121988	-	mRNA	protein_coding
+56376	yel018c-a_m	yel018c-a		V	121455	121988	-	mRNA	protein_coding
 57317	yel017c-a_m	yel017c-a	pmp2	V	122798	122929	-	mRNA	protein_coding
--57827	yel073c_m	yel073c	-	V	7230	7553	-	mRNA	protein_coding
+-57827	yel073c_m	yel073c		V	7230	7553	-	mRNA	protein_coding
 58045	yel017w_m	yel017w	gtt3	V	123657	124670	+	mRNA	protein_coding
--59254	yel074w_m	yel074w	-	V	6126	6464	+	mRNA	protein_coding
--59667	yel075c_m	yel075c	-	V	5345	5713	-	mRNA	protein_coding
--60266	yel076c-a_m	yel076c-a	-	V	4185	5114	-	mRNA	protein_coding
--60266	yel076c_m	yel076c	-	V	4464	5114	-	mRNA	protein_coding
--60510	yel075w-a_m	yel075w-a	-	V	4870	5481	+	mRNA	protein_coding
+-59254	yel074w_m	yel074w		V	6126	6464	+	mRNA	protein_coding
+-59667	yel075c_m	yel075c		V	5345	5713	-	mRNA	protein_coding
+-60266	yel076c_m	yel076c		V	4464	5114	-	mRNA	protein_coding
+-60266	yel076c-a_m	yel076c-a		V	4185	5114	-	mRNA	protein_coding
+-60510	yel075w-a_m	yel075w-a		V	4870	5481	+	mRNA	protein_coding
 60606	yel016c_m	yel016c	npp2	V	124737	126218	-	mRNA	protein_coding
 61017	yel015w_m	yel015w	edc3	V	126629	128284	+	mRNA	protein_coding
--61283	yel077c_m	yel077c	-	V	264	4097	-	mRNA	protein_coding
-62996	yel014c_m	yel014c	-	V	128303	128608	-	mRNA	protein_coding
+-61283	yel077c_m	yel077c		V	264	4097	-	mRNA	protein_coding
+62996	yel014c_m	yel014c		V	128303	128608	-	mRNA	protein_coding
 63213	yel013w_m	yel013w	vac8	V	128825	130561	+	mRNA	protein_coding
--64750	yel077w-a_m	yel077w-a	-	V	630	1112	+	mRNA	protein_coding
-65541	q(uug)e2_	tq(uug)e2	-	V	131082	131153	-	tRNA	trna
+-64750	yel077w-a_m	yel077w-a		V	630	1112	+	mRNA	protein_coding
+65541	q(uug)e2_	tq(uug)e2		V	131082	131153	-	tRNA	trna
 66160	yel012w_m	yel012w	ubc8	V	131772	132551	+	mRNA	protein_coding
 67508	yel011w_m	yel011w	glc3	V	133120	135234	+	mRNA	protein_coding
-69885	k(cuu)e1_	tk(cuu)e1	-	V	135425	135497	-	tRNA	trna
-70667	yel010w_m	yel010w	-	V	136279	136629	+	mRNA	protein_coding
-71166	yel009c-a_m	yel009c-a	-	V	136371	136778	-	mRNA	protein_coding
-73054	(ucu)e_	tr(ucu)	-	V	138666	138737	+	tRNA	trna
+69885	k(cuu)e1_	tk(cuu)e1		V	135425	135497	-	tRNA	trna
+70667	yel010w_m	yel010w		V	136279	136629	+	mRNA	protein_coding
+71166	yel009c-a_m	yel009c-a		V	136371	136778	-	mRNA	protein_coding
+73054	(ucu)e_	tr(ucu)		V	138666	138737	+	tRNA	trna
 74151	yel009c_m	yel009c	gcn4	V	138918	139763	-	mRNA	protein_coding
-74900	yel008w_m	yel008w	-	V	140512	140892	+	mRNA	protein_coding
-75206	yel008c-a_m	yel008c-a	-	V	140726	140818	-	mRNA	protein_coding
+74900	yel008w_m	yel008w		V	140512	140892	+	mRNA	protein_coding
+75206	yel008c-a_m	yel008c-a		V	140726	140818	-	mRNA	protein_coding
 76280	yel007w_m	yel007w	mit1	V	141892	143892	+	mRNA	protein_coding
 78715	yel006w_m	yel006w	yea6	V	144327	145334	+	mRNA	protein_coding
 81143	yel005c_m	yel005c	vab2	V	145907	146755	-	mRNA	protein_coding
@@ -108,239 +108,4 @@ distance to tss	transcript id	gene id	transcript name	chromosome	start	end	stran
 94938	yer005w_m	yer005w	ynd1	V	160550	162442	+	mRNA	protein_coding
 97111	yer006w_m	yer006w	nug1	V	162723	164285	+	mRNA	protein_coding
 98915	yer007w_m	yer007w	pac2	V	164527	166083	+	mRNA	protein_coding
-99049	yer006c-a_m	yer006c-a	-	V	164344	164661	-	mRNA	protein_coding
-101273	yer007c-a_m	yer007c-a	tma20	V	166237	166885	-	mRNA	protein_coding
-101974	14_	snr14	-	V	167427	167586	-	snRNA	snrna
-106206	yer008c_m	yer008c	sec3	V	167808	171818	-	mRNA	protein_coding
-106503	yer009w_m	yer009w	ntf2	V	172115	172492	+	mRNA	protein_coding
-107726	yer010c_m	yer010c	-	V	172634	173338	-	mRNA	protein_coding
-109636	yer011w_m	yer011w	tir1	V	175248	176012	+	mRNA	protein_coding
-111487	e(uuc)e1_	te(uuc)e1	-	V	177099	177170	+	tRNA	trna
-112223	yer012w_m	yer012w	pre1	V	177835	178431	+	mRNA	protein_coding
-113229	yer013w_m	yer013w	prp22	V	178841	182278	+	mRNA	protein_coding
-116988	yer014w_m	yer014w	hem14	V	182600	184219	+	mRNA	protein_coding
-118929	yer015w_m	yer015w	faa2	V	184541	186775	+	mRNA	protein_coding
-119088	yer014c-a_m	yer014c-a	bud25	V	183731	184700	-	mRNA	protein_coding
-122665	yer016w_m	yer016w	bim1	V	188277	189311	+	mRNA	protein_coding
-126176	yer017c_m	yer017c	afg3	V	189503	191788	-	mRNA	protein_coding
-127012	yer018c_m	yer018c	spc25	V	191959	192624	-	mRNA	protein_coding
-127185	yer019w_m	yer019w	isc1	V	192797	194230	+	mRNA	protein_coding
-128927	yer019c-a_m	yer019c-a	sbh2	V	194273	194539	-	mRNA	protein_coding
-129556	yer020w_m	yer020w	gpa2	V	195168	196517	+	mRNA	protein_coding
-131336	yer021w_m	yer021w	rpn3	V	196948	198519	+	mRNA	protein_coding
-133200	yer022w_m	yer022w	srb4	V	198812	200875	+	mRNA	protein_coding
-135464	yer023w_m	yer023w	pro3	V	201076	201936	+	mRNA	protein_coding
-136122	yer023c-a_m	yer023c-a	-	V	201522	201734	-	mRNA	protein_coding
-136580	yer024w_m	yer024w	yat2	V	202192	204963	+	mRNA	protein_coding
-139639	yer025w_m	yer025w	gcd11	V	205251	206834	+	mRNA	protein_coding
-141745	h(gug)e1_	th(gug)e1	-	V	207357	207428	+	tRNA	trna
-142862	yer026c_m	yer026c	cho1	V	207644	208474	-	mRNA	protein_coding
-144620	yer027c_m	yer027c	gal83	V	208979	210232	-	mRNA	protein_coding
-146264	yer028c_m	yer028c	mig3	V	210692	211876	-	mRNA	protein_coding
-147565	yer029c_m	yer029c	smb1	V	212587	213177	-	mRNA	protein_coding
-147825	yer030w_m	yer030w	chz1	V	213437	213898	+	mRNA	protein_coding
-149135	yer031c_m	yer031c	ypt31	V	214076	214747	-	mRNA	protein_coding
-149451	yer032w_m	yer032w	fir1	V	215063	217693	+	mRNA	protein_coding
-155675	yer033c_m	yer033c	zrg8	V	218057	221287	-	mRNA	protein_coding
-156234	yer034w_m	yer034w	-	V	221846	222403	+	mRNA	protein_coding
-157027	yer035w_m	yer035w	edc2	V	222639	223076	+	mRNA	protein_coding
-159587	yer036c_m	yer036c	arb1	V	223367	225199	-	mRNA	protein_coding
-160277	yer037w_m	yer037w	phm8	V	225889	226854	+	mRNA	protein_coding
-162640	yer038c_m	yer038c	kre29	V	226858	228252	-	mRNA	protein_coding
-162839	yer038w-a_m	yer038w-a	fmp49	V	228451	228831	+	mRNA	protein_coding
-163593	yer039c_m	yer039c	hvg1	V	228456	229205	-	mRNA	protein_coding
-163869	yer039c-a_m	yer039c-a	-	V	229263	229481	-	mRNA	protein_coding
-164183	yer040w_m	yer040w	gln3	V	229795	231987	+	mRNA	protein_coding
-166849	yer041w_m	yer041w	yen1	V	232461	234740	+	mRNA	protein_coding
-169325	yer042w_m	yer042w	mxr1	V	234937	235491	+	mRNA	protein_coding
-171507	yer043c_m	yer043c	sah1	V	235770	237119	-	mRNA	protein_coding
-172404	yer044c_m	yer044c	erg28	V	237570	238016	-	mRNA	protein_coding
-174162	yer044c-a_m	yer044c-a	mei4	V	238460	239774	-	mRNA	protein_coding
-175889	yer045c_m	yer045c	aca1	V	240032	241501	-	mRNA	protein_coding
-177568	yer046w_m	yer046w	spo73	V	243180	243611	+	mRNA	protein_coding
-178088	yer046w-a_m	yer046w-a	-	V	243700	244029	+	mRNA	protein_coding
-180891	yer047c_m	yer047c	sap1	V	243810	246503	-	mRNA	protein_coding
-182545	yer048c_m	yer048c	caj1	V	246982	248157	-	mRNA	protein_coding
-184674	q(uug)e1_	tq(uug)e1	-	V	250286	250357	+	tRNA	trna
-185106	yer048w-a_m	yer048w-a	isd11	V	250718	251002	+	mRNA	protein_coding
-186116	yer049w_m	yer049w	tpa1	V	251728	253662	+	mRNA	protein_coding
-188775	yer050c_m	yer050c	rsm18	V	253971	254387	-	mRNA	protein_coding
-189044	yer051w_m	yer051w	jhd1	V	254656	256134	+	mRNA	protein_coding
-192346	yer052c_m	yer052c	hom3	V	256375	257958	-	mRNA	protein_coding
-194027	yer053c_m	yer053c	pic2	V	258737	259639	-	mRNA	protein_coding
-195434	yer053c-a_m	yer053c-a	-	V	260933	261046	-	mRNA	protein_coding
-198086	yer054c_m	yer054c	gip2	V	262052	263698	-	mRNA	protein_coding
-200173	yer055c_m	yer055c	his1	V	264892	265785	-	mRNA	protein_coding
-202501	yer056c_m	yer056c	fcy2	V	266512	268113	-	mRNA	protein_coding
-204573	yer056c-a_m	yer056c-a	rpl34a	V	269423	270185	-	mRNA	protein_coding
-205514	yer057c_m	yer057c	hmf1	V	270737	271126	-	mRNA	protein_coding
-206156	yer058w_m	yer058w	pet117	V	271768	272091	+	mRNA	protein_coding
-207012	yer059w_m	yer059w	pcl6	V	272624	273886	+	mRNA	protein_coding
-208955	yer060w_m	yer060w	fcy21	V	274567	276153	+	mRNA	protein_coding
-210960	yer060w-a_m	yer060w-a	fcy22	V	276572	278164	+	mRNA	protein_coding
-214014	yer061c_m	yer061c	cem1	V	278298	279626	-	mRNA	protein_coding
-215070	yer062c_m	yer062c	gpp2	V	279930	280682	-	mRNA	protein_coding
-216098	yer063w_m	yer063w	tho1	V	281710	282366	+	mRNA	protein_coding
-218610	yer064c_m	yer064c	vhr2	V	282705	284222	-	mRNA	protein_coding
-221302	yer065c_m	yer065c	icl1	V	285241	286914	-	mRNA	protein_coding
-222912	(uga)e_	ts(uga)	-	V	288443	288524	-	tRNA	trna
-224630	yer066w_m	yer066w	rrt13	V	290242	290799	+	mRNA	protein_coding
-226454	yer067w_m	yer067w	rgi1	V	292066	292551	+	mRNA	protein_coding
-226591	yer066c-a_m	yer066c-a	-	V	291703	292203	-	mRNA	protein_coding
-226951	yer067c-a_m	yer067c-a	-	V	292240	292563	-	mRNA	protein_coding
-227438	yer068w_m	yer068w	mot2	V	293050	294813	+	mRNA	protein_coding
-229798	yer069w_m	yer069w	arg5%2c6	V	295410	298001	+	mRNA	protein_coding
-230120	yer068c-a_m	yer068c-a	-	V	295301	295732	-	mRNA	protein_coding
-233338	yer070w_m	yer070w	rnr1	V	298950	301616	+	mRNA	protein_coding
-236715	yer071c_m	yer071c	tda2	V	301947	302327	-	mRNA	protein_coding
-237194	yer072w_m	yer072w	vtc1	V	302806	303195	+	mRNA	protein_coding
-238418	yer073w_m	yer073w	ald5	V	304030	305592	+	mRNA	protein_coding
-240711	yer074w_m	yer074w	rps24a	V	306323	307196	+	mRNA	protein_coding
-242041	yer074w-a_m	yer074w-a	yos1	V	307653	308123	+	mRNA	protein_coding
-245587	yer075c_m	yer075c	ptp3	V	308413	311199	-	mRNA	protein_coding
-246483	(ugc)e_	ta(ugc)	-	V	312023	312095	-	tRNA	trna
-247778	yer076w-a_m	yer076w-a	-	V	313390	313737	+	mRNA	protein_coding
-247886	yer076c_m	yer076c	-	V	312590	313498	-	mRNA	protein_coding
-250988	yer077c_m	yer077c	mrx1	V	314534	316600	-	mRNA	protein_coding
-252730	yer078c_m	yer078c	icp55	V	316807	318342	-	mRNA	protein_coding
-253034	yer078w-a_m	yer078w-a	-	V	318646	318810	+	mRNA	protein_coding
-253308	yer079w_m	yer079w	-	V	318920	319552	+	mRNA	protein_coding
-254351	yer080w_m	yer080w	aim9	V	319963	321846	+	mRNA	protein_coding
-254628	yer079c-a_m	yer079c-a	-	V	319902	320240	-	mRNA	protein_coding
-256600	g1_	srg1	-	V	322212	322762	+	ncRNA	ncrna
-257074	yer081w_m	yer081w	ser3	V	322686	324095	+	mRNA	protein_coding
-260324	yer082c_m	yer082c	utp7	V	324272	325936	-	mRNA	protein_coding
-261419	yer083c_m	yer083c	get2	V	326174	327031	-	mRNA	protein_coding
-261453	yer084w_m	yer084w	-	V	327065	327451	+	mRNA	protein_coding
-261986	yer084w-a_m	yer084w-a	-	V	327598	328110	+	mRNA	protein_coding
-262528	yer085c_m	yer085c	-	V	327619	328140	-	mRNA	protein_coding
-262865	yer086w_m	yer086w	ilv1	V	328477	330207	+	mRNA	protein_coding
-264964	yer087w_m	yer087w	aim10	V	330576	332306	+	mRNA	protein_coding
-266756	yer087c-a_m	yer087c-a	-	V	331817	332368	-	mRNA	protein_coding
-267218	yer087c-b_m	yer087c-b	sbh1	V	332582	332830	-	mRNA	protein_coding
-269576	yer088c_m	yer088c	dot6	V	333176	335188	-	mRNA	protein_coding
-270315	yer088w-b_m	yer088w-b	-	V	335927	336073	+	mRNA	protein_coding
-270407	yer088c-a_m	yer088c-a	-	V	335696	336019	-	mRNA	protein_coding
-271728	yer089c_m	yer089c	ptc2	V	335946	337340	-	mRNA	protein_coding
-272337	yer090w_m	yer090w	trp2	V	337949	339472	+	mRNA	protein_coding
-272799	yer090c-a_m	yer090c-a	-	V	338322	338411	-	mRNA	protein_coding
-276555	yer091c_m	yer091c	met6	V	339864	342167	-	mRNA	protein_coding
-276999	yer091c-a_m	yer091c-a	-	V	342390	342611	-	mRNA	protein_coding
-277243	yer092w_m	yer092w	ies5	V	342855	343232	+	mRNA	protein_coding
-282000	yer093c_m	yer093c	tsc11	V	343320	347612	-	mRNA	protein_coding
-282788	yer093c-a_m	yer093c-a	aim11	V	347912	348400	-	mRNA	protein_coding
-283734	yer094c_m	yer094c	pup3	V	348729	349346	-	mRNA	protein_coding
-284368	yer095w_m	yer095w	rad51	V	349980	351182	+	mRNA	protein_coding
-286086	yer096w_m	yer096w	shc1	V	351698	353236	+	mRNA	protein_coding
-289322	e(uuc)e2_	te(uuc)e2	-	V	354934	355005	+	tRNA	trna
-289528	yer097w_m	yer097w	-	V	355140	355469	+	mRNA	protein_coding
-289854	yer098w_m	yer098w	ubp9	V	355466	357730	+	mRNA	protein_coding
-293449	yer099c_m	yer099c	prs2	V	358105	359061	-	mRNA	protein_coding
-293950	yer100w_m	yer100w	ubc6	V	359562	360314	+	mRNA	protein_coding
-296182	yer101c_m	yer101c	ast2	V	360502	361794	-	mRNA	protein_coding
-297488	yer102w_m	yer102w	rps8b	V	363100	363702	+	mRNA	protein_coding
-298977	yer103w_m	yer103w	ssa4	V	364589	366517	+	mRNA	protein_coding
-301190	yer104w_m	yer104w	rtt105	V	366802	367428	+	mRNA	protein_coding
-306401	yer105c_m	yer105c	nup157	V	367838	372013	-	mRNA	protein_coding
-306714	yer106w_m	yer106w	mam1	V	372326	373234	+	mRNA	protein_coding
-308782	yer107w-a_m	yer107w-a	-	V	374394	374714	+	mRNA	protein_coding
-308933	yer107c_m	yer107c	gle2	V	373448	374545	-	mRNA	protein_coding
-316491	yer110c_m	yer110c	kap123	V	378762	382103	-	mRNA	protein_coding
-320264	yer111c_m	yer111c	swi4	V	382595	385876	-	mRNA	protein_coding
-321620	yer112w_m	yer112w	lsm4	V	387232	387795	+	mRNA	protein_coding
-324440	yer113c_m	yer113c	tmn3	V	387932	390052	-	mRNA	protein_coding
-328100	yer114c_m	yer114c	boi2	V	390590	393712	-	mRNA	protein_coding
-329255	yer115c_m	yer115c	spr6	V	394292	394867	-	mRNA	protein_coding
-330560	yer116c_m	yer116c	slx8	V	395348	396172	-	mRNA	protein_coding
-331157	yer117w_m	yer117w	rpl23b	V	396769	397653	+	mRNA	protein_coding
-333443	yer118c_m	yer118c	sho1	V	397952	399055	-	mRNA	protein_coding
-335230	yer119c_m	yer119c	avt6	V	399496	400842	-	mRNA	protein_coding
-335523	yer120w_m	yer120w	scs2	V	401135	401869	+	mRNA	protein_coding
-335626	yer119c-a_m	yer119c-a	-	V	400867	401238	-	mRNA	protein_coding
-336763	yer121w_m	yer121w	-	V	402375	402719	+	mRNA	protein_coding
-338740	yer122c_m	yer122c	glo3	V	402871	404352	-	mRNA	protein_coding
-339201	yer123w_m	yer123w	yck3	V	404813	406387	+	mRNA	protein_coding
-343451	yer124c_m	yer124c	dse1	V	407342	409063	-	mRNA	protein_coding
-344577	yer125w_m	yer125w	rsp5	V	410189	412618	+	mRNA	protein_coding
-348567	yer126c_m	yer126c	nsa2	V	413394	414179	-	mRNA	protein_coding
-348869	yer127w_m	yer127w	lcp5	V	414481	415554	+	mRNA	protein_coding
-350247	yer128w_m	yer128w	vfa1	V	415859	416470	+	mRNA	protein_coding
-351669	yer129w_m	yer129w	sak1	V	417281	420709	+	mRNA	protein_coding
-356834	yer130c_m	yer130c	com2	V	421115	422446	-	mRNA	protein_coding
-358340	yer131w_m	yer131w	rps26b	V	423952	424311	+	mRNA	protein_coding
-359086	4_sno	snr4	-	V	424698	424883	+	snoRNA	snorna
-364837	yer132c_m	yer132c	pmd1	V	425188	430449	-	mRNA	protein_coding
-365608	52_sno	snr52	-	V	431129	431220	-	snoRNA	snorna
-366883	yer133w_m	yer133w	glc7	V	432495	433958	+	mRNA	protein_coding
-369000	h(gug)e2_	th(gug)e2	-	V	434541	434612	-	tRNA	trna
-370212	k(cuu)e2_	tk(cuu)e2	-	V	435752	435824	-	tRNA	trna
-371579	yer133w-a_m	yer133w-a	-	V	437191	437532	+	mRNA	protein_coding
-372191	yer134c_m	yer134c	-	V	437267	437803	-	mRNA	protein_coding
-372732	yer135c_m	yer135c	-	V	437952	438344	-	mRNA	protein_coding
-373088	v(aac)e1_	tv(aac)e1	-	V	438700	438773	+	tRNA	trna
-374004	yer136w_m	yer136w	gdi1	V	439616	440971	+	mRNA	protein_coding
-375963	yer137w-a_m	yer137w-a	-	V	441575	441880	+	mRNA	protein_coding
-376207	yer137c_m	yer137c	-	V	441373	441819	-	mRNA	protein_coding
-376375	1_	scr1	-	V	441987	442508	+	ncRNA	ncrna
-377663	(aau)e1_	ti(aau)e1	-	V	443202	443275	-	tRNA	trna
-383862	yer138w-a_m	yer138w-a	-	V	449474	449578	+	mRNA	protein_coding
-385631	yer139c_m	yer139c	rtr1	V	450563	451243	-	mRNA	protein_coding
-385953	yer140w_m	yer140w	emp65	V	451565	453235	+	mRNA	protein_coding
-387847	yer141w_m	yer141w	cox15	V	453459	454919	+	mRNA	protein_coding
-390424	yer142c_m	yer142c	mag1	V	455146	456036	-	mRNA	protein_coding
-390707	yer143w_m	yer143w	ddi1	V	456319	457605	+	mRNA	protein_coding
-394611	yer144c_m	yer144c	ubp5	V	457806	460223	-	mRNA	protein_coding
-396128	yer145c_m	yer145c	ftr1	V	460526	461740	-	mRNA	protein_coding
-396973	yer146w_m	yer146w	lsm5	V	462585	462866	+	mRNA	protein_coding
-397211	yer145c-a_m	yer145c-a	-	V	462386	462823	-	mRNA	protein_coding
-399230	yer147c_m	yer147c	scc4	V	462968	464842	-	mRNA	protein_coding
-399691	yer148w_m	yer148w	spt15	V	465303	466025	+	mRNA	protein_coding
-400001	yer147c-a_m	yer147c-a	-	V	465203	465613	-	mRNA	protein_coding
-400573	yer148w-a_m	yer148w-a	-	V	466185	466763	+	mRNA	protein_coding
-401858	yer149c_m	yer149c	pea2	V	466208	467470	-	mRNA	protein_coding
-402758	yer150w_m	yer150w	spi1	V	468370	468816	+	mRNA	protein_coding
-403845	v(aac)e2_	tv(aac)e2	-	V	469457	469530	+	tRNA	trna
-406812	yer151c_m	yer151c	ubp3	V	469686	472424	-	mRNA	protein_coding
-407873	yer152w-a_m	yer152w-a	-	V	473485	474051	+	mRNA	protein_coding
-408376	yer152c_m	yer152c	-	V	472657	473988	-	mRNA	protein_coding
-409193	yer153c_m	yer153c	pet122	V	474041	474805	-	mRNA	protein_coding
-409408	yer154w_m	yer154w	oxa1	V	475020	476228	+	mRNA	protein_coding
-417236	yer155c_m	yer155c	bem2	V	476345	482848	-	mRNA	protein_coding
-418729	yer156c_m	yer156c	-	V	483325	484341	-	mRNA	protein_coding
-419176	yer157w_m	yer157w	cog3	V	484788	487193	+	mRNA	protein_coding
-421790	e(uuc)e3_	te(uuc)e3	-	V	487331	487402	-	tRNA	trna
-424966	yer158c_m	yer158c	-	V	488857	490578	-	mRNA	protein_coding
-425875	yer158w-a_m	yer158w-a	-	V	491487	491702	+	mRNA	protein_coding
-426346	yer159c_m	yer159c	bur6	V	491530	491958	-	mRNA	protein_coding
-426812	(acg)e_	tr(acg)	-	V	492352	492424	-	tRNA	trna
-434736	yer161c_m	yer161c	spt2	V	499347	500348	-	mRNA	protein_coding
-437282	yer162c_m	yer162c	rad4	V	500630	502894	-	mRNA	protein_coding
-438170	yer163c_m	yer163c	gcg1	V	503084	503782	-	mRNA	protein_coding
-439780	yer164w_m	yer164w	chd1	V	505392	509798	+	mRNA	protein_coding
-444761	yer165w_m	yer165w	pab1	V	510373	512106	+	mRNA	protein_coding
-447132	yer166w_m	yer166w	dnf1	V	512744	517459	+	mRNA	protein_coding
-447371	yer165c-a_m	yer165c-a	-	V	512627	512983	-	mRNA	protein_coding
-452604	yer167w_m	yer167w	bck2	V	518216	520771	+	mRNA	protein_coding
-457057	yer168c_m	yer168c	cca1	V	521029	522669	-	mRNA	protein_coding
-457757	yer169w_m	yer169w	rph1	V	523369	525759	+	mRNA	protein_coding
-460362	yer170w_m	yer170w	adk2	V	525974	526651	+	mRNA	protein_coding
-461470	yer171w_m	yer171w	rad3	V	527082	529418	+	mRNA	protein_coding
-470409	yer172c_m	yer172c	brr2	V	529530	536021	-	mRNA	protein_coding
-470688	yer173w_m	yer173w	rad24	V	536300	538279	+	mRNA	protein_coding
-471043	yer172c-a_m	yer172c-a	-	V	536275	536655	-	mRNA	protein_coding
-473556	yer174c_m	yer174c	grx4	V	538434	539168	-	mRNA	protein_coding
-474751	yer175c_m	yer175c	tmt1	V	539464	540363	-	mRNA	protein_coding
-475038	yer175w-a_m	yer175w-a	-	V	540650	540814	+	mRNA	protein_coding
-476078	yer176w_m	yer176w	ecm32	V	541690	545055	+	mRNA	protein_coding
-479999	yer177w_m	yer177w	bmh1	V	545611	546414	+	mRNA	protein_coding
-481205	yer178w_m	yer178w	pda1	V	546817	548079	+	mRNA	protein_coding
-482809	yer179w_m	yer179w	dmc1	V	548421	549517	+	mRNA	protein_coding
-484915	yer180c_m	yer180c	isc10	V	549724	550527	-	mRNA	protein_coding
-485510	yer180c-a_m	yer180c-a	slo1	V	550865	551122	-	mRNA	protein_coding
-485746	(aau)e2_	ti(aau)e2	-	V	551285	551358	-	tRNA	trna
-486184	yer181c_m	yer181c	-	V	551473	551796	-	mRNA	protein_coding
-486913	yer182w_m	yer182w	fmp10	V	552525	553259	+	mRNA	protein_coding
-488357	yer183c_m	yer183c	fau1	V	553334	553969	-	mRNA	protein_coding
-493068	yer184c_m	yer184c	tog1	V	556296	558680	-	mRNA	protein_coding
-493842	yer185w_m	yer185w	pug1	V	559454	560365	+	mRNA	protein_coding
-497013	yer186c_m	yer186c	-	V	561705	562625	-	mRNA	protein_coding
+99049	yer006c-a_m	yer006c-a		V	164344	164661	-	mRNA	protein_coding
