@@ -780,7 +780,7 @@ def tss_dist_plot (
     pvalue_threshold:float=0.01,
     max_distance:int=100000,
     n_bins:int=500,
-    smooth_sigma:float=2,
+    smooth_sigma:float=3,
     fig_width:int=None,
     fig_height:int=None):
 
@@ -811,7 +811,7 @@ def tss_dist_plot (
     # Plot significant trace
     sig_trace = go.Scatter (
         x=x_sig, y=y_sig,
-        name="Significant",
+        name=f"Significant<br>n={len(sig_val)}",
         fill='tozeroy',
         fillcolor=sig_color,
         line_color=sig_color,
@@ -822,7 +822,7 @@ def tss_dist_plot (
     if not non_sig_val.empty:
         ns_trace = go.Scatter (
             x=x_ns, y=y_ns,
-            name="Non_significant",
+            name=f"Non-significant<br>n={len(non_sig_val)}",
             fill='tozeroy',
             fillcolor=non_sig_color,
             line_color=non_sig_color,
@@ -832,8 +832,8 @@ def tss_dist_plot (
     # tweak figure layout
     fig.update_layout(
         dict1 = {"plot_bgcolor":'rgba(0,0,0,0)',"width":fig_width, "height":fig_height, "margin":{"t":50,"b":50}},
-        xaxis={"fixedrange":False, "showgrid":True, 'zeroline':False, "title":'Distance to closest TSS',},
-        yaxis={"fixedrange":True, "showgrid":True, 'zeroline':False, "title":"CpG Islands density"})
+        xaxis={"fixedrange":False, "showgrid":True, 'zeroline':False, "title":'Distance to closest TSS', "gridcolor":"lightgrey"},
+        yaxis={"fixedrange":True, "showgrid":False, 'zeroline':False, "title":"CpG Islands density"})
 
     return fig
 
