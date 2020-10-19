@@ -30,8 +30,6 @@ requirements:
     - pyfaidx>=0.5.8
     - tqdm>=4.45.0
     - colorlog>=4.1.0
-    - nbformat>=4.2.0
-    - python-kaleido
 
 test:
   imports:

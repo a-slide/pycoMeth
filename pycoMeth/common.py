@@ -25,7 +25,6 @@ try:
     from IPython.core.display import SVG, display
     STATIC_EXPORT=True
 except (ModuleNotFoundError, ImportError) as E:
-    print("Cannot import dependencies required for static image export")
     STATIC_EXPORT=False
     pass
 
