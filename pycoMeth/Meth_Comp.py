@@ -307,7 +307,7 @@ class StatsResults():
             if self.pvalue_method == "KW":
                 statistics, pvalue = kruskal(*raw_llr_list)
             elif self.pvalue_method == "MW":
-                statistics, pvalue = mannwhitneyu(raw_llr_list[0], raw_llr_list[1])
+                statistics, pvalue = mannwhitneyu(raw_llr_list[0], raw_llr_list[1], alternative='two-sided')
 
             # Fix and categorize p-values
             if pvalue is np.nan or pvalue is None or pvalue>1 or pvalue<0:
