@@ -1,0 +1,2 @@
+pvalue	chromosome	start	end	Number of nearby TSS	closest tx id	closest tx name	closest tx biotype	distance to tss
+0.029563770441734687	V	65380	65612	110	yel048c_m	tca17	protein_coding	-213

@@ -1,0 +1,1095 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python package for nanopore DNA methylation analysis downstream to Nanopolish">
+      
+      
+        <link rel="canonical" href="https://a-slide.github.io/pycoMeth/CpG_Aggregate/CLI_usage/">
+      
+      
+        <meta name="author" content="Adrien Leger">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.0">
+    
+    
+      
+        <title>Command line usage - pycoMeth</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bc7e593a.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab28b872.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../css/ansi-colours.css">
+    
+      <link rel="stylesheet" href="../../css/jupyter-cells.css">
+    
+      <link rel="stylesheet" href="../../css/pandas-dataframe.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cpg_aggregate-cli-usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://a-slide.github.io/pycoMeth/" title="pycoMeth" class="md-header-nav__button md-logo" aria-label="pycoMeth">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            pycoMeth
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Command line usage
+            
+          </span>
+        </div>
+      
+    </div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/a-slide/pycoMeth/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    a-slide/pycoMeth
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://a-slide.github.io/pycoMeth/" title="pycoMeth" class="md-nav__button md-logo" aria-label="pycoMeth">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    pycoMeth
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/a-slide/pycoMeth/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    a-slide/pycoMeth
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../installation/" class="md-nav__link">
+      Installation instructions
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      CpG_Aggregate Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="CpG_Aggregate Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        CpG_Aggregate Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../usage/" class="md-nav__link">
+      Using CpG_Aggregate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Command line usage
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Command line usage
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#activate-virtual-environment" class="md-nav__link">
+    Activate virtual environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Example usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    Basic usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage-using-a-regex-and-with-a-lower-depth-threshold" class="md-nav__link">
+    Example usage using a regex and with a lower depth threshold
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Interval_Aggregate Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Interval_Aggregate Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Interval_Aggregate Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Interval_Aggregate/usage/" class="md-nav__link">
+      Using Interval_Aggregate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Interval_Aggregate/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Interval_Aggregate/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Meth_Comp Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Meth_Comp Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Meth_Comp Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Meth_Comp/usage/" class="md-nav__link">
+      Using Meth_Comp
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Meth_Comp/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Meth_Comp/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Comp_Report Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Comp_Report Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        Comp_Report Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Comp_Report/usage/" class="md-nav__link">
+      Using Comp_Report
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Comp_Report/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Comp_Report/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      CGI_Finder Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="CGI_Finder Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon"></span>
+        CGI_Finder Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CGI_Finder/usage/" class="md-nav__link">
+      Using CGI_Finder
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CGI_Finder/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CGI_Finder/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../contributing/" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../code_of_conduct/" class="md-nav__link">
+      Code of conduct
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../licence/" class="md-nav__link">
+      Licence
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../changelog/" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#activate-virtual-environment" class="md-nav__link">
+    Activate virtual environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Example usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    Basic usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage-using-a-regex-and-with-a-lower-depth-threshold" class="md-nav__link">
+    Example usage using a regex and with a lower depth threshold
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/a-slide/pycoMeth/edit/master/docs/CpG_Aggregate/CLI_usage.ipynb" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+(function() {
+  function addWidgetsRenderer() {
+    var mimeElement = document.querySelector('script[type="application/vnd.jupyter.widget-view+json"]');
+    var scriptElement = document.createElement('script');
+    var widgetRendererSrc = 'https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js';
+    var widgetState;
+
+    // Fallback for older version:
+    try {
+      widgetState = mimeElement && JSON.parse(mimeElement.innerHTML);
+
+      if (widgetState && (widgetState.version_major < 2 || !widgetState.version_major)) {
+        widgetRendererSrc = 'jupyter-js-widgets@*/dist/embed.js';
+      }
+    } catch(e) {}
+
+    scriptElement.src = widgetRendererSrc;
+    document.body.appendChild(scriptElement);
+  }
+
+  document.addEventListener('DOMContentLoaded', addWidgetsRenderer);
+}());
+</script>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="cpg_aggregate-cli-usage">CpG_Aggregate CLI usage</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="activate-virtual-environment">Activate virtual environment</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code><span class="c1"># Using virtualenvwrapper here but can also be done with Conda </span>
+workon pycoMeth
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code>(pycoMeth) (pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="getting-help">Getting help</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code>pycoMeth CpG_Aggregate --help
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code>usage: pycoMeth CpG_Aggregate [-h] -i [NANOPOLISH_FN [NANOPOLISH_FN ...]] -f
+                              REF_FASTA_FN [-b OUTPUT_BED_FN]
+                              [-t OUTPUT_TSV_FN] [-d MIN_DEPTH] [-s SAMPLE_ID]
+                              [-l MIN_LLR] [-v] [-q] [-p]
+
+Calculate methylation frequency at genomic CpG sites from the output of
+`nanopolish call-methylation`
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Input/Output options:
+  -i [NANOPOLISH_FN [NANOPOLISH_FN ...]], --nanopolish_fn [NANOPOLISH_FN [NANOPOLISH_FN ...]]
+                        Path to a nanopolish call_methylation tsv output file
+                        or a list of files or a regex matching several files
+                        (can be gzipped) (required) [str]
+  -f REF_FASTA_FN, --ref_fasta_fn REF_FASTA_FN
+                        Reference file used for alignment in Fasta format
+                        (ideally already indexed with samtools faidx)
+                        (required) [str]
+  -b OUTPUT_BED_FN, --output_bed_fn OUTPUT_BED_FN
+                        Path to write a summary result file in BED format (At
+                        least 1 output file is required) (can be gzipped)
+                        (default: None) [str]
+  -t OUTPUT_TSV_FN, --output_tsv_fn OUTPUT_TSV_FN
+                        Path to write a more extensive result report in TSV
+                        format (At least 1 output file is required) (can be
+                        gzipped) (default: None) [str]
+
+Misc options:
+  -d MIN_DEPTH, --min_depth MIN_DEPTH
+                        Minimal number of reads covering a site to be reported
+                        (default: 10) [int]
+  -s SAMPLE_ID, --sample_id SAMPLE_ID
+                        Sample ID to be used for the BED track header
+                        (default: None) [str]
+  -l MIN_LLR, --min_llr MIN_LLR
+                        Minimal log likelyhood ratio to consider a site
+                        significantly methylated or unmethylated in output BED
+                        file (default: 2) [float]
+
+Verbosity options:
+  -v, --verbose         Increase verbosity
+  -q, --quiet           Reduce verbosity
+  -p, --progress        Display a progress bar
+(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="example-usage">Example usage</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="basic-usage">Basic usage</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code>pycoMeth CpG_Aggregate <span class="se">\</span>
+    -i ./data/nanopolish_sample_1.tsv <span class="se">\</span>
+    -f ./data/ref.fa <span class="se">\</span>
+    -b ./results/CpG_Aggregate_sample_1_CLI.bed <span class="se">\</span>
+    -t ./results/CpG_Aggregate_sample_1_CLI.tsv <span class="se">\</span>
+    -s sample_1 <span class="se">\</span>
+    --progress
+
+head ./results/CpG_Aggregate_sample_1_CLI.bed
+head ./results/CpG_Aggregate_sample_1_CLI.tsv
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code><span class="ansi-blue-intense-fg ansi-bold">## Checking options and input files ##</span>
+<span class="ansi-blue-intense-fg ansi-bold">## Parsing methylation_calls file ##</span>
+<span class="ansi-green-fg">    Starting to parse file Nanopolish methylation call file</span>
+    Progress: 100%|██████████████████████| 51.9M/51.9M [00:04&lt;00:00, 11.1M bytes/s]
+<span class="ansi-green-fg">    Parsing summary</span>
+<span class="ansi-green-fg">        Lines Parsed: 543,135</span>
+<span class="ansi-green-fg">        Line successfully parsed: 543,135</span>
+<span class="ansi-green-fg">        Input files: 1</span>
+<span class="ansi-green-fg">    Filtering out low coverage sites</span>
+<span class="ansi-green-fg">    Sorting each chromosome by coordinates</span>
+<span class="ansi-green-fg">    Sites summary</span>
+<span class="ansi-green-fg">        Total Valid Lines: 543,135</span>
+<span class="ansi-green-fg">        Initial Sites: 218,353</span>
+<span class="ansi-green-fg">        Low Count Sites: 218,114</span>
+<span class="ansi-green-fg">        Valid Sites Found: 239</span>
+<span class="ansi-blue-intense-fg ansi-bold">## Processing valid sites found and write to file ##</span>
+    Progress: 100%|██████████████████████████| 239/239 [00:00&lt;00:00, 4.18k sites/s]
+<span class="ansi-green-fg">    Results summary</span>
+<span class="ansi-green-fg">        Total Sites Writen: 239</span>
+<span class="ansi-green-fg">        Unmethylated sites: 162</span>
+<span class="ansi-green-fg">        Ambiguous sites: 77</span>
+(pycoMeth) (pycoMeth) track name=sample_1_CpG itemRgb=On
+VIII    138415  138416  .   -2.355  .   138415  138416  52,168,194
+VIII    138429  138430  .   -4.525  .   138429  138430  33,102,171
+VIII    212351  212352  .   -2.77   .   212351  212352  52,168,194
+VIII    212392  212393  .   -2.51   .   212392  212393  52,168,194
+VIII    212457  212461  .   -6.08   .   212457  212461  28,45,131
+VIII    212530  212531  .   -1.27   .   212530  212531  230,230,230
+VIII    212581  212582  .   0.075   .   212581  212582  230,230,230
+VIII    212596  212600  .   -4.86   .   212596  212600  33,102,171
+VIII    212612  212613  .   -2.91   .   212612  212613  52,168,194
+(pycoMeth) chromosome   start   end sequence    num_motifs  median_llr  llr_list
+VIII    138415  138416  GGTCTCGCTTT 1   -2.355  [-9.42,-5.49,-5.18,-5.11,-2.43,-1.1,0.46,-0.68,1.07,-2.28]
+VIII    138429  138430  AGCTTCGAGGA 1   -4.525  [-3.62,-5.58,1.12,-2.5,-10.4,-2.39,-8.33,-7.29,-0.44,-5.43]
+VIII    212351  212352  TGGGGCGACAT 1   -2.77   [-2.95,-11.55,-9.31,-0.07,-11.21,-4.14,0.66,-2.54,2.05,0.54,-2.77]
+VIII    212392  212393  ATTAACGTATA 1   -2.51   [-6.76,3.04,0.11,-2.51,0.32,-3.7,-2.92,-2.01,-3.52,-4.71,-1.2]
+VIII    212457  212461  AGAATCGTCGATTA  2   -6.08   [-6.08,-13.01,-3.52,-1.3,-8.11,-8.88,-1.47,-4.78,-6.83,-3.04,-6.32,-0.17,-10.75]
+VIII    212530  212531  CTATTCGTTTC 1   -1.27   [-5.33,-1.27,1.12,-3.72,0.48,-4.4,-0.48,-1.02,-0.07,-5.54,-2.65,0.16,-2.7]
+VIII    212581  212582  GTTACCGCAGG 1   0.075   [1.19,-0.11,-0.02,-5.77,2.08,0.17,0.84,2.46,-4.36,-2.46,1.75,6.98,-11.76,-0.68]
+VIII    212596  212600  TTTGTCGTCGCTGT  2   -4.86   [-13.76,-4.43,-1.37,-8.36,-6.67,-6.3,1.13,-4.67,-7.3,-2.5,-0.96,-5.05,-2.63,-7.3]
+VIII    212612  212613  CACCCCGTTGG 1   -2.91   [-7.45,1.01,-2.76,-0.81,-3.06,-2.63,-3.66,-3.11,-0.21,-2.02,-6.81,-8.47,-1.18,-7.1]
+(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="example-usage-using-a-regex-and-with-a-lower-depth-threshold">Example usage using a regex and with a lower depth threshold</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code>pycoMeth CpG_Aggregate <span class="se">\</span>
+    -i ./data/nanopolish_sample_*.tsv <span class="se">\</span>
+    -f ./data/ref.fa <span class="se">\</span>
+    -b ./results/CpG_Aggregate_sample_all_CLI.bed <span class="se">\</span>
+    -t ./results/CpG_Aggregate_sample_all_CLI.tsv <span class="se">\</span>
+    -d <span class="m">5</span> <span class="se">\</span>
+    -s sample_all <span class="se">\</span>
+    --progress
+
+head ./results/CpG_Aggregate_sample_all_CLI.bed
+head ./results/CpG_Aggregate_sample_all_CLI.tsv
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code><span class="ansi-blue-intense-fg ansi-bold">## Checking options and input files ##</span>
+<span class="ansi-blue-intense-fg ansi-bold">## Parsing methylation_calls file ##</span>
+<span class="ansi-green-fg">    Starting to parse file Nanopolish methylation call file</span>
+    Progress: 100%|████████████████████████| 209M/209M [00:17&lt;00:00, 12.0M bytes/s]
+<span class="ansi-green-fg">    Parsing summary</span>
+<span class="ansi-green-fg">        Lines Parsed: 2,180,231</span>
+<span class="ansi-green-fg">        Line successfully parsed: 2,180,231</span>
+<span class="ansi-green-fg">        Input files: 4</span>
+<span class="ansi-green-fg">    Filtering out low coverage sites</span>
+<span class="ansi-green-fg">    Sorting each chromosome by coordinates</span>
+<span class="ansi-green-fg">    Sites summary</span>
+<span class="ansi-green-fg">        Total Valid Lines: 2,180,231</span>
+<span class="ansi-green-fg">        Initial Sites: 251,674</span>
+<span class="ansi-green-fg">        Valid Sites Found: 228,163</span>
+<span class="ansi-green-fg">        Low Count Sites: 23,511</span>
+<span class="ansi-blue-intense-fg ansi-bold">## Processing valid sites found and write to file ##</span>
+    Progress: 100%|████████████████████████| 228k/228k [00:26&lt;00:00, 8.67k sites/s]
+<span class="ansi-green-fg">    Results summary</span>
+<span class="ansi-green-fg">        Total Sites Writen: 228,163</span>
+<span class="ansi-green-fg">        Unmethylated sites: 168,018</span>
+<span class="ansi-green-fg">        Ambiguous sites: 60,129</span>
+<span class="ansi-green-fg">        Methylated sites: 16</span>
+(pycoMeth) (pycoMeth) track name=sample_all_CpG itemRgb=On
+I   144 145 .   -2.2    .   144 145 52,168,194
+I   175 176 .   -1.35   .   175 176 230,230,230
+I   216 217 .   -2.16   .   216 217 52,168,194
+I   325 326 .   -2.66   .   325 326 52,168,194
+I   339 340 .   -1.21   .   339 340 230,230,230
+I   354 355 .   -1.39   .   354 355 230,230,230
+I   422 433 .   -10.52  .   422 433 28,45,131
+I   542 543 .   -0.78   .   542 543 230,230,230
+I   557 558 .   -2.3    .   557 558 52,168,194
+(pycoMeth) chromosome   start   end sequence    num_motifs  median_llr  llr_list
+I   144 145 CCACTCGTTAC 1   -2.2    [-2.2,-8.42,-0.7,2.77,-3.01]
+I   175 176 CACTCCGAACC 1   -1.35   [1.94,-2.01,-1.35,-8.02,-1.07]
+I   216 217 CCCACCGTTAC 1   -2.16   [-0.27,-0.41,-6.62,-2.16,-2.85]
+I   325 326 TGAAACGCTAA 1   -2.66   [-4.93,-2.66,-0.41,0.01,-5.79]
+I   339 340 ATGATCGTAAA 1   -1.21   [-1.21,-1.08,-0.02,-2.85,-4.49]
+I   354 355 ACACACGTGCT 1   -1.39   [-1.39,-1.2,-1.11,-4.6,-1.63]
+I   422 433 TTTTACGTACGCACACGGATG   3   -10.52  [-13.29,-10.52,-2.49,-7.21,-10.79]
+I   542 543 ATGCACGGCAC 1   -0.78   [2.14,2.59,-2.03,-3.57,0.47,-3.81]
+I   557 558 CTCAGCGGTCT 1   -2.3    [-4.34,-1.14,-1.11,-5.5,-1.85,-4.84,-2.3]
+(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../API_usage/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                jupyter API usage
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../Interval_Aggregate/usage/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Using Interval_Aggregate
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Adrien Leger
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.6a3d08fc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.71201edf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,13 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+-4370	ensorlt00000000072	sorlg00000000055		1	1576629	1604541	-	mRNA	protein_coding
+5523	ensorlt00000040497	sorlg00000000062	arhgap19-201	1	1606039	1615290	-	mRNA	protein_coding
+5523	ensorlt00000032161	sorlg00000000062	arhgap19-202	1	1606039	1615290	-	mRNA	protein_coding
+5523	ensorlt00000000074	sorlg00000000062	arhgap19-203	1	1606039	1615290	-	mRNA	protein_coding
+10626	ensorlt00000000075	sorlg00000000064	si:ch211-133l11.10-202	1	1618265	1620393	-	mRNA	protein_coding
+10634	ensorlt00000047053	sorlg00000000064	si:ch211-133l11.10-201	1	1618265	1620401	-	mRNA	protein_coding
+22871	ensorlt00000047064	sorlg00000027625	dla-201	1	1632638	1640828	+	mRNA	protein_coding
+-50087	ensorlt00000032515	sorlg00000027690		1	1555542	1558824	-	mRNA	protein_coding
+51729	ensorlt00000044437	sorlg00000026423		1	1642274	1661496	-	mRNA	protein_coding
+52041	ensorlt00000046946	sorlg00000026423		1	1647230	1661808	-	mRNA	protein_coding
+75827	ensorlt00000000086	sorlg00000000069	hk1-201	1	1661829	1685594	-	mRNA	protein_coding
+81381	ensorlt00000000089	sorlg00000000075	myom2a-201	1	1691148	1720250	+	mRNA	protein_coding

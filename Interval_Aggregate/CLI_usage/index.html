@@ -1,0 +1,1082 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python package for nanopore DNA methylation analysis downstream to Nanopolish">
+      
+      
+        <link rel="canonical" href="https://a-slide.github.io/pycoMeth/Interval_Aggregate/CLI_usage/">
+      
+      
+        <meta name="author" content="Adrien Leger">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.0">
+    
+    
+      
+        <title>Command line usage - pycoMeth</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bc7e593a.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab28b872.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../css/ansi-colours.css">
+    
+      <link rel="stylesheet" href="../../css/jupyter-cells.css">
+    
+      <link rel="stylesheet" href="../../css/pandas-dataframe.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#interval_aggregate-cli-usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://a-slide.github.io/pycoMeth/" title="pycoMeth" class="md-header-nav__button md-logo" aria-label="pycoMeth">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            pycoMeth
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Command line usage
+            
+          </span>
+        </div>
+      
+    </div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/a-slide/pycoMeth/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    a-slide/pycoMeth
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://a-slide.github.io/pycoMeth/" title="pycoMeth" class="md-nav__button md-logo" aria-label="pycoMeth">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    pycoMeth
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/a-slide/pycoMeth/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    a-slide/pycoMeth
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../installation/" class="md-nav__link">
+      Installation instructions
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      CpG_Aggregate Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="CpG_Aggregate Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        CpG_Aggregate Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CpG_Aggregate/usage/" class="md-nav__link">
+      Using CpG_Aggregate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CpG_Aggregate/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CpG_Aggregate/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Interval_Aggregate Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Interval_Aggregate Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Interval_Aggregate Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../usage/" class="md-nav__link">
+      Using Interval_Aggregate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Command line usage
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Command line usage
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#activate-virtual-environment" class="md-nav__link">
+    Activate virtual environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Example usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-usage-with-sliding-windows" class="md-nav__link">
+    Default usage with sliding windows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-with-an-annotation-bed-file" class="md-nav__link">
+    Usage with an annotation Bed file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Meth_Comp Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Meth_Comp Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Meth_Comp Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Meth_Comp/usage/" class="md-nav__link">
+      Using Meth_Comp
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Meth_Comp/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Meth_Comp/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Comp_Report Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Comp_Report Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        Comp_Report Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Comp_Report/usage/" class="md-nav__link">
+      Using Comp_Report
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Comp_Report/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Comp_Report/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      CGI_Finder Usage
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="CGI_Finder Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon"></span>
+        CGI_Finder Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CGI_Finder/usage/" class="md-nav__link">
+      Using CGI_Finder
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CGI_Finder/API_usage/" class="md-nav__link">
+      jupyter API usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CGI_Finder/CLI_usage/" class="md-nav__link">
+      Command line usage
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../contributing/" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../code_of_conduct/" class="md-nav__link">
+      Code of conduct
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../licence/" class="md-nav__link">
+      Licence
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../changelog/" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#activate-virtual-environment" class="md-nav__link">
+    Activate virtual environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Example usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-usage-with-sliding-windows" class="md-nav__link">
+    Default usage with sliding windows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-with-an-annotation-bed-file" class="md-nav__link">
+    Usage with an annotation Bed file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/a-slide/pycoMeth/edit/master/docs/Interval_Aggregate/CLI_usage.ipynb" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+(function() {
+  function addWidgetsRenderer() {
+    var mimeElement = document.querySelector('script[type="application/vnd.jupyter.widget-view+json"]');
+    var scriptElement = document.createElement('script');
+    var widgetRendererSrc = 'https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js';
+    var widgetState;
+
+    // Fallback for older version:
+    try {
+      widgetState = mimeElement && JSON.parse(mimeElement.innerHTML);
+
+      if (widgetState && (widgetState.version_major < 2 || !widgetState.version_major)) {
+        widgetRendererSrc = 'jupyter-js-widgets@*/dist/embed.js';
+      }
+    } catch(e) {}
+
+    scriptElement.src = widgetRendererSrc;
+    document.body.appendChild(scriptElement);
+  }
+
+  document.addEventListener('DOMContentLoaded', addWidgetsRenderer);
+}());
+</script>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="interval_aggregate-cli-usage">Interval_Aggregate CLI usage</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="activate-virtual-environment">Activate virtual environment</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code><span class="c1"># Using virtualenvwrapper here but can also be done with Conda </span>
+workon pycoMeth
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code>(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="getting-help">Getting help</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code>pycoMeth Interval_Aggregate --help
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code>usage: pycoMeth Interval_Aggregate [-h] -i CPG_AGGREGATE_FN -f REF_FASTA_FN
+                                   [-a INTERVAL_BED_FN] [-b OUTPUT_BED_FN]
+                                   [-t OUTPUT_TSV_FN] [-n INTERVAL_SIZE]
+                                   [-m MIN_CPG_PER_INTERVAL] [-s SAMPLE_ID]
+                                   [-l MIN_LLR] [-v] [-q] [-p]
+
+Bin the output of `pycoMeth CpG_Aggregate` in genomic intervals, using either
+an annotation file containing intervals or a sliding window.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Input/Output options:
+  -i CPG_AGGREGATE_FN, --cpg_aggregate_fn CPG_AGGREGATE_FN
+                        Output tsv file generated by CpG_Aggregate (can be
+                        gzipped) (required) [str]
+  -f REF_FASTA_FN, --ref_fasta_fn REF_FASTA_FN
+                        Reference file used for alignment in Fasta format
+                        (ideally already indexed with samtools faidx)
+                        (required) [str]
+  -a INTERVAL_BED_FN, --interval_bed_fn INTERVAL_BED_FN
+                        SORTED bed file containing **non-overlapping**
+                        intervals to bin CpG data into (Optional) (can be
+                        gzipped) (default: None) [str]
+  -b OUTPUT_BED_FN, --output_bed_fn OUTPUT_BED_FN
+                        Path to write a summary result file in BED format (At
+                        least 1 output file is required) (can be gzipped)
+                        (default: None) [str]
+  -t OUTPUT_TSV_FN, --output_tsv_fn OUTPUT_TSV_FN
+                        Path to write a more extensive result report in TSV
+                        format (At least 1 output file is required) (can be
+                        gzipped) (default: None) [str]
+
+Misc options:
+  -n INTERVAL_SIZE, --interval_size INTERVAL_SIZE
+                        Size of the sliding window in which to aggregate CpG
+                        sites data from if no BED file is provided (default:
+                        1000) [int]
+  -m MIN_CPG_PER_INTERVAL, --min_cpg_per_interval MIN_CPG_PER_INTERVAL
+                        Minimal number of CpG sites per interval. (default: 5)
+                        [int]
+  -s SAMPLE_ID, --sample_id SAMPLE_ID
+                        Sample ID to be used for the BED track header
+                        (default: None) [str]
+  -l MIN_LLR, --min_llr MIN_LLR
+                        Minimal log likelyhood ratio to consider a site
+                        significantly methylated or unmethylated in output BED
+                        file (default: 2) [float]
+
+Verbosity options:
+  -v, --verbose         Increase verbosity
+  -q, --quiet           Reduce verbosity
+  -p, --progress        Display a progress bar
+(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="example-usage">Example usage</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="default-usage-with-sliding-windows">Default usage with sliding windows</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code>pycoMeth Interval_Aggregate<span class="se">\</span>
+    -i ./data/CpG_Aggregate_sample_1.tsv <span class="se">\</span>
+    -f ./data/ref.fa <span class="se">\</span>
+    -b ./results/Interval_Aggregate_sample_1_CLI.bed <span class="se">\</span>
+    -t ./results/Interval_Aggregate_sample_1_CLI.tsv <span class="se">\</span>
+    --interval_size <span class="m">500</span> <span class="se">\</span>
+    --min_cpg_per_interval <span class="m">5</span> <span class="se">\</span>
+    -s sample_1 <span class="se">\</span>
+    --progress
+
+head ./results/Interval_Aggregate_sample_1_CLI.bed
+head ./results/Interval_Aggregate_sample_1_CLI.tsv
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code><span class="ansi-blue-intense-fg ansi-bold">## Checking options and input files ##</span>
+<span class="ansi-blue-intense-fg ansi-bold">## Parsing CpG_aggregate file ##</span>
+    Progress: 100%|██████████████████████| 5.82M/5.82M [00:01&lt;00:00, 3.11M bytes/s]
+<span class="ansi-green-fg">    Results summary</span>
+<span class="ansi-green-fg">        Lines parsed: 89,392</span>
+<span class="ansi-green-fg">        Total number of intervals: 24,319</span>
+<span class="ansi-green-fg">    Writter summary</span>
+<span class="ansi-green-fg">        Empty intervals skipped: 14,390</span>
+<span class="ansi-green-fg">        Valid intervals written: 8,389</span>
+<span class="ansi-green-fg">        Low CpG intervals skipped: 1,540</span>
+(pycoMeth) (pycoMeth) track name=sample_1_Interval itemRgb=On
+I   500 1000    .   -3.35   .   500 1000    29,140,190
+I   1000    1500    .   -3.65   .   1000    1500    29,140,190
+I   1500    2000    .   -3.4    .   1500    2000    29,140,190
+I   2000    2500    .   -4.272  .   2000    2500    33,102,171
+I   2500    3000    .   -2.5    .   2500    3000    52,168,194
+I   3000    3500    .   -1.4    .   3000    3500    230,230,230
+I   3500    4000    .   -1.75   .   3500    4000    230,230,230
+I   4000    4500    .   -3.325  .   4000    4500    29,140,190
+I   4500    5000    .   -2.628  .   4500    5000    52,168,194
+(pycoMeth) chromosome   start   end num_motifs  median_llr  llr_list    pos_list
+I   500 1000    12  -3.35   [-1.14,-3.54,-7.24,-4.3,0.56,-0.65,-4.37,-3.78,-0.27,-1.32,-3.35]   [557,587,626,665,834,868,890,936,955,967,988]
+I   1000    1500    22  -3.65   [-2.48,-5.035,-4.16,-3.315,-3.295,-1.69,-9.885,-7.95,-3.65,-3.0,-2.83,-8.36,-8.56]  [1036,1095,1119,1136,1158,1178,1197,1212,1345,1399,1437,1450,1482]
+I   1500    2000    19  -3.4    [-5.71,-6.05,-0.925,-7.165,-3.975,0.56,-1.78,-1.86,-3.67,-3.4,-5.53,-1.06,-1.79,-1.94,-6.22]    [1520,1581,1630,1650,1707,1755,1782,1797,1814,1829,1889,1925,1949,1961,1976]
+I   2000    2500    15  -4.272  [-5.24,-3.07,-4.33,-19.055,-7.55,-1.255,-2.565,-4.215,-5.515,-3.48] [2003,2051,2084,2126,2300,2396,2421,2445,2459,2498]
+I   2500    3000    19  -2.5    [-0.705,0.385,-6.685,-10.175,-4.27,-2.3,-2.5,-2.52,-1.425,-4.255,-2.73,0.35,-9.31,-1.05,-0.99]  [2546,2563,2584,2629,2666,2680,2694,2729,2752,2764,2829,2870,2908,2978,2989]
+I   3000    3500    9   -1.4    [-2.34,-2.19,-1.4,-1.0,0.29,-1.3,-6.9,-1.22,-1.92]  [3000,3024,3044,3056,3071,3148,3218,3367,3473]
+I   3500    4000    8   -1.75   [-1.7,-0.53,-4.46,-2.2,-1.75,-8.47,0.53]    [3516,3610,3624,3674,3722,3820,3987]
+I   4000    4500    10  -3.325  [-2.83,-3.96,-1.77,-13.895,-3.82,-1.73] [4076,4094,4223,4267,4296,4399]
+I   4500    5000    12  -2.628  [-2.71,-0.76,-1.55,-2.56,-0.985,-5.02,-3.46,-1.275,-2.695,-3.52]    [4534,4591,4654,4706,4787,4809,4847,4859,4917,4988]
+(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="usage-with-an-annotation-bed-file">Usage with an annotation Bed file</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="highlight"><pre><span></span><code>pycoMeth Interval_Aggregate<span class="se">\</span>
+    -i ./data/CpG_Aggregate_sample_1.tsv <span class="se">\</span>
+    -f ./data/ref.fa <span class="se">\</span>
+    -a ./data/Yeast_CGI.bed <span class="se">\</span>
+    -b ./results/Interval_Aggregate_sample_1_interval_CLI.bed <span class="se">\</span>
+    -t ./results/Interval_Aggregate_sample_1_interval_CLI.tsv <span class="se">\</span>
+    -s sample_1 <span class="se">\</span>
+    --progress
+
+head ./results/Interval_Aggregate_sample_1_interval_CLI.bed
+head ./results/Interval_Aggregate_sample_1_interval_CLI.tsv
+</code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code><span class="ansi-blue-intense-fg ansi-bold">## Checking options and input files ##</span>
+<span class="ansi-blue-intense-fg ansi-bold">## Parsing CpG_aggregate file ##</span>
+    Progress: 100%|█████████████████████▉| 5.81M/5.82M [00:00&lt;00:00, 6.77M bytes/s]
+<span class="ansi-green-fg">    Results summary</span>
+<span class="ansi-green-fg">        Lines parsed: 89,235</span>
+<span class="ansi-green-fg">        Total number of intervals: 2,041</span>
+<span class="ansi-green-fg">    Writter summary</span>
+<span class="ansi-green-fg">        Empty intervals skipped: 1,323</span>
+<span class="ansi-green-fg">        Valid intervals written: 637</span>
+<span class="ansi-green-fg">        Low CpG intervals skipped: 81</span>
+(pycoMeth) (pycoMeth) track name=sample_1_Interval itemRgb=On
+I   1804    2170    .   -3.67   .   1804    2170    29,140,190
+I   31835   32949   .   -5.65   .   31835   32949   35,70,156
+I   33497   34371   .   -3.295  .   33497   34371   29,140,190
+I   44730   44988   .   -3.2    .   44730   44988   29,140,190
+I   47889   48187   .   -4.55   .   47889   48187   33,102,171
+I   57175   57391   .   -4.76   .   57175   57391   33,102,171
+I   59052   59257   .   -4.05   .   59052   59257   33,102,171
+I   60422   60656   .   -3.615  .   60422   60656   29,140,190
+I   61246   61903   .   -3.423  .   61246   61903   29,140,190
+(pycoMeth) chromosome   start   end num_motifs  median_llr  llr_list    pos_list
+I   1804    2170    14  -3.67   [-3.67,-3.4,-5.53,-1.06,-1.79,-1.94,-6.22,-5.24,-3.07,-4.33,-19.055]    [1814,1829,1889,1925,1949,1961,1976,2003,2051,2084,2126]
+I   31835   32949   10  -5.65   [-2.925,-6.055,-1.785,-5.65,-6.83,-1.695,-12.32]    [31867,31889,31937,31960,32003,32027,32054]
+I   33497   34371   19  -3.295  [-4.38,-3.32,-1.29,-3.27,-5.89,-8.96,-6.88,-2.22,-3.605,-1.07,-6.465,-1.735,0.15,-0.96] [33947,33967,34001,34021,34049,34060,34097,34160,34171,34207,34226,34253,34307,34354]
+I   44730   44988   9   -3.2    [-2.37,-4.9,-1.63,-1.69,-8.09,-4.03]    [44748,44789,44808,44841,44867,44926]
+I   47889   48187   13  -4.55   [-4.55,-9.41,-3.37,-4.66,-3.24,-4.66,-4.535]    [47890,47994,48036,48050,48082,48100,48113]
+I   57175   57391   9   -4.76   [-7.96,-4.76,-0.33,-3.77,-1.03,-7.68,-6.66] [57192,57255,57274,57292,57316,57335,57359]
+I   59052   59257   13  -4.05   [-8.53,-1.23,-11.15,-3.07,-3.88,-4.22,-1.59,-5.79]  [59067,59109,59137,59167,59180,59219,59232,59247]
+I   60422   60656   18  -3.615  [-3.3,-3.14,-0.44,-6.65,-3.93,-2.27,-9.16,-1.73,-17.33,-4.25]   [60427,60440,60467,60490,60515,60548,60559,60581,60595,60650]
+I   61246   61903   38  -3.423  [-3.68,-26.15,-6.45,-0.76,-3.86,-2.33,-4.945,-4.975,-2.615,-2.715,-2.905,-3.415,-9.04,-21.33,-2.735,-1.355,-3.43,-2.44] [61257,61328,61389,61409,61424,61443,61495,61544,61569,61581,61614,61625,61644,61692,61746,61763,61857,61872]
+(pycoMeth) </code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>None</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../API_usage/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                jupyter API usage
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../Meth_Comp/usage/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Using Meth_Comp
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Adrien Leger
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.6a3d08fc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.71201edf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

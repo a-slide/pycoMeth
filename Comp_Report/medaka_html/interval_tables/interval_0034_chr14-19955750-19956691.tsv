@@ -1,0 +1,8 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+14624	ensorlt00000031151	sorlg00000029603	rps6ka4-202	14	19957802	19971315	-	mRNA	protein_coding
+17116	ensorlt00000044933	sorlg00000029603	rps6ka4-201	14	19957802	19973807	-	mRNA	protein_coding
+17134	ensorlt00000031900	sorlg00000029603	rps6ka4-203	14	19962524	19973825	-	mRNA	protein_coding
+30221	ensorlt00000013613	sorlg00000010852	stip1-202	14	19978576	19986912	-	mRNA	protein_coding
+33115	ensorlt00000013614	sorlg00000010852	stip1-201	14	19978513	19989806	-	mRNA	protein_coding
+33997	ensorlt00000038874	sorlg00000025822	spata22-201	14	19990688	19998823	+	mRNA	protein_coding
+33997	ensorlt00000043058	sorlg00000025822	spata22-202	14	19990688	19998823	+	mRNA	protein_coding
