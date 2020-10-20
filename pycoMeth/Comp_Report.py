@@ -797,7 +797,7 @@ def tss_dist_plot (
 
     if not non_sig_val.empty:
         x_ns, y_ns = gaussian_hist (
-            val_list=["distance to tss"],
+            val_list=non_sig_val["distance to tss"],
             start=-max_distance,
             stop=max_distance,
             num=n_bins,
