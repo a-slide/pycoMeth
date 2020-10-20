@@ -1,0 +1,13 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+-11370	ensorlt00000006287	sorlg00000004983	onecut3a-201	4	7862678	7878384	+	mRNA	protein_coding
+20599	ensorlt00000006332	sorlg00000005022	atp8b3-201	4	7878425	7896217	-	mRNA	protein_coding
+30206	ensorlt00000031831	sorlg00000030341		4	7905824	7912103	+	mRNA	protein_coding
+-39011	ensorlt00000006270	sorlg00000004973	foxq2-201	4	7835037	7837130	+	mRNA	protein_coding
+-41900	ensorlt00000006266	sorlg00000004970	pias4a-201	4	7819692	7832148	-	mRNA	protein_coding
+54013	ensorlt00000006341	sorlg00000005032	lingo3a-201	4	7927802	7929631	-	mRNA	protein_coding
+-58064	ensorlt00000006224	sorlg00000004940	map2k2a-201	4	7809313	7815984	-	mRNA	protein_coding
+-67885	ensorlt00000046293	sorlg00000028662	zbtb7a-201	4	7798326	7806163	-	mRNA	protein_coding
+-89315	ensorlt00000035303	sorlg00000004923	tcf3b-201	4	7765170	7784733	-	mRNA	protein_coding
+-89337	ensorlt00000006201	sorlg00000004923	tcf3b-202	4	7767436	7784711	-	mRNA	protein_coding
+-89337	ensorlt00000031862	sorlg00000004923	tcf3b-203	4	7767436	7784711	-	mRNA	protein_coding
+95623	ensorlt00000046472	sorlg00000025930	org-201	4	7965094	7971241	-	mRNA	protein_coding

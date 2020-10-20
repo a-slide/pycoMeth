@@ -1,0 +1,10 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+-6650	ensorlt00000019460	sorlg00000015542	galnt10-201	14	29234584	29279681	-	mRNA	protein_coding
+13529	ensorlt00000042885	sorlg00000029231		14	29298395	29300948	-	mRNA	protein_coding
+23652	ensorlt00000034962	sorlg00000024921		14	29307506	29311071	-	mRNA	protein_coding
+-59399	ensorlt00000043680	sorlg00000023108		14	29226932	29228455	+	mRNA	protein_coding
+64260	ensorlt00000040008	sorlg00000023427	mfap3-201	14	29349354	29351679	-	mRNA	protein_coding
+86842	ensorlt00000019481	sorlg00000015559	fam114a2-201	14	29374261	29380591	+	mRNA	protein_coding
+93360	ensorlt00000019507	sorlg00000015579	cnot8-201	14	29380779	29386648	+	mRNA	protein_coding
+94486	ensorlt00000042567	sorlg00000015579	cnot8-202	14	29381905	29386648	+	mRNA	protein_coding
+-95222	ensorlt00000031533	sorlg00000029112		14	29189826	29191109	-	mRNA	protein_coding

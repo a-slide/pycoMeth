@@ -1,0 +1,13 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+0	ensorlt00000043528	sorlg00000025444		6	4945100	4948063	-	mRNA	protein_coding
+16631	ensorlt00000023204	sorlg00000018559	zgc:158868-201	6	4950567	4965687	-	mRNA	protein_coding
+-30407	ensorlt00000023237	sorlg00000018585	bcar1-203	6	4917642	4942617	+	mRNA	protein_coding
+-44456	ensorlt00000040494	sorlg00000018585	bcar1-202	6	4903593	4942617	+	mRNA	protein_coding
+-66859	ensorlt00000044728	sorlg00000018585	bcar1-201	6	4881190	4942915	+	mRNA	protein_coding
+73146	ensorlt00000023197	sorlg00000018545	lrp5-203	6	4974192	5022202	-	mRNA	protein_coding
+75635	ensorlt00000046346	sorlg00000018545	lrp5-201	6	4971674	5024691	-	mRNA	protein_coding
+75635	ensorlt00000036180	sorlg00000018545	lrp5-202	6	4971674	5024691	-	mRNA	protein_coding
+-79987	ensorlt00000042084	sorlg00000018612		6	4868062	4877914	+	mRNA	protein_coding
+-79987	ensorlt00000023269	sorlg00000018612		6	4868062	4877914	+	mRNA	protein_coding
+-96796	ensorlt00000023300	sorlg00000018643	galn-201	6	4842078	4851253	-	mRNA	protein_coding
+-97102	ensorlt00000023305	sorlg00000018643	galn-202	6	4842078	4850947	-	mRNA	protein_coding

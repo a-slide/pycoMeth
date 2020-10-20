@@ -1,0 +1,10 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+485	ensorlt00000032832	sorlg00000027102	sst1.1-201	13	383149	384460	-	mRNA	protein_coding
+8660	ensorlt00000023877	sorlg00000019158		13	390875	392635	-	mRNA	protein_coding
+-48030	ensorlt00000025754	sorlg00000020795	ece2b-201	13	311411	335178	-	mRNA	protein_coding
+-58067	ensorlt00000045877	sorlg00000020795	ece2b-202	13	311411	325141	-	mRNA	protein_coding
+81199	ensorlt00000044286	sorlg00000025981		13	465174	475493	+	mRNA	protein_coding
+-82631	ensorlt00000025751	sorlg00000020793	spcs2-201	13	296602	300577	-	mRNA	protein_coding
+-88352	ensorlt00000033931	sorlg00000020791	abcg1-201	13	285578	294856	-	mRNA	protein_coding
+-88352	ensorlt00000025749	sorlg00000020791	abcg1-202	13	286195	294856	-	mRNA	protein_coding
+91967	ensorlt00000036422	sorlg00000029571		13	475942	477534	+	mRNA	protein_coding

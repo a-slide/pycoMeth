@@ -1,0 +1,4 @@
+distance to tss	transcript id	gene id	transcript name	chromosome	start	end	strand	feature type	transcript biotype
+-42024	ensorlt00000012721	sorlg00000010143	ptprga-201	5	19596704	19675265	+	mRNA	protein_coding
+44702	ensorlt00000034060	sorlg00000023114		5	19684611	19686957	+	mRNA	protein_coding
+66528	ensorlt00000012734	sorlg00000010156	fezf2-201	5	19703415	19706437	-	mRNA	protein_coding
